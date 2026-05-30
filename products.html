@@ -219,6 +219,22 @@ body {
   <div class="page-title">Блюда</div>
   <div class="page-sub">Все блюда вашего меню</div>
 
+  <input
+  id="searchInput"
+  type="text"
+  placeholder="🔍 Поиск блюда..."
+  style="
+    width:100%;
+    background:#111;
+    border:1px solid #1e1e1e;
+    border-radius:14px;
+    padding:14px 16px;
+    color:white;
+    margin-bottom:16px;
+    outline:none;
+    font-size:14px;
+  ">
+
   <div id="tabs"></div>
 <div id="list"></div>
 
@@ -290,12 +306,27 @@ tabs.innerHTML = categories.map((cat, index) => `
 
 function renderProducts(category = 'Все') {
 
-  const filtered =
+  const search =
+  document.getElementById('searchInput')
+    ?.value
+    ?.toLowerCase() || '';
+
+const filtered = products.filter(p => {
+
+  const categoryMatch =
     category === 'Все'
-      ? products
-      : products.filter(
-          p => (p.category || 'Без категории') === category
-        );
+      ? true
+      : (p.category || 'Без категории') === category;
+
+  const searchMatch =
+    !search ||
+    (p.name || '')
+      .toLowerCase()
+      .includes(search);
+
+  return categoryMatch && searchMatch;
+
+});
 
   list.innerHTML = filtered.map(p => `
     <div class="dish">
@@ -322,6 +353,19 @@ function renderProducts(category = 'Все') {
 }
 
 renderProducts();
+
+ document
+  .getElementById('searchInput')
+  ?.addEventListener('input', () => {
+
+    const activeTab =
+      document.querySelector('.category-tab.active');
+
+    renderProducts(
+      activeTab?.dataset?.category || 'Все'
+    );
+
+  });
 
 tabs.querySelectorAll('.category-tab').forEach(tab => {
 
