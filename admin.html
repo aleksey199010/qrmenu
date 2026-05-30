@@ -342,7 +342,12 @@ function renderList() {
       <div class="actions">
         ${c.plan === 'pro'
           ? `<button class="btn-free" onclick="setPlan('${c.uid}', 'free')">→ Free</button>`
-          : `<button class="btn-pro" onclick="setPlan('${c.uid}', 'pro')">→ Pro</button>`
+          : `<select id="period-${c.uid}" style="background:#1a1a1a;color:#aaa;border:1px solid #2a2a2a;border-radius:8px;padding:6px 8px;font-size:12px;margin-bottom:4px;width:100%">
+    <option value="month">1 месяц</option>
+    <option value="year">1 год</option>
+    <option value="unlimited">Безлимит</option>
+  </select>
+  <button class="btn-pro" onclick="setPlan('${c.uid}', 'pro')">→ Pro</button>`
         }
       </div>
     </div>
@@ -350,16 +355,27 @@ function renderList() {
 }
 
 window.setPlan = async function(uid, plan) {
-  await updateDoc(doc(db, 'cafes', uid), { plan });
+  let planExpiry = null;
+  if (plan === 'pro') {
+    const sel = document.getElementById('period-' + uid);
+    const period = sel ? sel.value : 'month';
+    if (period === 'month') planExpiry = new Date(Date.now() + 30*24*60*60*1000).toISOString();
+    if (period === 'year')  planExpiry = new Date(Date.now() + 365*24*60*60*1000).toISOString();
+  }
+
+  await updateDoc(doc(db, 'cafes', uid), { plan, planExpiry });
 
   const cafe = allCafes.find(c => c.uid === uid);
-  if (cafe) cafe.plan = plan;
+  if (cafe) { cafe.plan = plan; cafe.planExpiry = planExpiry; }
 
   document.getElementById('proCount').textContent = allCafes.filter(c => c.plan === 'pro').length;
   document.getElementById('freeCount').textContent = allCafes.filter(c => c.plan !== 'pro').length;
 
   renderList();
-  showToast(plan === 'pro' ? '✅ Pro активирован!' : '↩ Переведён на Free');
+  const label = plan === 'pro'
+    ? (planExpiry ? `✅ Pro до ${new Date(planExpiry).toLocaleDateString('ru')}` : '✅ Pro безлимит!')
+    : '↩ Переведён на Free';
+  showToast(label);
 }
 
 function showToast(msg) {
