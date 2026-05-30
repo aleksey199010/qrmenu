@@ -222,7 +222,39 @@ aiCategories.forEach(cat => {
     const items = document.querySelectorAll('.dish-item');
     let saved = 0;
 
-    for (let i = 0; i < items.length; i++) {
+const allCategories = new Set();
+
+for (let i = 0; i < items.length; i++) {
+
+  const checked = document.getElementById('check-' + i).checked;
+  if (!checked) continue;
+
+  const category =
+    document.getElementById('cat-' + i).value;
+
+  if (category) {
+    allCategories.add(category);
+  }
+}
+
+for (const categoryName of allCategories) {
+
+  await setDoc(
+    doc(
+      db,
+      'cafes',
+      currentUid,
+      'categories',
+      categoryName
+    ),
+    {
+      name: categoryName,
+      order: 0
+    }
+  );
+}
+
+for (let i = 0; i < items.length; i++) {
       const checked = document.getElementById('check-' + i).checked;
       if (!checked) continue;
 
