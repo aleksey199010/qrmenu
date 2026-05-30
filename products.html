@@ -389,6 +389,11 @@ tabs.querySelectorAll('.category-tab').forEach(tab => {
   window.location.href = 'edit-product.html';
 };
 
+window.edit = function(id) {
+  localStorage.setItem('editingProductId', id);
+  window.location.href = 'edit-product.html';
+};
+
 window.del = async function(id) {
   if (!confirm('Удалить блюдо?')) return;
   await deleteDoc(doc(db, 'cafes', currentUid, 'products', id));
@@ -399,11 +404,10 @@ window.addProduct = function() {
   window.location.href = 'add-product.html';
 };
 
-  window.del = async function(id) {
-    if (!confirm('Удалить блюдо?')) return;
-    await deleteDoc(doc(db, 'cafes', currentUid, 'products', id));
-    await load();
-  }
+window.addProduct = function() {
+  window.location.href = 'add-product.html';
+};
+
 </script>
 
 </body>
