@@ -325,7 +325,10 @@ body {
     }
 
     const cafeSnap = await getDoc(doc(db, 'cafes', uid));
-    const plan = cafeSnap.exists() ? cafeSnap.data().plan : 'free';
+    const cafeData = cafeSnap.exists() ? cafeSnap.data() : {};
+    const planExpiry = cafeData.planExpiry;
+    const planActive = cafeData.plan === 'pro' && (!planExpiry || new Date(planExpiry) > new Date());
+    const plan = planActive ? 'pro' : 'free';
 
     const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
     const totalDishes = productsSnap.size;
