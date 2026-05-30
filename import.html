@@ -102,8 +102,7 @@ body { font-family: 'Golos Text', sans-serif; background: #0a0a0a; color: white;
 <script type="module">
   import { auth, db } from './firebase.js';
   import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-  import { collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
+import { collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
   let currentUid = null;
   let imageBase64 = null;
   let categories = [];
@@ -224,24 +223,8 @@ aiCategories.forEach(cat => {
   const items = document.querySelectorAll('.dish-item');
   let saved = 0;
 
-  const MAX_FREE_DISHES = 10;
-
   const selectedItems = document.querySelectorAll('.dish-check:checked');
 
-  const snap = await getDocs(
-    collection(db, 'cafes', currentUid, 'products')
-  );
-
-  const currentCount = snap.size;
-
-  if (currentCount + selectedItems.length > MAX_FREE_DISHES) {
-    alert(
-      `❌ Лимит бесплатного тарифа: ${MAX_FREE_DISHES} блюд.\n` +
-      `У вас сейчас: ${currentCount}\n` +
-      `Вы пытаетесь добавить: ${selectedItems.length}`
-    );
-    return;
-  }
 
   const allCategories = new Set();
 
