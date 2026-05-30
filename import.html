@@ -186,19 +186,28 @@ aiCategories.forEach(cat => {
     const catsOptions = categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
     list.innerHTML = dishes.map((d, i) => `
-      <div class="dish-item">
-        <input type="checkbox" class="dish-check" id="check-${i}" checked>
-        <div class="dish-info">
-          <input type="text" class="dish-name-input" id="name-${i}" value="${d.name}">
-          <div class="dish-row">
-            <input type="number" class="dish-price-input" id="price-${i}" value="${d.price}" placeholder="Цена в сумах">
-            <select class="dish-cat-select" id="cat-${i}">
-              ${catsOptions}
-            </select>
-          </div>
-        </div>
+  <div class="dish-item">
+    <input type="checkbox" class="dish-check" id="check-${i}" checked>
+    <div class="dish-info">
+      <input type="text" class="dish-name-input" id="name-${i}" value="${d.name}">
+
+      <input
+        type="text"
+        class="dish-name-input"
+        id="description-${i}"
+        value="${d.description || ''}"
+        placeholder="Описание блюда">
+
+      <div class="dish-row">
+        <input type="number" class="dish-price-input" id="price-${i}" value="${d.price}" placeholder="Цена в сумах">
+
+        <select class="dish-cat-select" id="cat-${i}">
+          ${catsOptions}
+        </select>
       </div>
-    `).join('');
+    </div>
+  </div>
+`).join('');
 
     dishes.forEach((d, i) => {
       const sel = document.getElementById('cat-' + i);
@@ -220,17 +229,22 @@ aiCategories.forEach(cat => {
       const name = document.getElementById('name-' + i).value.trim();
       const price = document.getElementById('price-' + i).value;
       const category = document.getElementById('cat-' + i).value;
+      const description =
+  document.getElementById('description-' + i).value.trim();
 
       if (!name) continue;
 
       const id = Date.now().toString() + i;
       await setDoc(doc(db, 'cafes', currentUid, 'products', id), {
-        id, name, price, category,
-        description: '',
-        emoji: '🍽️',
-        photo: '',
-        createdAt: new Date().toISOString()
-      });
+  id,
+  name,
+  price,
+  category,
+  description,
+  emoji: '🍽️',
+  photo: '',
+  createdAt: new Date().toISOString()
+});
       saved++;
     }
 
