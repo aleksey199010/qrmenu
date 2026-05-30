@@ -343,11 +343,11 @@ function renderList() {
         ${c.plan === 'pro'
           ? `<button class="btn-free" onclick="setPlan('${c.uid}', 'free')">→ Free</button>`
           : `<select id="period-${c.uid}" style="background:#1a1a1a;color:#aaa;border:1px solid #2a2a2a;border-radius:8px;padding:6px 8px;font-size:12px;margin-bottom:4px;width:100%">
-    <option value="month">1 месяц</option>
-    <option value="year">1 год</option>
-    <option value="unlimited">Безлимит</option>
-  </select>
-  <button class="btn-pro" onclick="setPlan('${c.uid}', 'pro')">→ Pro</button>`
+               <option value="month">1 \u043c\u0435\u0441\u044f\u0446</option>
+               <option value="year">1 \u0433\u043e\u0434</option>
+               <option value="unlimited">\u0411\u0435\u0437\u043b\u0438\u043c\u0438\u0442</option>
+             </select>
+             <button class="btn-pro" onclick="setPlan('${c.uid}', 'pro')">\u2192 Pro</button>`
         }
       </div>
     </div>
