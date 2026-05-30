@@ -282,7 +282,7 @@ body {
     <button onclick="window.location.href='pricing.html'" style="background:#ff6b00;color:#000;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">Про →</button>
   </div>
 
-  <div class="plan-card">
+  <div class="plan-card" id="planCard">
     <div class="plan-left">
       <div class="plan-name">🆓 Бесплатный тариф</div>
       <div class="plan-desc">До 10 блюд · QR-код</div>
@@ -319,8 +319,27 @@ body {
     const plan = cafeSnap.exists() ? cafeSnap.data().plan : 'free';
     const limit = plan === 'pro' ? 99999 : 10;
 
+    const cafeSnap = await getDoc(doc(db, 'cafes', uid));
+    const plan = cafeSnap.exists() ? cafeSnap.data().plan : 'free';
+
     const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
     const totalDishes = productsSnap.size;
+    document.getElementById('dishCount').textContent = totalDishes;
+
+    if (plan === 'pro') {
+      document.getElementById('planCard').innerHTML = `
+        <div class="plan-left">
+          <div class="plan-name">⭐ Pro тариф активен</div>
+          <div class="plan-desc">Неограниченно блюд · Статистика · 3 языка</div>
+        </div>
+      `;
+      document.getElementById('planCard').style.borderColor = '#f5c842';
+      document.getElementById('hiddenBanner').style.display = 'none';
+    } else if (totalDishes > 10) {
+      const hidden = totalDishes - 10;
+      document.getElementById('hiddenBanner').style.display = 'flex';
+      document.getElementById('hiddenCount').textContent = hidden;
+    }
     document.getElementById('dishCount').textContent = totalDishes;
 
     // Показываем баннер если блюд больше лимита
