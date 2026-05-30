@@ -176,11 +176,15 @@ input:focus { border-color: #f5c842; }
       alert('Введите email и пароль');
       return;
     }
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = 'dashboard.html';
-    } catch (error) {
+      try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      if (cred.user.uid === 'FXcBFXmPHJP4fWhMl3FdbTYXW1p1') {
+        window.location.href = 'admin.html';
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    }
+    catch (error) {
       if (error.code === 'auth/user-not-found') {
         alert('Пользователь не найден');
       } else if (error.code === 'auth/wrong-password') {
