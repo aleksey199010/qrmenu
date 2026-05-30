@@ -119,8 +119,10 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
     }
 
     const cafeSnap = await getDoc(doc(db, 'cafes', uid));
-    const plan = cafeSnap.exists() ? cafeSnap.data().plan : 'free';
+    const cafeData = cafeSnap.exists() ? cafeSnap.data() : {};
+    const plan = cafeData.plan || 'free';
     const limit = plan === 'pro' ? 99999 : 10;
+    console.log('CAFE PLAN:', plan, 'LIMIT:', limit, 'DATA:', JSON.stringify(cafeData));
 
     const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
     allProducts = [];
