@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Админка | QR-Меню.uz</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: #0a0a0a;
+  color: white;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  background: #0f0f0f;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.admin-badge {
+  background: #1a0a0a;
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Unbounded', sans-serif;
+}
+
+.logout-btn {
+  background: #1a1a1a;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Golos Text', sans-serif;
+}
+
+.main {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.page-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.page-sub {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #555;
+  margin-top: 4px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  font-family: 'Golos Text', sans-serif;
+  outline: none;
+  margin-bottom: 16px;
+}
+
+.search-input:focus { border-color: #333; }
+.search-input::placeholder { color: #444; }
+
+.cafe-card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cafe-avatar {
+  width: 44px;
+  height: 44px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.cafe-info { flex: 1; }
+
+.cafe-name {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.cafe-email {
+  font-size: 12px;
+  color: #555;
+}
+
+.cafe-meta {
+  font-size: 11px;
+  color: #444;
+  margin-top: 4px;
+}
+
+.plan-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Unbounded', sans-serif;
+  flex-shrink: 0;
+}
+
+.plan-free {
+  background: #1a1a1a;
+  color: #666;
+  border: 1px solid #2a2a2a;
+}
+
+.plan-pro {
+  background: #161400;
+  color: #f5c842;
+  border: 1px solid #f5c842;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-pro {
+  background: #f5c842;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Golos Text', sans-serif;
+  white-space: nowrap;
+}
+
+.btn-pro:hover { opacity: 0.85; }
+
+.btn-free {
+  background: #1a1a1a;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Golos Text', sans-serif;
+  white-space: nowrap;
+}
+
+.btn-free:hover { border-color: #444; color: #aaa; }
+
+.empty {
+  text-align: center;
+  color: #444;
+  padding: 40px 0;
+  font-size: 14px;
+}
+
+.loading {
+  text-align: center;
+  color: #444;
+  padding: 40px 0;
+  font-size: 14px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a4a1a;
+  border: 1px solid #2a7a2a;
+  color: #4ade80;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  display: none;
+  z-index: 999;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🍽 QR-Меню</div>
+  <div class="admin-badge">АДМИН</div>
+  <button class="logout-btn" onclick="logout()">Выйти</button>
+</div>
+
+<div class="main">
+
+  <div class="page-title">Все кафе</div>
+  <div class="page-sub">Управление тарифами клиентов</div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="totalCount">—</div>
+      <div class="stat-label">Всего кафе</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="proCount">—</div>
+      <div class="stat-label">Pro тариф</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="freeCount">—</div>
+      <div class="stat-label">Бесплатных</div>
+    </div>
+  </div>
+
+  <input class="search-input" id="searchInput" placeholder="Поиск по названию или email...">
+
+  <div id="list"><div class="loading">Загрузка...</div></div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { auth, db } from './firebase.js';
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const ADMIN_UID = 'FXcBFXmPHJP4fWhMl3FdbTYXW1p1';
+
+let allCafes = [];
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user || user.uid !== ADMIN_UID) {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+  await loadCafes();
+});
+
+async function loadCafes() {
+  const snap = await getDocs(collection(db, 'cafes'));
+  allCafes = [];
+  snap.forEach(d => allCafes.push({ uid: d.id, ...d.data() }));
+
+  document.getElementById('totalCount').textContent = allCafes.length;
+  document.getElementById('proCount').textContent = allCafes.filter(c => c.plan === 'pro').length;
+  document.getElementById('freeCount').textContent = allCafes.filter(c => c.plan !== 'pro').length;
+
+  renderList();
+}
+
+function renderList() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = allCafes.filter(c => {
+    return !search ||
+      (c.name || '').toLowerCase().includes(search) ||
+      (c.email || '').toLowerCase().includes(search);
+  });
+
+  const list = document.getElementById('list');
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty">Кафе не найдены</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(c => `
+    <div class="cafe-card" id="card-${c.uid}">
+      <div class="cafe-avatar">🍽</div>
+      <div class="cafe-info">
+        <div class="cafe-name">${c.name || 'Без названия'}</div>
+        <div class="cafe-email">${c.email || '—'}</div>
+        <div class="cafe-meta">Зарегистрирован: ${c.createdAt ? new Date(c.createdAt).toLocaleDateString('ru') : '—'}</div>
+      </div>
+      <div class="plan-badge ${c.plan === 'pro' ? 'plan-pro' : 'plan-free'}">
+        ${c.plan === 'pro' ? 'PRO' : 'FREE'}
+      </div>
+      <div class="actions">
+        ${c.plan === 'pro'
+          ? `<button class="btn-free" onclick="setPlan('${c.uid}', 'free')">→ Free</button>`
+          : `<button class="btn-pro" onclick="setPlan('${c.uid}', 'pro')">→ Pro</button>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+window.setPlan = async function(uid, plan) {
+  await updateDoc(doc(db, 'cafes', uid), { plan });
+
+  const cafe = allCafes.find(c => c.uid === uid);
+  if (cafe) cafe.plan = plan;
+
+  document.getElementById('proCount').textContent = allCafes.filter(c => c.plan === 'pro').length;
+  document.getElementById('freeCount').textContent = allCafes.filter(c => c.plan !== 'pro').length;
+
+  renderList();
+  showToast(plan === 'pro' ? '✅ Pro активирован!' : '↩ Переведён на Free');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  setTimeout(() => toast.style.display = 'none', 2500);
+}
+
+document.getElementById('searchInput').addEventListener('input', renderList);
+
+window.logout = async function() {
+  await signOut(auth);
+  window.location.href = 'login.html';
+}
+</script>
+
+</body>
+</html>
