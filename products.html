@@ -237,23 +237,52 @@ body {
       return;
     }
 
-    list.innerHTML = products.map(p => `
-      <div class="dish">
-        ${p.photo
-          ? `<div class="dish-emoji"><img src="${p.photo}" style="width:48px;height:48px;object-fit:cover;border-radius:10px;"></div>`
-          : `<div class="dish-emoji">${p.emoji || getEmoji(p.category)}</div>`
-        }
-        <div class="dish-info">
-          <div class="dish-name">${p.name}</div>
-          <div class="dish-cat">${p.category || 'Без категории'}</div>
-        </div>
-        <div class="dish-price">${Number(p.price).toLocaleString()} сум</div>
-        <div class="dish-actions">
-          <button class="edit-btn" onclick="edit('${p.id}')">✏️</button>
-          <button class="del-btn" onclick="del('${p.id}')">🗑</button>
-        </div>
+    const grouped = {};
+
+products.forEach(p => {
+  const category = p.category || 'Без категории';
+
+  if (!grouped[category]) {
+    grouped[category] = [];
+  }
+
+  grouped[category].push(p);
+});
+
+list.innerHTML = Object.entries(grouped).map(([category, items]) => `
+  <div style="
+    margin-top:24px;
+    margin-bottom:12px;
+    font-family:'Unbounded',sans-serif;
+    font-size:14px;
+    color:#f5c842;
+  ">
+    ${category} (${items.length})
+  </div>
+
+  ${items.map(p => `
+    <div class="dish">
+      ${p.photo
+        ? `<div class="dish-emoji"><img src="${p.photo}" style="width:48px;height:48px;object-fit:cover;border-radius:10px;"></div>`
+        : `<div class="dish-emoji">${p.emoji || getEmoji(p.category)}</div>`
+      }
+
+      <div class="dish-info">
+        <div class="dish-name">${p.name}</div>
+        <div class="dish-cat">${p.category || 'Без категории'}</div>
       </div>
-    `).join('');
+
+      <div class="dish-price">
+        ${Number(p.price).toLocaleString()} сум
+      </div>
+
+      <div class="dish-actions">
+        <button class="edit-btn" onclick="edit('${p.id}')">✏️</button>
+        <button class="del-btn" onclick="del('${p.id}')">🗑</button>
+      </div>
+    </div>
+  `).join('')}
+`).join('');
   }
 
   window.edit = function(id) {
