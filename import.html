@@ -220,102 +220,106 @@ aiCategories.forEach(cat => {
 
 
   window.saveAll = async function() {
-    const items = document.querySelectorAll('.dish-item');
-let saved = 0;
 
-const MAX_FREE_DISHES = 10;
+  const items = document.querySelectorAll('.dish-item');
+  let saved = 0;
 
-const selectedItems = document.querySelectorAll('.dish-check:checked');
+  const MAX_FREE_DISHES = 10;
 
-if (selectedItems.length === 0) return;
-
-const snap = await getDocs(
-  collection(db, 'cafes', currentUid, 'products')
-);
-
-const currentCount = snap.size;
-
-if (currentCount + selectedItems.length > MAX_FREE_DISHES) {
-  alert(
-    `❌ Лимит бесплатного тарифа: ${MAX_FREE_DISHES} блюд.\n` +
-    `У вас сейчас: ${currentCount}\n` +
-    `Вы пытаетесь добавить: ${selectedItems.length}`
-  );
-  return;
-}
-
-const allCategories = new Set();
-
-for (let i = 0; i < items.length; i++) {
+  const selectedItems = document.querySelectorAll('.dish-check:checked');
 
   const snap = await getDocs(
-  collection(db, 'cafes', currentUid, 'products')
-);
-
-if (snap.size >= 10) {
-  alert('❌ Лимит 10 блюд достигнут. Обновите тариф.');
-  return;
-}
-
-  const checked = document.getElementById('check-' + i).checked;
-  if (!checked) continue;
-
-  const category =
-    document.getElementById('cat-' + i).value;
-
-  if (category) {
-    allCategories.add(category);
-  }
-}
-
-for (const categoryName of allCategories) {
-
-  await setDoc(
-    doc(
-      db,
-      'cafes',
-      currentUid,
-      'categories',
-      categoryName
-    ),
-    {
-      name: categoryName,
-      order: 0
-    }
+    collection(db, 'cafes', currentUid, 'products')
   );
-}
 
-for (let i = 0; i < items.length; i++) {
-      const checked = document.getElementById('check-' + i).checked;
-      if (!checked) continue;
+  const currentCount = snap.size;
 
-      const name = document.getElementById('name-' + i).value.trim();
-      const price = document.getElementById('price-' + i).value;
-      const category = document.getElementById('cat-' + i).value;
-      const description =
-  document.getElementById('description-' + i).value.trim();
-
-      if (!name) continue;
-
-      const id = Date.now().toString() + i;
-      await setDoc(doc(db, 'cafes', currentUid, 'products', id), {
-  id,
-  name,
-  price,
-  category,
-  description,
-  emoji: '🍽️',
-  photo: '',
-  createdAt: new Date().toISOString()
-});
-      saved++;
-    }
-
-    document.getElementById('successMsg').style.display = 'block';
-    setTimeout(() => {
-      window.location.href = 'products.html';
-    }, 2000);
+  if (currentCount + selectedItems.length > MAX_FREE_DISHES) {
+    alert(
+      `❌ Лимит бесплатного тарифа: ${MAX_FREE_DISHES} блюд.\n` +
+      `У вас сейчас: ${currentCount}\n` +
+      `Вы пытаетесь добавить: ${selectedItems.length}`
+    );
+    return;
   }
+
+  const allCategories = new Set();
+
+  for (let i = 0; i < items.length; i++) {
+
+    const checked = document.getElementById('check-' + i);
+    if (!checked || !checked.checked) continue;
+
+    const category =
+      document.getElementById('cat-' + i).value;
+
+    if (category) {
+      allCategories.add(category);
+    }
+  }
+
+  for (const categoryName of allCategories) {
+
+    await setDoc(
+      doc(
+        db,
+        'cafes',
+        currentUid,
+        'categories',
+        categoryName
+      ),
+      {
+        name: categoryName,
+        order: 0
+      }
+    );
+  }
+
+  for (let i = 0; i < items.length; i++) {
+
+    const checked = document.getElementById('check-' + i);
+    if (!checked || !checked.checked) continue;
+
+    const name =
+      document.getElementById('name-' + i).value.trim();
+
+    const price =
+      document.getElementById('price-' + i).value;
+
+    const category =
+      document.getElementById('cat-' + i).value;
+
+    const description =
+      document.getElementById('description-' + i).value.trim();
+
+    if (!name) continue;
+
+    const id = Date.now().toString() + i;
+
+    await setDoc(
+      doc(db, 'cafes', currentUid, 'products', id),
+      {
+        id,
+        name,
+        price,
+        category,
+        description,
+        emoji: '🍽️',
+        photo: '',
+        createdAt: new Date().toISOString()
+      }
+    );
+
+    saved++;
+  }
+
+  document.getElementById('successMsg').style.display = 'block';
+
+  setTimeout(() => {
+    window.location.href = 'products.html';
+  }, 2000);
+
+};
 
   window.resetImport = function() {
     imageBase64 = null;
