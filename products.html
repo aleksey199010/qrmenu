@@ -152,7 +152,7 @@ body {
   <div id="tabs"></div>
   <div id="list"></div>
 
-  <button class="add-btn" onclick="addProduct()">+ Добавить блюдо</button>
+  <button id="addProductBtn" class="add-btn">+ Добавить блюдо</button>
 
 </div>
 
@@ -182,7 +182,7 @@ async function load() {
 
 function render() {
 
-  const list = document.getElementById('list');
+
   const tabs = document.getElementById('tabs');
 
   const categories = ['Все', ...new Set(products.map(p=>p.category||'Без категории'))];
@@ -193,29 +193,26 @@ function render() {
     </div>
   `).join('');
 
-  setTimeout(()=>{
+  document.getElementById('tabs').onclick = (e) => {
+  const tab = e.target.closest('.category-tab');
+  if (!tab) return;
 
-    document.querySelectorAll('.category-tab').forEach(tab=>{
-      tab.onclick = ()=>{
+  document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
 
-        document.querySelectorAll('.category-tab').forEach(t=>t.classList.remove('active'));
-        tab.classList.add('active');
-
-        renderList(tab.dataset.cat);
-      }
-    });
-
-  },0);
+  renderList(tab.dataset.cat);
+};
 
   renderList('Все');
 
-  document.getElementById('searchInput').oninput = ()=> {
-    const active = document.querySelector('.category-tab.active');
-    renderList(active?.dataset.cat || 'Все');
-  };
+  document.getElementById('searchInput').addEventListener('input', () => {
+  const active = document.querySelector('.category-tab.active');
+  renderList(active?.dataset.cat || 'Все');
+});
 }
 
 function renderList(category) {
+
 
   const search = document.getElementById('searchInput').value.toLowerCase();
 
@@ -239,9 +236,10 @@ function renderList(category) {
   `).join('');
 }
 
-window.addProduct = () => {
-  window.location.href='add-product.html';
-};
+function addProduct() {
+  window.location.href = 'add-product.html';
+}
+window.addProduct = addProduct;
 
 window.del = async (id)=>{
   await deleteDoc(doc(db,'cafes',currentUid,'products',id));
@@ -252,6 +250,17 @@ window.edit = (id)=>{
   localStorage.setItem('editingProductId',id);
   window.location.href='edit-product.html';
 };
+
+<script type="module">
+  ...весь твой JS...
+
+  document.getElementById('addProductBtn').addEventListener('click', () => {
+    window.location.href = 'add-product.html';
+  });
+
+  document.getElementById('addProductBtn').addEventListener('click', () => {
+  window.location.href = 'add-product.html';
+});
 
 </script>
 
