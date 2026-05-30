@@ -47,6 +47,7 @@ exports.handler = async function(event) {
     );
 
     const data = await response.json();
+    console.log('GEMINI RESPONSE:', JSON.stringify(data));
 
     if (!data.candidates || data.candidates.length === 0) {
       return {
