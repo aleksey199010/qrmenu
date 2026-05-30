@@ -141,7 +141,7 @@ body { font-family: 'Golos Text', sans-serif; background: #0a0a0a; color: white;
     try {
       const catsText = categories.length > 0 ? categories.join(', ') : 'Горячее, Салаты, Напитки, Десерты, Выпечка';
 
-      const response = await fetch('/.netlify/functions/analyze', {
+      const response = await fetch('/api/analyze', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
