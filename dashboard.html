@@ -273,6 +273,15 @@ body {
   <span class="action-desc">Загрузить меню из фото</span>
 </a>
 
+  <div id="hiddenBanner" style="display:none;background:#1a0a00;border:1px solid #ff6b00;border-radius:14px;padding:16px;margin-bottom:16px;gap:12px;align-items:center;">
+    <div style="font-size:24px;">🔒</div>
+    <div style="flex:1;">
+      <div style="font-size:13px;font-weight:700;color:#ff6b00;">Скрыто от клиентов: <span id="hiddenCount">0</span> блюд</div>
+      <div style="font-size:12px;color:#666;margin-top:2px;">Перейдите на Pro — все блюда сразу появятся в меню</div>
+    </div>
+    <button onclick="window.location.href='pricing.html'" style="background:#ff6b00;color:#000;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">Про →</button>
+  </div>
+
   <div class="plan-card">
     <div class="plan-left">
       <div class="plan-name">🆓 Бесплатный тариф</div>
@@ -306,8 +315,20 @@ body {
       if (s.name) document.getElementById('cafeName').textContent = s.name;
     }
 
+    const cafeSnap = await getDoc(doc(db, 'cafes', uid));
+    const plan = cafeSnap.exists() ? cafeSnap.data().plan : 'free';
+    const limit = plan === 'pro' ? 99999 : 10;
+
     const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
-    document.getElementById('dishCount').textContent = productsSnap.size;
+    const totalDishes = productsSnap.size;
+    document.getElementById('dishCount').textContent = totalDishes;
+
+    // Показываем баннер если блюд больше лимита
+    if (plan !== 'pro' && totalDishes > limit) {
+      const hidden = totalDishes - limit;
+      document.getElementById('hiddenBanner').style.display = 'flex';
+      document.getElementById('hiddenCount').textContent = hidden;
+    }
 
     const catsSnap = await getDocs(collection(db, 'cafes', uid, 'categories'));
     document.getElementById('catCount').textContent = catsSnap.size;
