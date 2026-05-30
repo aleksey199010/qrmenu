@@ -170,6 +170,18 @@ const text = data.text;
   }
 
   function showResults(dishes) {
+
+    const aiCategories = [...new Set(
+  dishes
+    .map(d => d.category)
+    .filter(Boolean)
+)];
+
+aiCategories.forEach(cat => {
+  if (!categories.includes(cat)) {
+    categories.push(cat);
+  }
+});
     const list = document.getElementById('dishesList');
     const catsOptions = categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
