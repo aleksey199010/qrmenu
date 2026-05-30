@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR-код | QR-Меню.uz</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: #0a0a0a;
+  color: white;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  background: #0f0f0f;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.back-btn {
+  background: #1a1a1a;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Golos Text', sans-serif;
+}
+
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.page-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.page-sub {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.qr-card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 20px;
+  padding: 32px 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.qr-wrap {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  display: inline-block;
+  margin-bottom: 20px;
+  box-shadow: 0 0 40px rgba(245,200,66,0.15);
+}
+
+.qr-wrap img {
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
+.cafe-name {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.menu-url {
+  font-size: 13px;
+  color: #f5c842;
+  word-break: break-all;
+  background: #0a0a0a;
+  border: 1px solid #1e1e1e;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0 auto;
+  max-width: 320px;
+}
+
+.hint {
+  background: #161400;
+  border: 1px solid #2a2200;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.hint span { color: #f5c842; }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
+}
+
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Unbounded', sans-serif;
+  margin-bottom: 10px;
+  transition: opacity 0.2s;
+}
+
+.btn-gold { background: #f5c842; color: #000; }
+.btn-dark {
+  background: #111;
+  color: #888;
+  border: 1px solid #2a2a2a;
+}
+
+.btn:hover { opacity: 0.9; }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🍽️ QR-Меню.uz</div>
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">← Назад</button>
+</div>
+
+<div class="main">
+
+  <div class="page-title">Мой QR-код</div>
+  <div class="page-sub">Распечатайте и поставьте на столы</div>
+
+  <div class="qr-card">
+    <div class="qr-wrap">
+      <img id="qrImg" alt="QR Code">
+    </div>
+    <div class="cafe-name" id="cafeName">Ваше кафе</div>
+    <div class="menu-url" id="menuUrl"></div>
+  </div>
+
+  <div class="hint">
+    💡 QR-код <span>не меняется</span> при обновлении меню — распечатали один раз и готово!
+  </div>
+
+  <div class="stats-row">
+  <div class="stat">
+    <div class="stat-num" id="scansToday">0</div>
+    <div class="stat-label">Сканирований сегодня</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" id="scansTotal">0</div>
+    <div class="stat-label">За всё время</div>
+  </div>
+</div>
+
+  <button class="btn btn-gold" onclick="download()">
+    ⬇️ Скачать QR-код
+  </button>
+
+  <button class="btn btn-dark" onclick="copyLink()">
+    📋 Копировать ссылку
+  </button>
+
+</div>
+
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+  let menuUrl = '';
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+
+    const uid = user.uid;
+
+const base = window.location.origin + '/menu.html';    menuUrl = base + '?id=' + uid;
+
+    document.getElementById('menuUrl').textContent = menuUrl;
+    document.getElementById('qrImg').src =
+      'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' +
+      encodeURIComponent(menuUrl);
+
+    const settingsSnap = await getDoc(doc(db, 'cafes', uid, 'settings', 'main'));
+    if (settingsSnap.exists() && settingsSnap.data().name) {
+      document.getElementById('cafeName').textContent = settingsSnap.data().name;
+    }
+
+    const scansSnap = await getDoc(doc(db, 'cafes', uid, 'stats', 'scans'));
+    if (scansSnap.exists()) {
+      document.getElementById('scansToday').textContent = scansSnap.data().today || 0;
+      document.getElementById('scansTotal').textContent = scansSnap.data().total || 0;
+    }
+  });
+
+  window.copyLink = function() {
+    navigator.clipboard.writeText(menuUrl);
+    alert('Ссылка скопирована! ✓');
+  }
+
+  window.download = function() {
+    const a = document.createElement('a');
+    a.href = document.getElementById('qrImg').src;
+    a.download = 'qr-menu.png';
+    a.click();
+  }
+</script>
+
+</body>
+</html>

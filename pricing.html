@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тарифы | QR-Меню.uz</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: #0a0a0a;
+  color: white;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  background: #0f0f0f;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.back-btn {
+  background: #1a1a1a;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Golos Text', sans-serif;
+}
+
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.page-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.page-sub {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 32px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* TOGGLE */
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+}
+
+.toggle-label.active { color: white; font-weight: 600; }
+
+.toggle {
+  width: 48px;
+  height: 26px;
+  background: #f5c842;
+  border-radius: 13px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #000;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: left 0.2s;
+}
+
+.toggle.yearly::after { left: 25px; }
+
+.save-badge {
+  background: #1a4a1a;
+  color: #4ade80;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* PLANS */
+.plan {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 20px;
+  padding: 24px 20px;
+  margin-bottom: 16px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+.plan.featured {
+  border-color: #f5c842;
+  background: linear-gradient(135deg, #161400, #0f0f00);
+}
+
+.plan-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f5c842;
+  color: #000;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 16px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+
+.plan-name {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.plan-price {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: #f5c842;
+  margin-bottom: 4px;
+}
+
+.plan-price span {
+  font-size: 14px;
+  color: #555;
+  font-family: 'Golos Text', sans-serif;
+}
+
+.plan-period {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.plan-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.feature {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14px;
+}
+
+.feature.yes { color: #ccc; }
+.feature.no { color: #444; }
+
+.feature-icon { flex-shrink: 0; font-size: 15px; }
+
+.plan-btn {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Unbounded', sans-serif;
+  transition: opacity 0.2s;
+}
+
+.plan-btn:hover { opacity: 0.9; }
+.btn-gold { background: #f5c842; color: #000; }
+.btn-dark { background: #1a1a1a; color: #888; border: 1px solid #2a2a2a; }
+
+/* COMPARE */
+.compare {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.compare-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  color: #888;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  font-size: 13px;
+  align-items: center;
+}
+
+.compare-row:last-child { border-bottom: none; }
+.compare-row .feature-name { color: #ccc; }
+.compare-row .val { text-align: center; font-weight: 600; }
+.compare-row .val.yes { color: #4ade80; }
+.compare-row .val.no { color: #333; }
+
+.compare-header {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  font-size: 12px;
+  color: #555;
+}
+
+.compare-header span { text-align: center; font-weight: 700; }
+.compare-header span.gold { color: #f5c842; }
+
+/* FAQ */
+.faq { margin-bottom: 24px; }
+
+.faq-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.faq-item {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.faq-q {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-a {
+  font-size: 13px;
+  color: #666;
+  margin-top: 10px;
+  line-height: 1.6;
+  display: none;
+}
+
+.faq-item.open .faq-a { display: block; }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-arrow { transition: transform 0.2s; }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🍽️ QR-Меню.uz</div>
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">← Назад</button>
+</div>
+
+<div class="main">
+
+  <div class="page-title">Тарифы</div>
+  <div class="page-sub">Начните бесплатно. Переходите на Pro когда будете готовы.</div>
+
+  <!-- TOGGLE -->
+  <div class="toggle-wrap">
+    <span class="toggle-label active" id="label-monthly">Ежемесячно</span>
+    <div class="toggle" id="billingToggle" onclick="toggleBilling()"></div>
+    <span class="toggle-label" id="label-yearly">Ежегодно</span>
+    <span class="save-badge">-20%</span>
+  </div>
+
+  <!-- FREE -->
+  <div class="plan">
+    <div class="plan-name">🆓 Бесплатный</div>
+    <div class="plan-price">0 <span>сум</span></div>
+    <div class="plan-period">навсегда бесплатно</div>
+    <div class="plan-features">
+      <div class="feature yes"><span class="feature-icon">✓</span> До 20 блюд</div>
+      <div class="feature yes"><span class="feature-icon">✓</span> QR-код</div>
+      <div class="feature yes"><span class="feature-icon">✓</span> Русский + Узбекский</div>
+      <div class="feature no"><span class="feature-icon">✗</span> Статистика сканирований</div>
+      <div class="feature no"><span class="feature-icon">✗</span> Своя ссылка</div>
+      <div class="feature no"><span class="feature-icon">✗</span> Поддержка в Telegram</div>
+    </div>
+    <button class="plan-btn btn-dark">Текущий тариф</button>
+  </div>
+
+  <!-- PRO -->
+  <div class="plan featured">
+    <div class="plan-badge">⭐ ПОПУЛЯРНЫЙ</div>
+    <div class="plan-name">Pro</div>
+    <div class="plan-price" id="proPrice">79 000 <span>сум</span></div>
+    <div class="plan-period" id="proPeriod">в месяц</div>
+    <div class="plan-features">
+      <div class="feature yes"><span class="feature-icon">✓</span> Неограниченно блюд</div>
+      <div class="feature yes"><span class="feature-icon">✓</span> Своя ссылка menu.uz/кафе</div>
+      <div class="feature yes"><span class="feature-icon">✓</span> Статистика сканирований</div>
+      <div class="feature yes"><span class="feature-icon">✓</span> Русский + Узбекский + English</div>
+      <div class="feature yes"><span class="feature-icon">✓</span> Поддержка в Telegram</div>
+      <div class="feature yes"><span class="feature-icon">✓</span> Приоритет в поиске</div>
+    </div>
+    <button class="plan-btn btn-gold" onclick="upgrade()">
+      Перейти на Pro →
+    </button>
+  </div>
+
+  <!-- COMPARE -->
+  <div class="compare">
+    <div class="compare-title">Сравнение тарифов</div>
+    <div class="compare-header">
+      <span></span>
+      <span>Free</span>
+      <span class="gold">Pro</span>
+    </div>
+    <div class="compare-row">
+      <span class="feature-name">Блюд в меню</span>
+      <span class="val">20</span>
+      <span class="val yes">∞</span>
+    </div>
+    <div class="compare-row">
+      <span class="feature-name">QR-код</span>
+      <span class="val yes">✓</span>
+      <span class="val yes">✓</span>
+    </div>
+    <div class="compare-row">
+      <span class="feature-name">Языки</span>
+      <span class="val">2</span>
+      <span class="val yes">3</span>
+    </div>
+    <div class="compare-row">
+      <span class="feature-name">Статистика</span>
+      <span class="val no">✗</span>
+      <span class="val yes">✓</span>
+    </div>
+    <div class="compare-row">
+      <span class="feature-name">Своя ссылка</span>
+      <span class="val no">✗</span>
+      <span class="val yes">✓</span>
+    </div>
+    <div class="compare-row">
+      <span class="feature-name">Поддержка</span>
+      <span class="val no">✗</span>
+      <span class="val yes">✓</span>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <div class="faq-title">Частые вопросы</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">
+        Можно ли отменить подписку?
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        Да, в любой момент. После отмены аккаунт переходит на бесплатный тариф.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">
+        Как оплатить?
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        Оплата через Uzum Pay, Click или Payme. Также принимаем перевод на карту.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">
+        Что будет с меню если не продлю?
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        Меню останется доступным на бесплатном тарифе. Блюда сверх лимита будут скрыты до продления.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">
+        Есть ли пробный период?
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">
+        Да! Первый месяц Pro — бесплатно для новых кафе.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let isYearly = false;
+
+function toggleBilling() {
+  isYearly = !isYearly;
+  const toggle = document.getElementById('billingToggle');
+  const labelM = document.getElementById('label-monthly');
+  const labelY = document.getElementById('label-yearly');
+  const price = document.getElementById('proPrice');
+  const period = document.getElementById('proPeriod');
+
+  if (isYearly) {
+    toggle.classList.add('yearly');
+    labelM.classList.remove('active');
+    labelY.classList.add('active');
+    price.innerHTML = '63 200 <span>сум</span>';
+    period.textContent = 'в месяц · 758 400 сум/год';
+  } else {
+    toggle.classList.remove('yearly');
+    labelM.classList.add('active');
+    labelY.classList.remove('active');
+    price.innerHTML = '79 000 <span>сум</span>';
+    period.textContent = 'в месяц';
+  }
+}
+
+function toggleFaq(el) {
+  el.classList.toggle('open');
+}
+
+function upgrade() {
+  alert('Для подключения Pro напишите нам в Telegram: @qrmenu_uz 👋');
+}
+</script>
+
+</body>
+</html>

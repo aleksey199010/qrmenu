@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Меню</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0e; min-height: 100vh; }
+.header { background: #3d2b1f; padding: 24px 20px 16px; text-align: center; }
+.cafe-name { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #e8b84b; }
+.cafe-info { font-size: 12px; color: #8a6a54; margin-top: 6px; display: flex; justify-content: center; gap: 16px; }
+.search-wrap { background: #f0e6d3; padding: 12px 16px 0; }
+.search-input { width: 100%; padding: 12px 16px; background: #fffdf8; border: 1.5px solid #e0d0bc; border-radius: 12px; font-size: 14px; font-family: 'Golos Text', sans-serif; color: #2c1a0e; outline: none; transition: border-color 0.2s; }
+.search-input:focus { border-color: #c9942a; }
+.tabs { display: flex; overflow-x: auto; padding: 12px 16px 0; gap: 8px; background: #f0e6d3; scrollbar-width: none; border-bottom: 1px solid #e0d0bc; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex-shrink: 0; padding: 8px 16px; border-radius: 20px 20px 0 0; font-size: 13px; font-weight: 600; cursor: pointer; color: #8a6a54; border: 1px solid transparent; border-bottom: none; transition: all 0.2s; background: transparent; }
+.tab.active { background: #faf6ef; color: #3d2b1f; border-color: #e0d0bc; margin-bottom: -1px; }
+.main { max-width: 600px; margin: 0 auto; padding: 20px 16px; }
+.section { display: none; }
+.section.active { display: block; }
+.section-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #3d2b1f; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, #d4b896, transparent); }
+.dish { background: #fffdf8; border-radius: 16px; box-shadow: 0 2px 12px rgba(61,43,31,0.08); display: flex; overflow: hidden; margin-bottom: 12px; border: 1px solid #f0e8d8; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+.dish:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(61,43,31,0.12); }
+.dish-emoji { width: 80px; min-width: 80px; display: flex; align-items: center; justify-content: center; font-size: 36px; background: #f0e6d3; }
+.dish-photo { width: 80px; min-width: 80px; overflow: hidden; }
+.dish-photo img { width: 100%; height: 100%; object-fit: cover; }
+.dish-body { padding: 14px; flex: 1; }
+.dish-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; color: #3d2b1f; }
+.dish-desc { font-size: 12px; color: #8a6a54; margin-top: 4px; line-height: 1.5; }
+.dish-price { font-size: 16px; font-weight: 700; color: #c9942a; margin-top: 8px; }
+.empty { text-align: center; padding: 40px 20px; color: #8a6a54; font-size: 14px; }
+.share-wrap { padding: 16px 16px 0; max-width: 600px; margin: 0 auto; }
+.share-btn { width: 100%; background: #3d2b1f; color: #e8b84b; border: none; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Golos Text', sans-serif; transition: opacity 0.2s; }
+.share-btn:hover { opacity: 0.9; }
+.footer { text-align: center; padding: 24px; font-size: 12px; color: #b09080; border-top: 1px solid #e8ddd0; margin-top: 16px; }
+.footer span { color: #c9942a; font-weight: 600; }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(30,15,5,0.6); z-index: 100; align-items: flex-end; justify-content: center; backdrop-filter: blur(3px); }
+.overlay.open { display: flex; }
+.modal { background: #fffdf8; border-radius: 24px 24px 0 0; width: 100%; max-width: 500px; padding: 28px 24px 36px; animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-emoji { font-size: 52px; text-align: center; margin-bottom: 12px; }
+.modal-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #3d2b1f; text-align: center; }
+.modal-desc { font-size: 14px; color: #8a6a54; text-align: center; margin-top: 8px; line-height: 1.6; }
+.modal-price { font-size: 24px; font-weight: 700; color: #c9942a; text-align: center; margin: 16px 0 20px; }
+.modal-close { width: 100%; background: #3d2b1f; color: #e8b84b; border: none; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Golos Text', sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="cafe-name" id="cafeName">Меню</div>
+  <div class="cafe-info">
+    <span id="cafeHours"></span>
+    <span id="cafeAddress"></span>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <input type="text" class="search-input" id="searchInput" placeholder="🔍 Найти блюдо..." oninput="searchDishes(this.value)">
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="main" id="main"></div>
+
+<div class="share-wrap">
+  <button class="share-btn" onclick="shareMenu()">📤 Поделиться меню</button>
+</div>
+
+<div class="footer">
+  Приятного аппетита! · <span>QR-Меню.uz</span>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-emoji" id="m-emoji"></div>
+    <div class="modal-name" id="m-name"></div>
+    <div class="modal-desc" id="m-desc"></div>
+    <div class="modal-price" id="m-price"></div>
+    <button class="modal-close" onclick="document.getElementById('overlay').classList.remove('open')">Закрыть ✕</button>
+  </div>
+</div>
+
+<script type="module">
+  import { db } from './firebase.js';
+  import { doc, getDoc, collection, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+  const emojis = { 'Горячее':'🍲','Салаты':'🥗','Напитки':'☕','Десерты':'🍰','Выпечка':'🫓','Завтраки':'🍳' };
+
+  function getEmoji(cat) {
+    for (const key in emojis) {
+      if (cat && cat.includes(key)) return emojis[key];
+    }
+    return '🍽️';
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const cafeId = urlParams.get('id');
+
+  if (!cafeId) {
+    document.getElementById('cafeName').textContent = 'Меню не найдено';
+  } else {
+    loadMenu(cafeId);
+  }
+
+  let allProducts = [];
+  let allCats = [];
+
+  async function loadMenu(uid) {
+    const settingsSnap = await getDoc(doc(db, 'cafes', uid, 'settings', 'main'));
+    if (settingsSnap.exists()) {
+      const s = settingsSnap.data();
+      if (s.name) document.getElementById('cafeName').textContent = s.name;
+      if (s.hours) document.getElementById('cafeHours').textContent = '⏰ ' + s.hours;
+      if (s.address) document.getElementById('cafeAddress').textContent = '📍 ' + s.address;
+    }
+
+    const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
+    allProducts = [];
+    productsSnap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+
+    const tabsEl = document.getElementById('tabs');
+    const mainEl = document.getElementById('main');
+
+    const grouped = {};
+    allProducts.forEach(p => {
+      const cat = p.category || 'Прочее';
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(p);
+    });
+
+    allCats = Object.keys(grouped);
+
+    if (allCats.length === 0) {
+      mainEl.innerHTML = '<div class="empty">В меню пока нет блюд</div>';
+    } else {
+      allCats.forEach((cat, i) => {
+        const tab = document.createElement('div');
+        tab.className = 'tab' + (i === 0 ? ' active' : '');
+        tab.textContent = getEmoji(cat) + ' ' + cat;
+        tab.onclick = () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById('cat-' + i).classList.add('active');
+        };
+        tabsEl.appendChild(tab);
+
+        const sec = document.createElement('div');
+        sec.className = 'section' + (i === 0 ? ' active' : '');
+        sec.id = 'cat-' + i;
+        sec.innerHTML = `<div class="section-title">${cat}</div>` +
+          grouped[cat].map(p => `
+            <div class="dish" onclick="openModal('${getEmoji(p.category)}','${p.name.replace(/'/g,"\\'")}','${(p.description||'').replace(/'/g,"\\'")}','${p.price}','${p.photo||''}')">
+              ${p.photo ? `<div class="dish-photo"><img src="${p.photo}" alt="${p.name}"></div>` : `<div class="dish-emoji">${getEmoji(p.category)}</div>`}
+              <div class="dish-body">
+                <div class="dish-name">${p.name}</div>
+                ${p.description ? `<div class="dish-desc">${p.description}</div>` : ''}
+                <div class="dish-price">${Number(p.price).toLocaleString()} сум</div>
+              </div>
+            </div>
+          `).join('');
+        mainEl.appendChild(sec);
+      });
+    }
+
+    const today = new Date().toDateString();
+    const scansRef = doc(db, 'cafes', uid, 'stats', 'scans');
+    const scansSnap = await getDoc(scansRef);
+    if (scansSnap.exists()) {
+      const data = scansSnap.data();
+      await setDoc(scansRef, {
+        total: (data.total || 0) + 1,
+        today: data.date === today ? (data.today || 0) + 1 : 1,
+        date: today
+      });
+    } else {
+      await setDoc(scansRef, { total: 1, today: 1, date: today });
+    }
+  }
+
+  window.openModal = function(emoji, name, desc, price, photo) {
+    if (photo) {
+      document.getElementById('m-emoji').innerHTML = `<img src="${photo}" style="width:100px;height:100px;object-fit:cover;border-radius:16px;">`;
+    } else {
+      document.getElementById('m-emoji').textContent = emoji;
+    }
+    document.getElementById('m-name').textContent = name;
+    document.getElementById('m-desc').textContent = desc || '';
+    document.getElementById('m-price').textContent = Number(price).toLocaleString() + ' сум';
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  window.closeModal = function(e) {
+    if (e.target.id === 'overlay') document.getElementById('overlay').classList.remove('open');
+  }
+
+  window.shareMenu = function() {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: 'Меню', url });
+    } else {
+      navigator.clipboard.writeText(url);
+      alert('Ссылка скопирована! ✓');
+    }
+  }
+
+  window.searchDishes = function(query) {
+    const q = query.toLowerCase().trim();
+    const tabs = document.getElementById('tabs');
+    const main = document.getElementById('main');
+    const existing = document.getElementById('search-results');
+    if (existing) existing.remove();
+
+    if (q === '') {
+      tabs.style.display = 'flex';
+      document.querySelectorAll('.section').forEach((s, i) => s.classList.toggle('active', i === 0));
+      return;
+    }
+
+    tabs.style.display = 'none';
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+    const results = allProducts.filter(p =>
+      p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q))
+    );
+
+    const sec = document.createElement('div');
+    sec.className = 'section active';
+    sec.id = 'search-results';
+    sec.innerHTML = '<div class="section-title">Результаты поиска</div>' +
+      (results.length === 0 ? '<div class="empty">Ничего не найдено 😔</div>' :
+        results.map(p => `
+          <div class="dish" onclick="openModal('🍽️','${p.name.replace(/'/g,"\\'")}','${(p.description||'').replace(/'/g,"\\'")}','${p.price}','${p.photo||''}')">
+            ${p.photo ? `<div class="dish-photo"><img src="${p.photo}" alt="${p.name}"></div>` : `<div class="dish-emoji">🍽️</div>`}
+            <div class="dish-body">
+              <div class="dish-name">${p.name}</div>
+              ${p.description ? `<div class="dish-desc">${p.description}</div>` : ''}
+              <div class="dish-price">${Number(p.price).toLocaleString()} сум</div>
+            </div>
+          </div>
+        `).join(''));
+    main.appendChild(sec);
+  }
+</script>
+
+</body>
+</html>

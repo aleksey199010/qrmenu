@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Создать категорию | QR-Меню.uz</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0a0a0a;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px;
+    border-bottom:1px solid #222;
+}
+
+.logo{
+    color:#f5c842;
+    font-size:22px;
+    font-weight:700;
+}
+
+.back-btn{
+    background:#222;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    padding:20px;
+}
+
+.title{
+    font-size:30px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#888;
+    margin-bottom:30px;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#1a1a1a;
+    color:white;
+    font-size:15px;
+}
+
+.save-btn{
+    width:100%;
+    background:#f5c842;
+    color:black;
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.save-btn:hover{
+    opacity:0.9;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="logo">🍽️ QR-Меню.uz</div>
+
+    <button
+        class="back-btn"
+        onclick="window.location.href='menu-manager.html'">
+        Назад
+    </button>
+</div>
+
+<div class="container">
+
+    <div class="title">
+        Создать категорию
+    </div>
+
+    <div class="subtitle">
+        Например: Напитки, Завтраки, Салаты
+    </div>
+
+    <div class="form-group">
+        <label>Название категории</label>
+        <input
+    id="categoryName"
+    type="text"
+    placeholder="Введите название категории">
+    </div>
+
+    
+
+    <button
+    class="save-btn"
+    onclick="saveCategory()">
+    Сохранить категорию
+</button>
+
+</div>
+
+<script>
+
+function saveCategory() {
+
+    const name =
+        document.getElementById('categoryName').value.trim();
+
+
+
+    if (name === '') {
+        alert('Введите название категории');
+        return;
+    }
+
+    let categories =
+        JSON.parse(
+            localStorage.getItem('categories')
+        ) || [];
+
+    categories.push({
+    name: name
+});
+
+    localStorage.setItem(
+        'categories',
+        JSON.stringify(categories)
+    );
+
+    alert('Категория сохранена');
+
+    window.location.href =
+        'menu-manager.html';
+}
+
+</script>
+
+</body>
+</html>

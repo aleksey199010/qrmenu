@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Категории | QR-Меню.uz</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: #0a0a0a;
+  color: white;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  background: #0f0f0f;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.back-btn {
+  background: #1a1a1a;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Golos Text', sans-serif;
+}
+
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.page-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.page-sub {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.category {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: border-color 0.2s;
+}
+
+.category:hover { border-color: #2a2a2a; }
+
+.cat-emoji {
+  width: 44px;
+  height: 44px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.cat-info { flex: 1; }
+
+.cat-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+}
+
+.cat-count {
+  font-size: 12px;
+  color: #555;
+  margin-top: 2px;
+}
+
+.cat-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: #888;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.del-btn {
+  background: #1a0000;
+  border: 1px solid #3a0000;
+  color: #ff4444;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #444;
+}
+
+.empty .icon { font-size: 40px; margin-bottom: 12px; }
+.empty p { font-size: 14px; }
+
+.add-btn {
+  width: 100%;
+  background: #f5c842;
+  color: #000;
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Unbounded', sans-serif;
+  margin-top: 8px;
+  transition: opacity 0.2s;
+}
+
+.add-btn:hover { opacity: 0.9; }
+
+/* MODAL */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+
+.overlay.open { display: flex; }
+
+.modal {
+  background: #111;
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 500px;
+  padding: 28px 20px 36px;
+  animation: slideUp 0.3s ease;
+  border: 1px solid #1e1e1e;
+  border-bottom: none;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-close {
+  background: #1a1a1a;
+  border: none;
+  color: #888;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.form-group { margin-bottom: 16px; }
+
+label {
+  display: block;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+input {
+  width: 100%;
+  padding: 13px 16px;
+  background: #0a0a0a;
+  border: 1px solid #1e1e1e;
+  border-radius: 12px;
+  color: white;
+  font-size: 14px;
+  font-family: 'Golos Text', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus { border-color: #f5c842; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-save {
+  flex: 1;
+  background: #f5c842;
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Unbounded', sans-serif;
+}
+
+.btn-cancel {
+  flex: 1;
+  background: #1a1a1a;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Golos Text', sans-serif;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🍽️ QR-Меню.uz</div>
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">← Назад</button>
+</div>
+
+<div class="main">
+
+  <div class="page-title">Категории</div>
+  <div class="page-sub">Структура вашего меню</div>
+
+  <div id="list"></div>
+
+  <button class="add-btn" onclick="openAdd()">
+    + Создать категорию
+  </button>
+
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modalTitle">Новая категория</span>
+      <button class="modal-close" onclick="document.getElementById('overlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Название категории</label>
+      <input type="text" id="catInput" placeholder="Горячее, Салаты, Напитки...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="document.getElementById('overlay').classList.remove('open')">Отмена</button>
+      <button class="btn-save" onclick="save()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+  import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+  const emojis = {
+    'Горячее':'🍲','Салаты':'🥗','Напитки':'☕',
+    'Десерты':'🍰','Выпечка':'🫓','Завтраки':'🍳'
+  };
+
+  function getEmoji(name) {
+    for (const key in emojis) {
+      if (name && name.includes(key)) return emojis[key];
+    }
+    return '📋';
+  }
+
+  let currentUid = null;
+  let cats = [];
+  let editingId = null;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    currentUid = user.uid;
+    await load();
+  });
+
+  async function load() {
+    const snap = await getDocs(collection(db, 'cafes', currentUid, 'categories'));
+    cats = [];
+    snap.forEach(d => cats.push({ id: d.id, ...d.data() }));
+    cats.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+    const list = document.getElementById('list');
+    if (cats.length === 0) {
+      list.innerHTML = `<div class="empty"><div class="icon">📋</div><p>Пока нет категорий.<br>Создайте первую!</p></div>`;
+      return;
+    }
+
+    list.innerHTML = cats.map((c, i) => `
+      <div class="category">
+        <div class="cat-emoji">${getEmoji(c.name)}</div>
+        <div class="cat-info">
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-count">категория</div>
+        </div>
+        <div class="cat-actions">
+          <button class="edit-btn" onclick="openEdit('${c.id}')">✏️</button>
+          <button class="del-btn" onclick="del('${c.id}')">🗑</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.openAdd = function() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Новая категория';
+    document.getElementById('catInput').value = '';
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('catInput').focus();
+  }
+
+  window.openEdit = function(id) {
+    editingId = id;
+    const cat = cats.find(c => c.id === id);
+    document.getElementById('modalTitle').textContent = 'Редактировать';
+    document.getElementById('catInput').value = cat.name;
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('catInput').focus();
+  }
+
+  window.del = async function(id) {
+    if (!confirm('Удалить категорию?')) return;
+    await deleteDoc(doc(db, 'cafes', currentUid, 'categories', id));
+    await load();
+  }
+
+  window.save = async function() {
+    const name = document.getElementById('catInput').value.trim();
+    if (!name) { alert('Введите название'); return; }
+
+    if (editingId) {
+      await setDoc(doc(db, 'cafes', currentUid, 'categories', editingId), { name, order: 0 });
+    } else {
+      await setDoc(doc(db, 'cafes', currentUid, 'categories', name), { name, order: cats.length });
+    }
+
+    document.getElementById('overlay').classList.remove('open');
+    await load();
+  }
+
+  window.closeModal = function(e) {
+    if (e.target.id === 'overlay') {
+      document.getElementById('overlay').classList.remove('open');
+    }
+  }
+</script>
+
+</body>
+</html>

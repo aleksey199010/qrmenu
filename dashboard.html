@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кабинет | QR-Меню.uz</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: #0a0a0a;
+  color: white;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  background: #0f0f0f;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.logout-btn {
+  background: #1a1a1a;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Golos Text', sans-serif;
+}
+
+/* MAIN */
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* WELCOME */
+.welcome {
+  margin-bottom: 24px;
+}
+
+.welcome-sub {
+  font-size: 12px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Unbounded', sans-serif;
+  margin-bottom: 6px;
+}
+
+.welcome h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+}
+
+.welcome h1 span { color: #f5c842; }
+
+/* STATS */
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.stat {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #555;
+  margin-top: 4px;
+}
+
+/* SECTION TITLE */
+.section-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+/* ACTION GRID */
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.action-card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 18px;
+  padding: 20px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  text-decoration: none;
+  display: block;
+}
+
+.action-card:hover {
+  border-color: #f5c842;
+  background: #161400;
+  transform: translateY(-2px);
+}
+
+.action-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.action-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  display: block;
+}
+
+.action-desc {
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
+  display: block;
+}
+
+/* PLAN CARD */
+.plan-card {
+  background: linear-gradient(135deg, #161400, #0f0f00);
+  border: 1px solid #f5c842;
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.plan-left .plan-name {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  color: #f5c842;
+  margin-bottom: 4px;
+}
+
+.plan-left .plan-desc {
+  font-size: 12px;
+  color: #666;
+}
+
+.upgrade-btn {
+  background: #f5c842;
+  color: #000;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Unbounded', sans-serif;
+  white-space: nowrap;
+}
+
+/* HINT */
+.hint {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 13px;
+  color: #555;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.hint span { color: #f5c842; }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🍽️ QR-Меню.uz</div>
+  <button class="logout-btn" onclick="logout()">Выйти</button>
+</div>
+
+<div class="main">
+
+  <div class="welcome">
+    <div class="welcome-sub">Личный кабинет</div>
+    <h1>Добро пожаловать, <span id="cafeName">Кафе</span>!</h1>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="dishCount">0</div>
+      <div class="stat-label">Блюд</div>
+    </div>
+    <div class="stat">
+  <div class="stat-num" id="scanCount">0</div>
+  <div class="stat-label">Сканирований</div>
+</div>
+    <div class="stat">
+      <div class="stat-num" id="catCount">0</div>
+      <div class="stat-label">Категорий</div>
+    </div>
+  </div>
+
+  <div class="section-title">Управление</div>
+
+  <div class="actions">
+    <a class="action-card" href="products.html">
+      <span class="action-icon">🍽️</span>
+      <span class="action-name">Блюда</span>
+      <span class="action-desc">Добавить и редактировать</span>
+    </a>
+    <a class="action-card" href="menu-manager.html">
+      <span class="action-icon">📋</span>
+      <span class="action-name">Категории</span>
+      <span class="action-desc">Структура меню</span>
+    </a>
+    <a class="action-card" href="qr.html">
+      <span class="action-icon">📱</span>
+      <span class="action-name">QR-код</span>
+      <span class="action-desc">Скачать и распечатать</span>
+    </a>
+    <a class="action-card" href="settings.html">
+  <span class="action-icon">⚙️</span>
+  <span class="action-name">Настройки</span>
+  <span class="action-desc">Данные кафе</span>
+</a>
+<a class="action-card" href="import.html">
+  <span class="action-icon">🤖</span>
+  <span class="action-name">AI Импорт</span>
+  <span class="action-desc">Загрузить меню из фото</span>
+</a>
+
+  <div class="plan-card">
+    <div class="plan-left">
+      <div class="plan-name">🆓 Бесплатный тариф</div>
+      <div class="plan-desc">До 20 блюд · QR-код</div>
+    </div>
+    <button class="upgrade-btn" onclick="window.location.href='pricing.html'">Про →</button>
+  </div>
+
+  <div class="hint">
+    Начните с добавления <span>категорий</span>, затем добавьте <span>блюда</span> — и ваше меню готово!
+  </div>
+
+</div>
+
+ <script type="module">
+  import { auth, db } from './firebase.js';
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+  import { doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    const uid = user.uid;
+
+    const settingsDoc = await getDoc(doc(db, 'cafes', uid, 'settings', 'main'));
+    if (settingsDoc.exists()) {
+      const s = settingsDoc.data();
+      if (s.name) document.getElementById('cafeName').textContent = s.name;
+    }
+
+    const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
+    document.getElementById('dishCount').textContent = productsSnap.size;
+
+    const catsSnap = await getDocs(collection(db, 'cafes', uid, 'categories'));
+    document.getElementById('catCount').textContent = catsSnap.size;
+
+    const scansDoc = await getDoc(doc(db, 'cafes', uid, 'stats', 'scans'));
+    if (scansDoc.exists()) {
+      document.getElementById('scanCount').textContent = scansDoc.data().total || 0;
+    }
+  });
+
+  window.logout = async function() {
+    await signOut(auth);
+    window.location.href = 'login.html';
+  }
+</script>
+
+</body>
+</html>

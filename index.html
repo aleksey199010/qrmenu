@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR-Меню.uz — Цифровое меню для кафе Узбекистана</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf7f2;
+  --brown: #2c1a0e;
+  --orange: #e85d2f;
+  --orange-light: #fff3ee;
+  --text: #1a1a1a;
+  --muted: #6b6b6b;
+  --border: #e8e0d5;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(250,247,242,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--brown); }
+.nav-logo span { color: var(--orange); }
+.nav-links { display: flex; gap: 16px; align-items: center; }
+.nav-links a { font-size: 13px; color: var(--muted); text-decoration: none; font-weight: 500; }
+.nav-btn { background: var(--brown); color: white; border: none; padding: 9px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+.nav-btn:hover { background: var(--orange); }
+.hero { padding: 120px 24px 60px; max-width: 680px; margin: 0 auto; text-align: center; }
+.hero-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--orange-light); border: 1px solid #ffd4c2; color: var(--orange); font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 28px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: clamp(34px, 8vw, 52px); font-weight: 900; line-height: 1.1; color: var(--brown); margin-bottom: 20px; }
+.hero h1 em { font-style: italic; color: var(--orange); }
+.hero p { font-size: 17px; color: var(--muted); line-height: 1.7; margin-bottom: 36px; }
+.hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary { background: var(--orange); color: white; border: none; padding: 15px 30px; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; box-shadow: 0 8px 24px rgba(232,93,47,0.3); text-decoration: none; display: inline-block; }
+.btn-primary:hover { transform: translateY(-2px); }
+.btn-secondary { background: white; color: var(--brown); border: 1.5px solid var(--border); padding: 15px 30px; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; text-decoration: none; display: inline-block; transition: border-color 0.2s; }
+.btn-secondary:hover { border-color: var(--brown); }
+.hero-stats { display: flex; justify-content: center; gap: 32px; margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--border); }
+.hero-stat .num { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; color: var(--brown); }
+.hero-stat .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.mockup-section { padding: 0 24px 80px; display: flex; justify-content: center; }
+.phone { width: 220px; background: var(--brown); border-radius: 36px; padding: 14px 10px; box-shadow: 0 32px 80px rgba(44,26,14,0.25); }
+.phone-notch { width: 64px; height: 6px; background: #4a3020; border-radius: 3px; margin: 0 auto 12px; }
+.phone-screen { background: #faf6ef; border-radius: 24px; overflow: hidden; }
+.ps-head { background: #3d2b1f; padding: 14px 12px 10px; text-align: center; }
+.ps-name { font-family: 'Fraunces', serif; font-size: 14px; color: #e8b84b; font-weight: 700; }
+.ps-info { font-size: 9px; color: #8a6a54; margin-top: 3px; }
+.ps-tabs { display: flex; background: #f0e6d3; padding: 6px 8px 0; gap: 4px; }
+.ps-tab { font-size: 8px; padding: 4px 8px; border-radius: 6px 6px 0 0; color: #8a6a54; font-weight: 600; }
+.ps-tab.act { background: #faf6ef; color: #3d2b1f; }
+.ps-items { padding: 8px; }
+.ps-item { display: flex; gap: 8px; padding: 8px; background: white; border-radius: 10px; margin-bottom: 6px; }
+.ps-emoji { width: 32px; height: 32px; background: #f0e6d3; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.ps-iname { font-size: 9px; font-weight: 700; color: #3d2b1f; }
+.ps-iprice { font-size: 9px; color: #c9942a; font-weight: 700; margin-top: 2px; }
+.problem { background: var(--brown); padding: 80px 24px; text-align: center; }
+.section-tag { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+.section-tag.light { color: rgba(255,255,255,0.4); }
+.section-tag.dark { color: var(--orange); }
+.problem h2 { font-family: 'Fraunces', serif; font-size: clamp(26px, 6vw, 38px); font-weight: 700; color: white; margin-bottom: 16px; line-height: 1.2; }
+.problem h2 em { font-style: italic; color: #e8b84b; }
+.problem p { font-size: 15px; color: rgba(255,255,255,0.5); max-width: 460px; margin: 0 auto 48px; line-height: 1.7; }
+.pain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 500px; margin: 0 auto; }
+.pain-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px 16px; text-align: left; }
+.pain-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+.pain-title { font-size: 14px; font-weight: 600; color: white; margin-bottom: 6px; }
+.pain-desc { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+.how { padding: 80px 24px; max-width: 580px; margin: 0 auto; }
+.how h2 { font-family: 'Fraunces', serif; font-size: clamp(26px, 6vw, 38px); font-weight: 700; color: var(--brown); margin-bottom: 8px; text-align: center; }
+.how h2 em { font-style: italic; color: var(--orange); }
+.how-sub { font-size: 15px; color: var(--muted); text-align: center; margin-bottom: 48px; }
+.steps { display: flex; flex-direction: column; }
+.step { display: flex; gap: 20px; position: relative; }
+.step:not(:last-child)::after { content: ''; position: absolute; left: 19px; top: 48px; width: 2px; height: calc(100% - 20px); background: linear-gradient(to bottom, var(--border), transparent); }
+.step-num { width: 40px; height: 40px; background: var(--orange-light); border: 2px solid #ffd4c2; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; color: var(--orange); flex-shrink: 0; }
+.step-body { padding: 8px 0 32px; }
+.step-title { font-size: 16px; font-weight: 600; color: var(--brown); margin-bottom: 6px; }
+.step-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.features { background: white; padding: 80px 24px; }
+.features-inner { max-width: 580px; margin: 0 auto; }
+.features h2 { font-family: 'Fraunces', serif; font-size: clamp(26px, 6vw, 38px); font-weight: 700; color: var(--brown); margin-bottom: 8px; text-align: center; }
+.features h2 em { font-style: italic; color: var(--orange); }
+.features-sub { font-size: 15px; color: var(--muted); text-align: center; margin-bottom: 40px; }
+.feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.feat-card { background: var(--cream); border: 1px solid var(--border); border-radius: 16px; padding: 18px; transition: all 0.2s; }
+.feat-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+.feat-icon { font-size: 26px; margin-bottom: 10px; display: block; }
+.feat-title { font-size: 14px; font-weight: 600; color: var(--brown); margin-bottom: 4px; }
+.feat-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.why { padding: 80px 24px; max-width: 580px; margin: 0 auto; }
+.why h2 { font-family: 'Fraunces', serif; font-size: clamp(26px, 6vw, 38px); font-weight: 700; color: var(--brown); margin-bottom: 8px; text-align: center; }
+.why h2 em { font-style: italic; color: var(--orange); }
+.why-sub { font-size: 15px; color: var(--muted); text-align: center; margin-bottom: 40px; }
+.why-list { display: flex; flex-direction: column; gap: 12px; }
+.why-item { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 18px; display: flex; gap: 14px; align-items: flex-start; }
+.why-icon { width: 44px; height: 44px; background: var(--orange-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.why-title { font-size: 15px; font-weight: 600; color: var(--brown); margin-bottom: 4px; }
+.why-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.faq-section { background: white; padding: 80px 24px; }
+.faq-inner { max-width: 580px; margin: 0 auto; }
+.faq-section h2 { font-family: 'Fraunces', serif; font-size: clamp(26px, 6vw, 38px); font-weight: 700; color: var(--brown); margin-bottom: 8px; text-align: center; }
+.faq-section h2 em { font-style: italic; color: var(--orange); }
+.faq-sub { font-size: 15px; color: var(--muted); text-align: center; margin-bottom: 40px; }
+.faq-item { border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; background: var(--cream); overflow: hidden; }
+.faq-q { padding: 18px 20px; font-size: 14px; font-weight: 600; color: var(--brown); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.faq-arrow { font-size: 11px; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; margin-left: 12px; }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-a { display: none; padding: 0 20px 18px; font-size: 14px; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 14px; }
+.faq-item.open .faq-a { display: block; }
+.pricing-section { padding: 80px 24px; max-width: 580px; margin: 0 auto; }
+.pricing-section h2 { font-family: 'Fraunces', serif; font-size: clamp(26px, 6vw, 38px); font-weight: 700; color: var(--brown); margin-bottom: 8px; text-align: center; }
+.pricing-section h2 em { font-style: italic; color: var(--orange); }
+.pricing-sub { font-size: 15px; color: var(--muted); text-align: center; margin-bottom: 40px; }
+.plan { background: white; border: 1.5px solid var(--border); border-radius: 20px; padding: 28px 24px; margin-bottom: 16px; }
+.plan.featured { border-color: var(--orange); background: var(--orange-light); position: relative; }
+.plan-badge { position: absolute; top: -12px; left: 24px; background: var(--orange); color: white; font-size: 11px; font-weight: 700; padding: 4px 14px; border-radius: 20px; }
+.plan-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--brown); margin-bottom: 8px; }
+.plan-price { font-family: 'Fraunces', serif; font-size: 34px; font-weight: 900; color: var(--orange); margin-bottom: 4px; }
+.plan-price span { font-size: 15px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 400; }
+.plan-period { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.plan-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.pf { font-size: 14px; display: flex; gap: 10px; }
+.pf.yes { color: var(--text); }
+.pf.no { color: #ccc; }
+.plan-btn { width: 100%; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.plan-btn.primary { background: var(--orange); color: white; box-shadow: 0 4px 16px rgba(232,93,47,0.3); }
+.plan-btn.primary:hover { transform: translateY(-1px); }
+.plan-btn.secondary { background: var(--cream); color: var(--muted); border: 1px solid var(--border); }
+.cta { background: var(--brown); padding: 80px 24px; text-align: center; }
+.cta h2 { font-family: 'Fraunces', serif; font-size: clamp(26px, 6vw, 42px); font-weight: 900; color: white; margin-bottom: 16px; line-height: 1.2; }
+.cta h2 em { font-style: italic; color: #e8b84b; }
+.cta p { font-size: 15px; color: rgba(255,255,255,0.5); margin-bottom: 32px; line-height: 1.7; }
+.cta-offer { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 20px; max-width: 320px; margin: 0 auto 28px; }
+.cta-offer-items { display: flex; flex-direction: column; gap: 10px; text-align: left; }
+.cta-offer-item { display: flex; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.8); align-items: center; }
+.cta-check { color: #4ade80; font-weight: 700; }
+.cta-btn { display: inline-block; background: var(--orange); color: white; border: none; padding: 16px 36px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; box-shadow: 0 8px 24px rgba(232,93,47,0.4); text-decoration: none; }
+.cta-btn:hover { transform: translateY(-2px); }
+.cta-contact { margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.3); }
+.cta-contact strong { color: rgba(255,255,255,0.6); }
+footer { background: #1a0f08; padding: 28px 24px; text-align: center; }
+.footer-logo { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; color: white; margin-bottom: 6px; }
+.footer-logo span { color: var(--orange); }
+footer p { font-size: 12px; color: rgba(255,255,255,0.3); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">QR-<span>Меню</span>.uz</div>
+  <div class="nav-links">
+    <a href="#how">Как работает</a>
+    <a href="#features">Возможности</a>
+    <a href="#pricing">Тарифы</a>
+    <a href="#faq">FAQ</a>
+    <button class="nav-btn" onclick="window.location.href='login.html'">Войти</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">🇺🇿 Для кафе Узбекистана</div>
+  <h1>Цифровое меню для <em>вашего кафе</em> за 5 минут</h1>
+  <p>Клиент сканирует QR-код — и сразу видит красивое меню с фото и ценами. Вы меняете цены за 30 секунд с любого телефона.</p>
+  <div class="hero-btns">
+    <a href="register.html" class="btn-primary">Начать бесплатно →</a>
+    <a href="#how" class="btn-secondary">Как это работает</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">3 000+</div><div class="lbl">кафе в Ташкенте</div></div>
+    <div class="hero-stat"><div class="num">5 мин</div><div class="lbl">до готового меню</div></div>
+    <div class="hero-stat"><div class="num">0 сум</div><div class="lbl">для старта</div></div>
+  </div>
+</div>
+
+<div class="mockup-section">
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <div class="ps-head">
+        <div class="ps-name">Café Osh</div>
+        <div class="ps-info">⏰ 09:00–23:00 · 📍 Ташкент</div>
+      </div>
+      <div class="ps-tabs">
+        <div class="ps-tab act">🍲 Горячее</div>
+        <div class="ps-tab">🥗 Салаты</div>
+        <div class="ps-tab">☕ Напитки</div>
+      </div>
+      <div class="ps-items">
+        <div class="ps-item"><div class="ps-emoji">🍚</div><div><div class="ps-iname">Плов Ферганский</div><div class="ps-iprice">45 000 сум</div></div></div>
+        <div class="ps-item"><div class="ps-emoji">🥩</div><div><div class="ps-iname">Шашлык из баранины</div><div class="ps-iprice">55 000 сум</div></div></div>
+        <div class="ps-item"><div class="ps-emoji">🍜</div><div><div class="ps-iname">Лагман</div><div class="ps-iprice">38 000 сум</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="problem">
+  <div class="section-tag light">Проблема</div>
+  <h2>Бумажное меню — <em>дорого и неудобно</em></h2>
+  <p>Каждый раз когда меняются цены — нужно перепечатывать. Это дорого, долго и раздражает.</p>
+  <div class="pain-grid">
+    <div class="pain-card"><span class="pain-icon">🖨️</span><div class="pain-title">Дорогая печать</div><div class="pain-desc">50–100к сум каждый раз при смене цен</div></div>
+    <div class="pain-card"><span class="pain-icon">😤</span><div class="pain-title">Устаревшие цены</div><div class="pain-desc">Клиенты видят старые цены и злятся</div></div>
+    <div class="pain-card"><span class="pain-icon">🦠</span><div class="pain-title">Грязные меню</div><div class="pain-desc">Потрёпанные папки портят впечатление</div></div>
+    <div class="pain-card"><span class="pain-icon">📸</span><div class="pain-title">Нет фото блюд</div><div class="pain-desc">Клиент не знает что заказать</div></div>
+  </div>
+</div>
+
+<div class="how" id="how">
+  <div class="section-tag dark">Как работает</div>
+  <h2>Готово за <em>5 минут</em></h2>
+  <p class="how-sub">Никаких технических знаний не нужно</p>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Зарегистрируйтесь</div><div class="step-desc">Введите название кафе, телефон и пароль. Займёт 2 минуты.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Добавьте блюда</div><div class="step-desc">Название, цена, фото. Стандартные категории уже созданы.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Распечатайте QR-код</div><div class="step-desc">Скачайте и поставьте на столы. Один раз — навсегда.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Меняйте цены за 30 секунд</div><div class="step-desc">Зашли с телефона, изменили, сохранили. Клиент сразу видит актуальное.</div></div></div>
+  </div>
+</div>
+
+<div class="features" id="features">
+  <div class="features-inner">
+    <div class="section-tag dark">Возможности</div>
+    <h2>Всё что нужно <em>вашему кафе</em></h2>
+    <p class="features-sub">Простые инструменты без лишнего</p>
+    <div class="feat-grid">
+      <div class="feat-card"><span class="feat-icon">📱</span><div class="feat-title">Без скачивания</div><div class="feat-desc">Клиент сканирует QR — меню в браузере</div></div>
+      <div class="feat-card"><span class="feat-icon">📸</span><div class="feat-title">Фото блюд</div><div class="feat-desc">Фото увеличивают средний чек на 20-30%</div></div>
+      <div class="feat-card"><span class="feat-icon">🌐</span><div class="feat-title">3 языка</div><div class="feat-desc">Рус, Узб и English для иностранцев</div></div>
+      <div class="feat-card"><span class="feat-icon">⚡</span><div class="feat-title">30 секунд</div><div class="feat-desc">Столько нужно чтобы изменить цену</div></div>
+      <div class="feat-card"><span class="feat-icon">👁️</span><div class="feat-title">Скрыть блюдо</div><div class="feat-desc">Закончилось — скройте одним кликом</div></div>
+      <div class="feat-card"><span class="feat-icon">📊</span><div class="feat-title">Статистика</div><div class="feat-desc">Сколько раз открывали меню</div></div>
+      <div class="feat-card"><span class="feat-icon">🔍</span><div class="feat-title">Поиск</div><div class="feat-desc">Клиент найдёт блюдо по названию</div></div>
+      <div class="feat-card"><span class="feat-icon">📤</span><div class="feat-title">Поделиться</div><div class="feat-desc">Отправить ссылку на меню другу</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="why">
+  <div class="section-tag dark">Почему мы?</div>
+  <h2>Зачем выбирать <em>QR-Меню.uz</em></h2>
+  <p class="why-sub">Сделано специально для кафе Узбекистана</p>
+  <div class="why-list">
+    <div class="why-item"><div class="why-icon">🇺🇿</div><div><div class="why-title">Локальный сервис</div><div class="why-desc">Поддержка на русском и узбекском. Оплата через Uzum, Click, Payme.</div></div></div>
+    <div class="why-item"><div class="why-icon">💰</div><div><div class="why-title">В 3 раза дешевле конкурентов</div><div class="why-desc">Российские сервисы берут 270 000 сум/мес. Мы — 150 000 сум.</div></div></div>
+    <div class="why-item"><div class="why-icon">⚡</div><div><div class="why-title">Запуск за 5 минут</div><div class="why-desc">Никаких договоров. Зарегистрировались — меню готово.</div></div></div>
+    <div class="why-item"><div class="why-icon">🎁</div><div><div class="why-title">Первый месяц бесплатно</div><div class="why-desc">Попробуйте Pro без оплаты. Понравится — продолжайте.</div></div></div>
+  </div>
+</div>
+
+<div class="faq-section" id="faq">
+  <div class="faq-inner">
+    <div class="section-tag dark">FAQ</div>
+    <h2>Часто задаваемые <em>вопросы</em></h2>
+    <p class="faq-sub">Отвечаем на самые популярные вопросы</p>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">У меня бумажное меню — зачем мне электронное? <span class="faq-arrow">▼</span></div><div class="faq-a">Бумажное меню стоит 50–100к сум при каждой смене цен. С нами — меняете бесплатно за 30 секунд. Плюс клиенты видят фото блюд.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Нужно ли клиентам скачивать приложение? <span class="faq-arrow">▼</span></div><div class="faq-a">Нет! Клиент сканирует QR-код камерой — меню открывается в браузере. Никаких скачиваний.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Что будет с QR-кодом если изменю меню? <span class="faq-arrow">▼</span></div><div class="faq-a">QR-код не меняется никогда! Распечатали один раз — и всё. Меняйте меню сколько угодно.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Как оплатить подписку? <span class="faq-arrow">▼</span></div><div class="faq-a">Принимаем через Uzum Pay, Click, Payme или перевод на карту. Пишите в Telegram — поможем.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Могу скрыть блюдо которого нет в наличии? <span class="faq-arrow">▼</span></div><div class="faq-a">Да! В кабинете есть тумблер рядом с каждым блюдом. Выключили — скрыто. Включили — видно.</div></div>
+  </div>
+</div>
+
+<div class="pricing-section" id="pricing">
+  <div class="section-tag dark">Тарифы</div>
+  <h2>Простые и <em>честные цены</em></h2>
+  <p class="pricing-sub">Начните бесплатно. Платите когда убедитесь что работает.</p>
+  <div class="plan">
+    <div class="plan-name">🆓 Бесплатный</div>
+    <div class="plan-price">0 <span>сум / навсегда</span></div>
+    <div class="plan-period">для малых кафе</div>
+    <div class="plan-features">
+      <div class="pf yes">✓ До 10 блюд</div>
+      <div class="pf yes">✓ QR-код</div>
+      <div class="pf yes">✓ Русский + Узбекский</div>
+      <div class="pf no">✗ Статистика</div>
+      <div class="pf no">✗ Своя ссылка</div>
+    </div>
+    <button class="plan-btn secondary" onclick="window.location.href='register.html'">Начать бесплатно</button>
+  </div>
+  <div class="plan featured">
+    <div class="plan-badge">⭐ ПОПУЛЯРНЫЙ</div>
+    <div class="plan-name">Pro</div>
+    <div class="plan-price">150 000 <span>сум / месяц</span></div>
+    <div class="plan-period">первый месяц бесплатно</div>
+    <div class="plan-features">
+      <div class="pf yes">✓ Неограниченно блюд</div>
+      <div class="pf yes">✓ Своя ссылка menu.uz/кафе</div>
+      <div class="pf yes">✓ Статистика сканирований</div>
+      <div class="pf yes">✓ Русский + Узбекский + English</div>
+      <div class="pf yes">✓ Поддержка в Telegram</div>
+    </div>
+    <button class="plan-btn primary" onclick="window.location.href='register.html'">Попробовать бесплатно →</button>
+  </div>
+</div>
+
+<div class="cta">
+  <h2>Запустите меню <em>сегодня</em></h2>
+  <p>Зарегистрируйтесь за 2 минуты и получите первый месяц Pro бесплатно</p>
+  <div class="cta-offer">
+    <div class="cta-offer-items">
+      <div class="cta-offer-item"><span class="cta-check">✓</span> Бесплатная настройка меню</div>
+      <div class="cta-offer-item"><span class="cta-check">✓</span> 1 месяц Pro бесплатно</div>
+      <div class="cta-offer-item"><span class="cta-check">✓</span> Помогаем заполнить меню</div>
+      <div class="cta-offer-item"><span class="cta-check">✓</span> Поддержка в Telegram</div>
+    </div>
+  </div>
+  <a href="register.html" class="cta-btn">Начать бесплатно →</a>
+  <div class="cta-contact">Вопросы? Пишите: <strong>@qrmenu_uz</strong></div>
+</div>
+
+<footer>
+  <div class="footer-logo">QR-<span>Меню</span>.uz</div>
+  <p>Цифровое меню для кафе Узбекистана · Ташкент 2025</p>
+</footer>
+
+<script>
+function toggleFaq(el) { el.classList.toggle('open'); }
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

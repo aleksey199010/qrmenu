@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Настройки | QR-Меню.uz</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: #0a0a0a;
+  color: white;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  background: #0f0f0f;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.back-btn {
+  background: #1a1a1a;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Golos Text', sans-serif;
+}
+
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.page-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.page-sub {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.section {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.section-label {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.form-group { margin-bottom: 16px; }
+.form-group:last-child { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 13px 16px;
+  background: #0a0a0a;
+  border: 1px solid #1e1e1e;
+  border-radius: 12px;
+  color: white;
+  font-size: 14px;
+  font-family: 'Golos Text', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #f5c842;
+}
+
+select option { background: #111; }
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.save-btn {
+  width: 100%;
+  background: #f5c842;
+  color: #000;
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Unbounded', sans-serif;
+  transition: opacity 0.2s;
+}
+
+.save-btn:hover { opacity: 0.9; }
+
+.success {
+  display: none;
+  background: #0a1f0a;
+  border: 1px solid #1a4a1a;
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  font-size: 14px;
+  color: #4ade80;
+  margin-top: 12px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🍽️ QR-Меню.uz</div>
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">← Назад</button>
+</div>
+
+<div class="main">
+
+  <div class="page-title">Настройки</div>
+  <div class="page-sub">Информация о вашем кафе</div>
+
+  <div class="section">
+    <div class="section-label">Основное</div>
+
+    <div class="form-group">
+      <label>Название кафе</label>
+      <input type="text" id="name" placeholder="Café Osh">
+    </div>
+
+    <div class="form-group">
+      <label>Описание</label>
+      <textarea id="description" placeholder="Узбекская кухня, уютная атмосфера..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Адрес</label>
+      <input type="text" id="address" placeholder="ул. Амира Темура, 45, Ташкент">
+    </div>
+
+    <div class="form-group">
+      <label>Телефон</label>
+      <input type="tel" id="phone" placeholder="+998 71 234 56 78">
+    </div>
+
+    <div class="form-group">
+      <label>Время работы</label>
+      <input type="text" id="hours" placeholder="09:00 – 23:00">
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Язык меню</div>
+    <div class="form-group">
+      <label>Языки для клиентов</label>
+      <select id="lang">
+        <option value="ru-uz">Русский + Узбекский</option>
+        <option value="ru">Только русский</option>
+        <option value="ru-uz-en">Русский + Узбекский + English</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="save-btn" onclick="save()">
+    Сохранить изменения ✓
+  </button>
+
+  <div class="success" id="success">
+    ✅ Настройки сохранены!
+  </div>
+
+</div>
+
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+  import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+  let currentUid = null;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    currentUid = user.uid;
+
+    const snap = await getDoc(doc(db, 'cafes', currentUid, 'settings', 'main'));
+    if (snap.exists()) {
+      const s = snap.data();
+      if (s.name) document.getElementById('name').value = s.name;
+      if (s.description) document.getElementById('description').value = s.description;
+      if (s.address) document.getElementById('address').value = s.address;
+      if (s.phone) document.getElementById('phone').value = s.phone;
+      if (s.hours) document.getElementById('hours').value = s.hours;
+      if (s.lang) document.getElementById('lang').value = s.lang;
+    }
+  });
+
+  window.save = async function() {
+    if (!currentUid) return;
+    const settings = {
+      name: document.getElementById('name').value,
+      description: document.getElementById('description').value,
+      address: document.getElementById('address').value,
+      phone: document.getElementById('phone').value,
+      hours: document.getElementById('hours').value,
+      lang: document.getElementById('lang').value,
+    };
+    await setDoc(doc(db, 'cafes', currentUid, 'settings', 'main'), settings);
+    const msg = document.getElementById('success');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  }
+</script>
+
+</body>
+</html>
