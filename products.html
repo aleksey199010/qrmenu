@@ -4,213 +4,141 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Блюда | QR-Меню.uz</title>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
 
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
   font-family: 'Golos Text', sans-serif;
-  background: #0a0a0a;
-  color: white;
-  min-height: 100vh;
+  background:#0a0a0a;
+  color:white;
+  min-height:100vh;
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #1e1e1e;
-  background: #0f0f0f;
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 20px;
+  border-bottom:1px solid #1e1e1e;
+  background:#0f0f0f;
+  position:sticky;
+  top:0;
+  z-index:50;
 }
 
 .logo {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #f5c842;
+  font-family:'Unbounded',sans-serif;
+  font-size:16px;
+  font-weight:700;
+  color:#f5c842;
 }
 
 .back-btn {
-  background: #1a1a1a;
-  color: #888;
-  border: 1px solid #2a2a2a;
-  padding: 8px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 13px;
-  font-family: 'Golos Text', sans-serif;
+  background:#1a1a1a;
+  color:#888;
+  border:1px solid #2a2a2a;
+  padding:8px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:13px;
 }
 
 .main {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 24px 16px;
+  max-width:600px;
+  margin:0 auto;
+  padding:24px 16px;
 }
 
 .page-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 6px;
+  font-family:'Unbounded',sans-serif;
+  font-size:20px;
+  font-weight:700;
 }
 
 .page-sub {
-  font-size: 13px;
-  color: #555;
-  margin-bottom: 24px;
+  font-size:13px;
+  color:#555;
+  margin-bottom:20px;
 }
 
-/* DISH ITEM */
+.add-btn {
+  width:100%;
+  background:#f5c842;
+  color:#000;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:10px;
+}
+
 .dish {
-  background: #111;
-  border: 1px solid #1e1e1e;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  transition: border-color 0.2s;
+  background:#111;
+  border:1px solid #1e1e1e;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:10px;
+  display:flex;
+  gap:12px;
+  align-items:center;
 }
-
-.dish:hover { border-color: #2a2a2a; }
 
 .dish-emoji {
-  width: 50px;
-  height: 50px;
-  background: #1a1a1a;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  flex-shrink: 0;
+  width:48px;
+  height:48px;
+  background:#1a1a1a;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.dish-info { flex: 1; }
+.dish-info { flex:1; }
 
-.dish-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 4px;
-}
+.dish-name { font-weight:600; }
 
 .dish-cat {
-  font-size: 12px;
-  color: #555;
+  font-size:12px;
+  color:#666;
 }
 
 .dish-price {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: #f5c842;
-  white-space: nowrap;
+  color:#f5c842;
+  font-weight:700;
 }
 
-.dish-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.edit-btn {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  color: #888;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.del-btn {
-  background: #1a0000;
-  border: 1px solid #3a0000;
-  color: #ff4444;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.empty {
-  text-align: center;
-  padding: 40px 20px;
-  color: #444;
-}
-
-.empty .icon { font-size: 40px; margin-bottom: 12px; }
-.empty p { font-size: 14px; }
-
-.add-btn {
-  width: 100%;
-  background: #f5c842;
-  color: #000;
-  border: none;
-  border-radius: 14px;
-  padding: 16px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: 'Unbounded', sans-serif;
-  margin-top: 8px;
-  transition: opacity 0.2s;
-}
-
-.add-btn:hover { opacity: 0.9; }
-
-  .category-tabs{
+.category-tabs {
   display:flex;
   gap:8px;
   overflow-x:auto;
-  margin-bottom:20px;
-  padding-bottom:4px;
+  margin-bottom:16px;
 }
 
-.category-tabs::-webkit-scrollbar{
-  display:none;
-}
-
-.category-tab{
+.category-tab {
+  padding:8px 12px;
+  border-radius:999px;
   background:#111;
   border:1px solid #1e1e1e;
   color:#888;
-  padding:10px 14px;
-  border-radius:999px;
-  cursor:pointer;
   white-space:nowrap;
-  font-size:13px;
-  transition:all .2s;
+  cursor:pointer;
 }
 
-.category-tab.active{
+.category-tab.active {
   background:#f5c842;
   color:#000;
-  border-color:#f5c842;
-  font-weight:600;
 }
-
 </style>
 </head>
+
 <body>
 
 <div class="header">
-  <div class="logo">🍽️ QR-Меню.uz</div>
+  <div class="logo">🍽 QR-Меню</div>
   <button class="back-btn" onclick="window.location.href='dashboard.html'">← Назад</button>
 </div>
 
@@ -219,193 +147,110 @@ body {
   <div class="page-title">Блюда</div>
   <div class="page-sub">Все блюда вашего меню</div>
 
-  <input
-  id="searchInput"
-  type="text"
-  placeholder="🔍 Поиск блюда..."
-  style="
-    width:100%;
-    background:#111;
-    border:1px solid #1e1e1e;
-    border-radius:14px;
-    padding:14px 16px;
-    color:white;
-    margin-bottom:16px;
-    outline:none;
-    font-size:14px;
-  ">
+  <input id="searchInput" placeholder="Поиск..." style="width:100%;padding:12px;margin-bottom:12px;background:#111;border:1px solid #1e1e1e;color:white;border-radius:10px;">
 
   <div id="tabs"></div>
-<div id="list"></div>
+  <div id="list"></div>
 
-  <button class="add-btn" onclick="addProduct()">
-  + Добавить блюдо
-</button>
+  <button class="add-btn" onclick="addProduct()">+ Добавить блюдо</button>
 
 </div>
 
 <script type="module">
-  import { auth, db } from './firebase.js';
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-  import { collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { auth, db } from './firebase.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-  const emojis = {
-    'Горячее':'🍲','Салаты':'🥗','Напитки':'☕',
-    'Десерты':'🍰','Выпечка':'🫓','Завтраки':'🍳'
-  };
+let currentUid = null;
+let products = [];
 
-  function getEmoji(cat) {
-    for (const key in emojis) {
-      if (cat && cat.includes(key)) return emojis[key];
-    }
-    return '🍽️';
-  }
-
-  let currentUid = null;
-
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = 'login.html'; return; }
-    currentUid = user.uid;
-    await load();
-  });
-
-  async function load() {
-    const snap = await getDocs(collection(db, 'cafes', currentUid, 'products'));
-    const products = [];
-    snap.forEach(d => products.push({ id: d.id, ...d.data() }));
-
-    const list = document.getElementById('list');
-
-    if (products.length === 0) {
-      list.innerHTML = `
-        <div class="empty">
-          <div class="icon">🍽️</div>
-          <p>Пока нет блюд.<br>Добавьте первое!</p>
-        </div>`;
-      return;
-    }
-
-    const tabs = document.getElementById('tabs');
-
-const categories = [
-  'Все',
-  ...new Set(
-    products.map(p => p.category || 'Без категории')
-  )
-];
-
-tabs.className = 'category-tabs';
-
-tabs.innerHTML = categories.map((cat, index) => `
-  <div
-    class="category-tab ${index === 0 ? 'active' : ''}"
-    data-category="${cat}">
-    ${cat}
-  </div>
-`).join('');
-
-function renderProducts(category = 'Все') {
-
-  const search =
-  document.getElementById('searchInput')
-    ?.value
-    ?.toLowerCase() || '';
-
-const filtered = products.filter(p => {
-
-  const categoryMatch =
-    category === 'Все'
-      ? true
-      : (p.category || 'Без категории') === category;
-
-  const searchMatch =
-    !search ||
-    (p.name || '')
-      .toLowerCase()
-      .includes(search);
-
-  return categoryMatch && searchMatch;
-
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return (window.location.href='login.html');
+  currentUid = user.uid;
+  await load();
 });
 
-  list.innerHTML = filtered.map(p => `
-    <div class="dish">
-      ${p.photo
-        ? `<div class="dish-emoji"><img src="${p.photo}" style="width:48px;height:48px;object-fit:cover;border-radius:10px;"></div>`
-        : `<div class="dish-emoji">${p.emoji || getEmoji(p.category)}</div>`
-      }
+async function load() {
 
+  const snap = await getDocs(collection(db,'cafes',currentUid,'products'));
+
+  products = [];
+  snap.forEach(d => products.push({id:d.id,...d.data()}));
+
+  render();
+}
+
+function render() {
+
+  const list = document.getElementById('list');
+  const tabs = document.getElementById('tabs');
+
+  const categories = ['Все', ...new Set(products.map(p=>p.category||'Без категории'))];
+
+  tabs.innerHTML = categories.map((c,i)=>`
+    <div class="category-tab ${i===0?'active':''}" data-cat="${c}">
+      ${c}
+    </div>
+  `).join('');
+
+  setTimeout(()=>{
+
+    document.querySelectorAll('.category-tab').forEach(tab=>{
+      tab.onclick = ()=>{
+
+        document.querySelectorAll('.category-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+
+        renderList(tab.dataset.cat);
+      }
+    });
+
+  },0);
+
+  renderList('Все');
+
+  document.getElementById('searchInput').oninput = ()=> {
+    const active = document.querySelector('.category-tab.active');
+    renderList(active?.dataset.cat || 'Все');
+  };
+}
+
+function renderList(category) {
+
+  const search = document.getElementById('searchInput').value.toLowerCase();
+
+  const filtered = products.filter(p=>{
+
+    const catOk = category==='Все' || (p.category||'Без категории')===category;
+    const searchOk = !search || (p.name||'').toLowerCase().includes(search);
+
+    return catOk && searchOk;
+  });
+
+  document.getElementById('list').innerHTML = filtered.map(p=>`
+    <div class="dish">
+      <div class="dish-emoji">🍽</div>
       <div class="dish-info">
         <div class="dish-name">${p.name}</div>
-        <div class="dish-cat">${p.category || 'Без категории'}</div>
+        <div class="dish-cat">${p.category||''}</div>
       </div>
-
-      <div class="dish-price">
-        ${Number(p.price).toLocaleString()} сум
-      </div>
-
-      <div class="dish-actions">
-        <button class="edit-btn" onclick="edit('${p.id}')">✏️</button>
-        <button class="del-btn" onclick="del('${p.id}')">🗑</button>
-      </div>
+      <div class="dish-price">${p.price}</div>
     </div>
   `).join('');
 }
 
-renderProducts();
-
- document
-  .getElementById('searchInput')
-  ?.addEventListener('input', () => {
-
-    const activeTab =
-      document.querySelector('.category-tab.active');
-
-    renderProducts(
-      activeTab?.dataset?.category || 'Все'
-    );
-
-  });
-
-tabs.querySelectorAll('.category-tab').forEach(tab => {
-
-  tab.addEventListener('click', () => {
-
-    tabs.querySelectorAll('.category-tab')
-      .forEach(t => t.classList.remove('active'));
-
-    tab.classList.add('active');
-
-    renderProducts(
-      tab.dataset.category
-    );
-  });
-
-});
-  }
-
-  window.edit = function(id) {
-  localStorage.setItem('editingProductId', id);
-  window.location.href = 'edit-product.html';
+window.addProduct = () => {
+  window.location.href='add-product.html';
 };
 
-window.edit = function(id) {
-  localStorage.setItem('editingProductId', id);
-  window.location.href = 'edit-product.html';
-};
-
-window.del = async function(id) {
-  if (!confirm('Удалить блюдо?')) return;
-  await deleteDoc(doc(db, 'cafes', currentUid, 'products', id));
+window.del = async (id)=>{
+  await deleteDoc(doc(db,'cafes',currentUid,'products',id));
   await load();
 };
 
-window.addProduct = function() {
-  window.location.href = 'add-product.html';
-};
-
-window.addProduct = function() {
-  window.location.href = 'add-product.html';
+window.edit = (id)=>{
+  localStorage.setItem('editingProductId',id);
+  window.location.href='edit-product.html';
 };
 
 </script>
