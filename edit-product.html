@@ -385,8 +385,8 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('category').value = p.category;
     document.getElementById('previewEmoji').textContent = selectedEmoji;
     document.getElementById('previewName').textContent = p.name;
-    document.getElementById('previewPrice').textContent = Number(p.price).toLocaleString() + ' сум';
-
+document.getElementById('previewPrice').textContent = Number(p.price).toLocaleString() + ' сум';
+    if (p.oldPrice) document.getElementById('oldPrice').value = p.oldPrice;
     if (p.photo) {
       photoData = p.photo;
       document.getElementById('photoPreview').src = p.photo;
@@ -409,8 +409,11 @@ textarea { min-height: 80px; resize: vertical; }
   window.updatePreview = function() {
     const name = document.getElementById('name').value || 'Название блюда';
     const price = document.getElementById('price').value || '0';
+    const oldPrice = document.getElementById('oldPrice').value;
     document.getElementById('previewName').textContent = name;
-    document.getElementById('previewPrice').textContent = Number(price).toLocaleString() + ' сум';
+    document.getElementById('previewPrice').innerHTML = oldPrice
+      ? `${Number(price).toLocaleString()} сум <span style="text-decoration:line-through;color:#666;font-size:12px;margin-left:6px;">${Number(oldPrice).toLocaleString()}</span>`
+      : `${Number(price).toLocaleString()} сум`;
   }
 
   window.loadPhoto = function(input) {
@@ -435,11 +438,14 @@ textarea { min-height: 80px; resize: vertical; }
     if (!name) { alert('Введите название блюда'); return; }
     if (!price) { alert('Введите цену'); return; }
 
+    const oldPrice = document.getElementById('oldPrice').value;
+
     await setDoc(doc(db, 'cafes', currentUid, 'products', currentId), {
       id: currentId,
       name, price, category, description,
       emoji: selectedEmoji,
       photo: photoData || '',
+      oldPrice: oldPrice || '',
       updatedAt: new Date().toISOString()
     });
 
