@@ -442,6 +442,37 @@ body {
 
 </div>
 
+<!-- МОДАЛЬНОЕ ОКНО ОПЛАТЫ -->
+<div id="paymentModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:flex-end;justify-content:center;">
+  <div style="background:#111;border-radius:24px 24px 0 0;width:100%;max-width:500px;padding:28px 24px 40px;">
+    <div style="font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;">Оплата Pro тарифа</div>
+    <div style="font-size:13px;color:#555;margin-bottom:24px;">150 000 сум / месяц</div>
+
+    <div style="background:#0a0a0a;border:1px solid #1e1e1e;border-radius:14px;padding:16px;margin-bottom:12px;">
+      <div style="font-size:12px;color:#555;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Перевод на карту</div>
+      <div style="font-size:20px;font-weight:700;color:#f5c842;letter-spacing:2px;" id="cardNumber">9860 3501 4793 7840</div>
+      <div style="font-size:12px;color:#555;margin-top:4px;">Алексей А.</div>
+      <button onclick="copyCard()" style="margin-top:10px;background:#1a1a1a;color:#888;border:1px solid #2a2a2a;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;font-family:'Golos Text',sans-serif;">📋 Скопировать номер</button>
+    </div>
+
+    <div style="background:#0a0a0a;border:1px solid #1e1e1e;border-radius:14px;padding:16px;margin-bottom:20px;">
+      <div style="font-size:13px;color:#888;line-height:1.7;">
+        1. Переведите <strong style="color:white;">150 000 сум</strong> на карту выше<br>
+        2. Отправьте скриншот оплаты в Telegram<br>
+        3. Мы активируем Pro в течение <strong style="color:white;">1 часа</strong>
+      </div>
+    </div>
+
+    <a href="https://t.me/qrmenu_uz" target="_blank" style="display:block;width:100%;background:#f5c842;color:#000;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Unbounded',sans-serif;text-align:center;text-decoration:none;margin-bottom:10px;">
+      📱 Написать в Telegram
+    </a>
+
+    <button onclick="closePayment()" style="width:100%;background:#1a1a1a;color:#888;border:1px solid #2a2a2a;border-radius:12px;padding:13px;font-size:14px;cursor:pointer;font-family:'Golos Text',sans-serif;">
+      Закрыть
+    </button>
+  </div>
+</div>
+
 <script>
 let isYearly = false;
 
@@ -468,12 +499,22 @@ period.textContent = 'в месяц · 1 560 000 сум/год';
   }
 }
 
+function copyCard() {
+  const card = document.getElementById('cardNumber').textContent.replace(/\s/g, '');
+  navigator.clipboard.writeText(card);
+  alert('Номер карты скопирован! ✓');
+}
+
 function toggleFaq(el) {
   el.classList.toggle('open');
 }
 
 function upgrade() {
-  alert('Для подключения Pro напишите нам в Telegram: @qrmenu_uz 👋');
+  document.getElementById('paymentModal').style.display = 'flex';
+}
+
+function closePayment() {
+  document.getElementById('paymentModal').style.display = 'none';
 }
 </script>
 
