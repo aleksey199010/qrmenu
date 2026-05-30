@@ -74,6 +74,12 @@ body {
   font-weight:700;
   cursor:pointer;
   margin-top:10px;
+  font-family:'Golos Text',sans-serif;
+  font-size:15px;
+}
+
+.add-btn:hover {
+  background:#ffd84d;
 }
 
 .dish {
@@ -95,6 +101,8 @@ body {
   display:flex;
   align-items:center;
   justify-content:center;
+  font-size:22px;
+  flex-shrink:0;
 }
 
 .dish-info { flex:1; }
@@ -109,6 +117,7 @@ body {
 .dish-price {
   color:#f5c842;
   font-weight:700;
+  white-space:nowrap;
 }
 
 .category-tabs {
@@ -116,7 +125,10 @@ body {
   gap:8px;
   overflow-x:auto;
   margin-bottom:16px;
+  padding-bottom:4px;
 }
+
+.category-tabs::-webkit-scrollbar { display:none; }
 
 .category-tab {
   padding:8px 12px;
@@ -126,11 +138,42 @@ body {
   color:#888;
   white-space:nowrap;
   cursor:pointer;
+  font-family:'Golos Text',sans-serif;
+  font-size:13px;
 }
 
 .category-tab.active {
   background:#f5c842;
   color:#000;
+  border-color:#f5c842;
+}
+
+#searchInput {
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  background:#111;
+  border:1px solid #1e1e1e;
+  color:white;
+  border-radius:10px;
+  font-family:'Golos Text',sans-serif;
+  font-size:14px;
+  outline:none;
+}
+
+#searchInput:focus {
+  border-color:#333;
+}
+
+#searchInput::placeholder {
+  color:#444;
+}
+
+.empty {
+  text-align:center;
+  color:#444;
+  padding:40px 0;
+  font-size:14px;
 }
 </style>
 </head>
@@ -147,9 +190,9 @@ body {
   <div class="page-title">Блюда</div>
   <div class="page-sub">Все блюда вашего меню</div>
 
-  <input id="searchInput" placeholder="Поиск..." style="width:100%;padding:12px;margin-bottom:12px;background:#111;border:1px solid #1e1e1e;color:white;border-radius:10px;">
+  <input id="searchInput" placeholder="Поиск...">
 
-  <div id="tabs"></div>
+  <div class="category-tabs" id="tabs"></div>
   <div id="list"></div>
 
   <button id="addProductBtn" class="add-btn">+ Добавить блюдо</button>
@@ -163,105 +206,84 @@ import { collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/fir
 
 let currentUid = null;
 let products = [];
+let activeCategory = 'Все';
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) return (window.location.href='login.html');
+  if (!user) return (window.location.href = 'login.html');
   currentUid = user.uid;
   await load();
 });
 
 async function load() {
-
-  const snap = await getDocs(collection(db,'cafes',currentUid,'products'));
-
+  const snap = await getDocs(collection(db, 'cafes', currentUid, 'products'));
   products = [];
-  snap.forEach(d => products.push({id:d.id,...d.data()}));
-
+  snap.forEach(d => products.push({ id: d.id, ...d.data() }));
   render();
 }
 
 function render() {
-
+  const categories = ['Все', ...new Set(products.map(p => p.category || 'Без категории'))];
 
   const tabs = document.getElementById('tabs');
-
-  const categories = ['Все', ...new Set(products.map(p=>p.category||'Без категории'))];
-
-  tabs.innerHTML = categories.map((c,i)=>`
-    <div class="category-tab ${i===0?'active':''}" data-cat="${c}">
-      ${c}
-    </div>
+  tabs.innerHTML = categories.map(c => `
+    <div class="category-tab ${c === activeCategory ? 'active' : ''}" data-cat="${c}">${c}</div>
   `).join('');
 
-  document.getElementById('tabs').onclick = (e) => {
-  const tab = e.target.closest('.category-tab');
-  if (!tab) return;
+  tabs.onclick = (e) => {
+    const tab = e.target.closest('.category-tab');
+    if (!tab) return;
+    activeCategory = tab.dataset.cat;
+    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderList();
+  };
 
-  document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-  tab.classList.add('active');
-
-  renderList(tab.dataset.cat);
-};
-
-  renderList('Все');
-
-  document.getElementById('searchInput').addEventListener('input', () => {
-  const active = document.querySelector('.category-tab.active');
-  renderList(active?.dataset.cat || 'Все');
-});
+  renderList();
 }
 
-function renderList(category) {
-
-
+function renderList() {
   const search = document.getElementById('searchInput').value.toLowerCase();
 
-  const filtered = products.filter(p=>{
-
-    const catOk = category==='Все' || (p.category||'Без категории')===category;
-    const searchOk = !search || (p.name||'').toLowerCase().includes(search);
-
+  const filtered = products.filter(p => {
+    const catOk = activeCategory === 'Все' || (p.category || 'Без категории') === activeCategory;
+    const searchOk = !search || (p.name || '').toLowerCase().includes(search);
     return catOk && searchOk;
   });
 
-  document.getElementById('list').innerHTML = filtered.map(p=>`
+  const list = document.getElementById('list');
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty">Блюда не найдены</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(p => `
     <div class="dish">
       <div class="dish-emoji">🍽</div>
       <div class="dish-info">
-        <div class="dish-name">${p.name}</div>
-        <div class="dish-cat">${p.category||''}</div>
+        <div class="dish-name">${p.name || '—'}</div>
+        <div class="dish-cat">${p.category || ''}</div>
       </div>
-      <div class="dish-price">${p.price}</div>
+      <div class="dish-price">${p.price || ''}</div>
     </div>
   `).join('');
 }
 
-function addProduct() {
-  window.location.href = 'add-product.html';
-}
-window.addProduct = addProduct;
+document.getElementById('searchInput').addEventListener('input', renderList);
 
-window.del = async (id)=>{
-  await deleteDoc(doc(db,'cafes',currentUid,'products',id));
-  await load();
-};
-
-window.edit = (id)=>{
-  localStorage.setItem('editingProductId',id);
-  window.location.href='edit-product.html';
-};
-
-<script type="module">
-  ...весь твой JS...
-
-  document.getElementById('addProductBtn').addEventListener('click', () => {
-    window.location.href = 'add-product.html';
-  });
-
-  document.getElementById('addProductBtn').addEventListener('click', () => {
+document.getElementById('addProductBtn').addEventListener('click', () => {
   window.location.href = 'add-product.html';
 });
 
+window.del = async (id) => {
+  await deleteDoc(doc(db, 'cafes', currentUid, 'products', id));
+  await load();
+};
+
+window.edit = (id) => {
+  localStorage.setItem('editingProductId', id);
+  window.location.href = 'edit-product.html';
+};
 </script>
 
 </body>
