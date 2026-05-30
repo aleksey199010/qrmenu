@@ -225,6 +225,24 @@ aiCategories.forEach(cat => {
 
   const selectedItems = document.querySelectorAll('.dish-check:checked');
 
+  // Проверка лимита
+  const cafeSnap = await getDoc(doc(db, 'cafes', currentUid));
+  const plan = cafeSnap.exists() ? cafeSnap.data().plan : 'free';
+  const limit = plan === 'pro' ? 99999 : 10;
+
+  const productsSnap = await getDocs(collection(db, 'cafes', currentUid, 'products'));
+  const currentCount = productsSnap.size;
+
+  if (currentCount + selectedItems.length > limit) {
+    alert(
+      `❌ Лимит тарифа: ${limit} блюд.\n` +
+      `У вас сейчас: ${currentCount}\n` +
+      `Вы пытаетесь добавить: ${selectedItems.length}\n\n` +
+      `Перейдите на Pro для неограниченного количества блюд.`
+    );
+    window.location.href = 'pricing.html';
+    return;
+  }
 
   const allCategories = new Set();
 
