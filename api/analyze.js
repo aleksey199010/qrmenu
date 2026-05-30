@@ -6,6 +6,11 @@ export default async function handler(req, res) {
   try {
     const { imageBase64, categories } = req.body;
 
+    const cleanImage = imageBase64.replace(
+  /^data:image\/[a-zA-Z]+;base64,/,
+  ''
+);
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
@@ -19,7 +24,7 @@ export default async function handler(req, res) {
               {
                 inline_data: {
                   mime_type: 'image/jpeg',
-                  data: imageBase64
+                  data: cleanImage
                 }
               },
               {
@@ -45,6 +50,8 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
+
+    console.log('GEMINI RESPONSE:', JSON.stringify(data));
 
     if (!data.candidates || !data.candidates.length) {
       return res.status(200).json({
