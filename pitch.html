@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR-Меню.uz — Цифровое меню для кафе</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: #0a0a0a;
+  color: white;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  background: #0f0f0f;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f5c842;
+}
+
+.header-btn {
+  background: #f5c842;
+  color: #000;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Golos Text', sans-serif;
+}
+
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 16px 60px;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 48px 0 40px;
+}
+
+.hero-tag {
+  display: inline-block;
+  background: #161400;
+  border: 1px solid #f5c842;
+  color: #f5c842;
+  font-size: 11px;
+  font-family: 'Unbounded', sans-serif;
+  letter-spacing: 1px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 16px;
+}
+
+.hero h1 span { color: #f5c842; }
+
+.hero p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.7;
+  margin-bottom: 28px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-cta {
+  background: #f5c842;
+  color: #000;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Golos Text', sans-serif;
+}
+
+/* DIVIDER */
+.divider {
+  border: none;
+  border-top: 1px solid #1e1e1e;
+  margin: 36px 0;
+}
+
+/* SECTION */
+.section-label {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 10px;
+  color: #444;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+/* METRICS */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.metric {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  padding: 20px 16px;
+}
+
+.metric-value {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #f5c842;
+  margin-bottom: 4px;
+}
+
+.metric-label {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* CHART */
+.chart-wrap {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.chart-title {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+/* BENEFITS */
+.benefits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.benefit {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  padding: 20px 16px;
+}
+
+.benefit-icon { font-size: 26px; margin-bottom: 10px; }
+
+.benefit-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.benefit-text {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* COMPARE */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.compare-card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  padding: 20px 16px;
+}
+
+.compare-card.featured {
+  border-color: #f5c842;
+  background: #0f0d00;
+}
+
+.compare-badge {
+  display: inline-block;
+  background: #161400;
+  color: #f5c842;
+  font-size: 10px;
+  font-family: 'Unbounded', sans-serif;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.compare-name {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.compare-price {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #f5c842;
+  margin-bottom: 4px;
+}
+
+.compare-price-sub {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.compare-list {
+  list-style: none;
+  padding: 0;
+}
+
+.compare-list li {
+  font-size: 12px;
+  color: #666;
+  padding: 5px 0;
+  border-bottom: 1px solid #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.compare-list li:last-child { border-bottom: none; }
+.compare-list .ok { color: #4ade80; }
+.compare-list .no { color: #333; }
+
+/* STEPS */
+.steps { display: flex; flex-direction: column; gap: 10px; }
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.step-num {
+  width: 30px;
+  height: 30px;
+  background: #f5c842;
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.step-text { font-size: 12px; color: #555; line-height: 1.5; }
+
+/* TESTIMONIALS */
+.testimonial {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+
+.stars { color: #f5c842; font-size: 14px; margin-bottom: 8px; }
+
+.testimonial-text {
+  font-size: 14px;
+  color: #ccc;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.testimonial-author { font-size: 12px; color: #555; }
+
+/* FAQ */
+.faq-item {
+  border-bottom: 1px solid #1e1e1e;
+  padding: 16px 0;
+  cursor: pointer;
+}
+
+.faq-q {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.faq-arrow { color: #555; font-size: 18px; flex-shrink: 0; transition: transform 0.2s; }
+.faq-arrow.open { transform: rotate(180deg); }
+
+.faq-a {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.7;
+  margin-top: 10px;
+  display: none;
+}
+
+.faq-a.open { display: block; }
+
+/* BOTTOM CTA */
+.bottom-cta {
+  text-align: center;
+  background: #111;
+  border: 1px solid #f5c842;
+  border-radius: 20px;
+  padding: 36px 24px;
+  margin-top: 36px;
+}
+
+.bottom-cta h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.bottom-cta p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.bottom-cta-btn {
+  background: #f5c842;
+  color: #000;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Golos Text', sans-serif;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🍽 QR-Меню.uz</div>
+  <button class="header-btn" onclick="window.location.href='register.html'">Попробовать бесплатно</button>
+</div>
+
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Цифровое меню для кафе Узбекистана</div>
+    <h1>Больше гостей читают меню.<br><span>Больше гостей заказывают.</span></h1>
+    <p>QR-код на столе — гость сканирует и видит меню мгновенно. Без приложений, без бумаги, без лишних трат.</p>
+    <button class="hero-cta" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Посмотреть тарифы ↓</button>
+  </div>
+
+  <hr class="divider">
+
+  <!-- METRICS -->
+  <div class="section-label">Почему это работает</div>
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-value">73%</div>
+      <div class="metric-label">гостей предпочитают QR-меню бумажному</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">+18%</div>
+      <div class="metric-label">средний рост чека с фото блюд</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">200K</div>
+      <div class="metric-label">сум экономия в месяц на печати</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">2 мин</div>
+      <div class="metric-label">обновить цены вместо 2 дней</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Средний рост выручки кафе после подключения QR-меню</div>
+    <div style="position:relative;height:220px;">
+      <canvas id="chart1" role="img" aria-label="Рост выручки по месяцам: +5, +9, +14, +18, +21, +24 процента">Рост: +5%, +9%, +14%, +18%, +21%, +24%</canvas>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BENEFITS -->
+  <div class="section-label">Что получает ваше кафе</div>
+  <div class="benefits">
+    <div class="benefit">
+      <div class="benefit-icon">📱</div>
+      <div class="benefit-title">QR-код за 5 минут</div>
+      <div class="benefit-text">Регистрируетесь, добавляете блюда — получаете готовый QR для распечатки.</div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">🤖</div>
+      <div class="benefit-title">AI импорт из фото</div>
+      <div class="benefit-text">Сфотографируйте бумажное меню — ИИ сам распознает блюда и цены.</div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">📊</div>
+      <div class="benefit-title">Статистика сканирований</div>
+      <div class="benefit-text">Видите сколько гостей открыли меню сегодня, за неделю и месяц.</div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">✏️</div>
+      <div class="benefit-title">Меняйте меню когда угодно</div>
+      <div class="benefit-text">Изменили цену — гости сразу видят новую. Никакой перепечатки.</div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">🌐</div>
+      <div class="benefit-title">Русский и узбекский</div>
+      <div class="benefit-text">Меню сразу на двух языках — удобно для всех гостей.</div>
+    </div>
+    <div class="benefit">
+      <div class="benefit-icon">💬</div>
+      <div class="benefit-title">Отзывы гостей</div>
+      <div class="benefit-text">Гости оставляют отзывы прямо в меню — вы модерируете и публикуете.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PRICING -->
+  <div id="pricing"></div>
+  <div class="section-label">Тарифы</div>
+  <div class="compare">
+    <div class="compare-card">
+      <div class="compare-name">Бесплатно</div>
+      <div class="compare-price">0</div>
+      <div class="compare-price-sub">навсегда</div>
+      <ul class="compare-list">
+        <li><span class="ok">✓</span> До 10 блюд</li>
+        <li><span class="ok">✓</span> QR-код</li>
+        <li><span class="ok">✓</span> Рус + Узб</li>
+        <li><span class="no">—</span> Без статистики</li>
+        <li><span class="no">—</span> Без AI импорта</li>
+        <li><span class="no">—</span> Без своей ссылки</li>
+      </ul>
+    </div>
+    <div class="compare-card featured">
+      <div class="compare-badge">★ Популярный</div>
+      <div class="compare-name">Pro</div>
+      <div class="compare-price">150 000</div>
+      <div class="compare-price-sub">сум / месяц</div>
+      <ul class="compare-list">
+        <li><span class="ok">✓</span> Безлимит блюд</li>
+        <li><span class="ok">✓</span> QR-код</li>
+        <li><span class="ok">✓</span> 3 языка</li>
+        <li><span class="ok">✓</span> Статистика</li>
+        <li><span class="ok">✓</span> AI импорт</li>
+        <li><span class="ok">✓</span> Своя ссылка</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:#111;border:1px solid #1e1e1e;border-radius:12px;padding:14px 16px;text-align:center;font-size:13px;color:#555;margin-top:12px;">
+    Год за <strong style="color:#f5c842;">1 560 000 сум</strong> — экономия 240 000 сум
+  </div>
+
+  <hr class="divider">
+
+  <!-- HOW IT WORKS -->
+  <div class="section-label">Как это работает</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Регистрируетесь на qrmenu.uz</div>
+        <div class="step-text">2 минуты — только email и название кафе.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Добавляете блюда</div>
+        <div class="step-text">Вручную или сфотографируйте меню — AI распознает сам.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Распечатываете QR-код</div>
+        <div class="step-text">Скачиваете и ставите на столы.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Гости сканируют и заказывают</div>
+        <div class="step-text">Без скачивания приложений — меню открывается в браузере телефона.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- TESTIMONIALS -->
+  <div class="section-label">Отзывы владельцев</div>
+  <div class="testimonial">
+    <div class="stars">★★★★★</div>
+    <div class="testimonial-text">«Раньше тратили 200 000 сум каждый раз на перепечатку меню. Теперь меняем цены за 2 минуты прямо с телефона.»</div>
+    <div class="testimonial-author">Кафе «Чайхона у фонтана», Ташкент</div>
+  </div>
+  <div class="testimonial">
+    <div class="stars">★★★★★</div>
+    <div class="testimonial-text">«Гости видят фото блюд и сразу заказывают дополнительно. Средний чек вырос заметно.»</div>
+    <div class="testimonial-author">Ресторан «Самарканд», Ташкент</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FAQ -->
+  <div class="section-label">Частые вопросы</div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Нужно ли гостям скачивать приложение? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a">Нет. Меню открывается прямо в браузере телефона — достаточно навести камеру на QR-код.</div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Что если нет Wi-Fi в кафе? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a">Меню работает через мобильный интернет гостя — Wi-Fi кафе не нужен.</div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Сколько времени занимает настройка? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a">От 5 до 30 минут. С AI импортом из фото — можно загрузить всё меню за 5 минут.</div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Можно ли менять меню самому? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a">Да, в любое время с телефона или компьютера. Изменения видны гостям мгновенно.</div>
+  </div>
+
+  <!-- BOTTOM CTA -->
+  <div class="bottom-cta">
+    <h2>Попробуйте бесплатно</h2>
+    <p>Первые 10 блюд и QR-код — навсегда бесплатно.<br>Никаких карт и обязательств.</p>
+    <button class="bottom-cta-btn" onclick="window.location.href='register.html'">Начать бесплатно →</button>
+  </div>
+
+</div>
+
+<script>
+new Chart(document.getElementById('chart1'), {
+  type: 'line',
+  data: {
+    labels: ['Месяц 1','Месяц 2','Месяц 3','Месяц 4','Месяц 5','Месяц 6'],
+    datasets: [{
+      data: [5, 9, 14, 18, 21, 24],
+      borderColor: '#f5c842',
+      backgroundColor: 'rgba(245,200,66,0.07)',
+      borderWidth: 2.5,
+      pointBackgroundColor: '#f5c842',
+      pointRadius: 5,
+      fill: true,
+      tension: 0.4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: v => '+' + v + '%', color: '#555', font: { size: 11 } },
+        grid: { color: 'rgba(255,255,255,0.05)' }
+      },
+      x: {
+        ticks: { color: '#555', font: { size: 11 } },
+        grid: { display: false }
+      }
+    }
+  }
+});
+
+function toggleFaq(el) {
+  const a = el.querySelector('.faq-a');
+  const arrow = el.querySelector('.faq-arrow');
+  a.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
