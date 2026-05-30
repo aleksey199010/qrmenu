@@ -66,6 +66,30 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 <div class="tabs" id="tabs"></div>
 <div class="main" id="main"></div>
 
+<!-- ОТЗЫВЫ -->
+<div style="max-width:600px;margin:0 auto;padding:16px 16px 0;">
+  <div style="font-family:'Playfair Display',serif;font-size:22px;color:#3d2b1f;margin-bottom:16px;">Отзывы</div>
+
+  <div id="reviewsList" style="margin-bottom:16px;"></div>
+
+  <div style="background:#fffdf8;border:1px solid #f0e8d8;border-radius:16px;padding:16px;">
+    <div style="font-size:13px;font-weight:600;color:#3d2b1f;margin-bottom:12px;">Оставить отзыв</div>
+
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <span id="star1" onclick="setStar(1)" style="font-size:24px;cursor:pointer;">⭐</span>
+      <span id="star2" onclick="setStar(2)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">⭐</span>
+      <span id="star3" onclick="setStar(3)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">⭐</span>
+      <span id="star4" onclick="setStar(4)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">⭐</span>
+      <span id="star5" onclick="setStar(5)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">⭐</span>
+    </div>
+
+    <input id="reviewName" type="text" placeholder="Ваше имя" style="width:100%;padding:10px 14px;background:#faf6ef;border:1.5px solid #e0d0bc;border-radius:10px;font-size:14px;font-family:'Golos Text',sans-serif;color:#2c1a0e;outline:none;margin-bottom:8px;">
+    <textarea id="reviewText" placeholder="Расскажите о вашем впечатлении..." style="width:100%;padding:10px 14px;background:#faf6ef;border:1.5px solid #e0d0bc;border-radius:10px;font-size:14px;font-family:'Golos Text',sans-serif;color:#2c1a0e;outline:none;min-height:80px;resize:vertical;margin-bottom:10px;"></textarea>
+    <button onclick="submitReview()" style="width:100%;background:#3d2b1f;color:#e8b84b;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;">Отправить отзыв</button>
+    <div id="reviewSuccess" style="display:none;text-align:center;color:#6a994e;font-size:13px;margin-top:10px;">✅ Отзыв отправлен на проверку!</div>
+  </div>
+</div>
+
 <div class="share-wrap">
   <button class="share-btn" onclick="shareMenu()">📤 Поделиться меню</button>
 </div>
@@ -86,8 +110,7 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 
 <script type="module">
   import { db } from './firebase.js';
-  import { doc, getDoc, collection, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
+import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
   const emojis = { 'Горячее':'🍲','Салаты':'🥗','Напитки':'☕','Десерты':'🍰','Выпечка':'🫓','Завтраки':'🍳' };
 
   function getEmoji(cat) {
@@ -190,6 +213,8 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
     } else {
       await setDoc(scansRef, { total: 1, today: 1, date: today });
     }
+
+    await loadReviews();
   }
 
 window.openModal = function(emoji, name, desc, price, photo, oldPrice) {    if (photo) {
@@ -217,8 +242,60 @@ document.getElementById('m-price').innerHTML = Number(price).toLocaleString() + 
     }
   }
 
-  window.searchDishes = function(query) {
-    const q = query.toLowerCase().trim();
+let selectedStars = 5;
+
+  window.setStar = function(n) {
+    selectedStars = n;
+    for (let i = 1; i <= 5; i++) {
+      document.getElementById('star' + i).style.filter = i <= n ? 'none' : 'grayscale(1)';
+    }
+  }
+
+  window.submitReview = async function() {
+    const name = document.getElementById('reviewName').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+    if (!name) { alert('Введите имя'); return; }
+    if (!text) { alert('Напишите отзыв'); return; }
+
+    await addDoc(collection(db, 'cafes', cafeId, 'reviews'), {
+      name, text,
+      stars: selectedStars,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    });
+
+    document.getElementById('reviewName').value = '';
+    document.getElementById('reviewText').value = '';
+    document.getElementById('reviewSuccess').style.display = 'block';
+    setTimeout(() => document.getElementById('reviewSuccess').style.display = 'none', 3000);
+  }
+
+  async function loadReviews() {
+    const snap = await getDocs(collection(db, 'cafes', cafeId, 'reviews'));
+    const approved = [];
+    snap.forEach(d => {
+      const r = d.data();
+      if (r.status === 'approved') approved.push(r);
+    });
+
+    const list = document.getElementById('reviewsList');
+    if (approved.length === 0) {
+      list.innerHTML = '<div style="font-size:13px;color:#8a6a54;text-align:center;padding:12px 0;">Пока нет отзывов. Будьте первым!</div>';
+      return;
+    }
+
+    list.innerHTML = approved.map(r => `
+      <div style="background:#fffdf8;border:1px solid #f0e8d8;border-radius:14px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-weight:600;font-size:14px;color:#3d2b1f;">${r.name}</div>
+          <div style="font-size:14px;">${'⭐'.repeat(r.stars)}</div>
+        </div>
+        <div style="font-size:13px;color:#6a4f3b;line-height:1.5;">${r.text}</div>
+      </div>
+    `).join('');
+  }
+
+  window.searchDishes = function(query) {    const q = query.toLowerCase().trim();
     const tabs = document.getElementById('tabs');
     const main = document.getElementById('main');
     const existing = document.getElementById('search-results');
