@@ -301,6 +301,12 @@ textarea { min-height: 80px; resize: vertical; }
     </div>
 
     <div class="form-group">
+      <label>Старая цена (необязательно)</label>
+      <input type="number" id="oldPrice"
+        placeholder="55000 — будет зачёркнута">
+    </div>
+
+    <div class="form-group">
   <label>Фото блюда (необязательно)</label>
   <div class="photo-wrap" id="photoWrap" onclick="document.getElementById('photoInput').click()">
     <div class="photo-placeholder" id="photoPlaceholder">
@@ -358,8 +364,11 @@ import { collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.co
   window.updatePreview = function() {
     const name = document.getElementById('name').value || 'Название блюда';
     const price = document.getElementById('price').value || '0';
+    const oldPrice = document.getElementById('oldPrice').value;
     document.getElementById('previewName').textContent = name;
-    document.getElementById('previewPrice').textContent = Number(price).toLocaleString() + ' сум';
+    document.getElementById('previewPrice').innerHTML = oldPrice
+      ? `${Number(price).toLocaleString()} сум <span style="text-decoration:line-through;color:#666;font-size:12px;margin-left:6px;">${Number(oldPrice).toLocaleString()}</span>`
+      : `${Number(price).toLocaleString()} сум`;
   }
 
   window.loadPhoto = function(input) {
@@ -396,11 +405,13 @@ import { collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.co
       return;
     }
 
+    const oldPrice = document.getElementById('oldPrice').value;
     const id = Date.now().toString();
     await setDoc(doc(db, 'cafes', currentUid, 'products', id), {
       id, name, price, category, description,
       emoji: selectedEmoji,
       photo: photoData || '',
+      oldPrice: oldPrice || '',
       createdAt: new Date().toISOString()
     });
 
