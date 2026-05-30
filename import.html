@@ -218,13 +218,44 @@ aiCategories.forEach(cat => {
     document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
   }
 
+
   window.saveAll = async function() {
     const items = document.querySelectorAll('.dish-item');
-    let saved = 0;
+let saved = 0;
+
+const MAX_FREE_DISHES = 10;
+
+const selectedItems = document.querySelectorAll('.dish-check:checked');
+
+if (selectedItems.length === 0) return;
+
+const snap = await getDocs(
+  collection(db, 'cafes', currentUid, 'products')
+);
+
+const currentCount = snap.size;
+
+if (currentCount + selectedItems.length > MAX_FREE_DISHES) {
+  alert(
+    `❌ Лимит бесплатного тарифа: ${MAX_FREE_DISHES} блюд.\n` +
+    `У вас сейчас: ${currentCount}\n` +
+    `Вы пытаетесь добавить: ${selectedItems.length}`
+  );
+  return;
+}
 
 const allCategories = new Set();
 
 for (let i = 0; i < items.length; i++) {
+
+  const snap = await getDocs(
+  collection(db, 'cafes', currentUid, 'products')
+);
+
+if (snap.size >= 10) {
+  alert('❌ Лимит 10 блюд достигнут. Обновите тариф.');
+  return;
+}
 
   const checked = document.getElementById('check-' + i).checked;
   if (!checked) continue;
