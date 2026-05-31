@@ -541,8 +541,13 @@ let selectedStars = 5;
     } catch(e) { cart = {}; }
   }
 window.openCart = function() {
+    const btn = document.getElementById('sendOrderBtn');
+
+    btn.textContent = '📲 Отправить заказ официанту';
+    btn.disabled = false;
+    btn.style.display = window.telegramChatId ? 'block' : 'none';
+
     document.getElementById('cartOverlay').classList.add('open');
-    document.getElementById('sendOrderBtn').style.display = window.telegramChatId ? 'block' : 'none';
 };
 
 window.closeCart = function() {
