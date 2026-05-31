@@ -231,7 +231,8 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 
     const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
     allProducts = [];
-    productsSnap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+   productsSnap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+    allProducts = allProducts.filter(p => p.available !== false);
     allProducts = allProducts.slice(0, limit);
 
     const tabsEl = document.getElementById('tabs');
