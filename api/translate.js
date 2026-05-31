@@ -1,0 +1,39 @@
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+  try {
+    const { name, description } = req.body;
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `Переведи название и описание блюда с русского на узбекский язык (латиница).
+Ответь ТОЛЬКО в формате JSON без markdown и пояснений:
+{"name_uz":"...","description_uz":"..."}
+Название: ${name}
+Описание: ${description || ''}`
+            }]
+          }],
+          generationConfig: {
+            temperature: 0,
+            maxOutputTokens: 512,
+            responseMimeType: "application/json"
+          }
+        })
+      }
+    );
+    const data = await response.json();
+    if (!data.candidates || !data.candidates.length) {
+      return res.status(200).json({ text: '{"name_uz":"","description_uz":""}' });
+    }
+    const text = data.candidates[0].content.parts[0].text;
+    return res.status(200).json({ text });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
