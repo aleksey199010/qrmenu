@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON Импорт | QR-Меню</title>
+
+<style>
+body{
+  background:#0a0a0a;
+  color:white;
+  font-family:Arial,sans-serif;
+  max-width:900px;
+  margin:0 auto;
+  padding:20px;
+}
+
+select,textarea,button{
+  width:100%;
+  margin-bottom:12px;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #333;
+}
+
+textarea{
+  height:400px;
+  background:#111;
+  color:white;
+}
+
+button{
+  background:#f5c842;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<h2>JSON Импорт блюд</h2>
+
+<select id="cafeSelect"></select>
+
+<textarea id="jsonInput" placeholder="Вставьте JSON сюда"></textarea>
+
+<button onclick="importJson()">Импортировать</button>
+
+<script type="module">
+import { auth, db } from './firebase.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+const ADMIN_UID = 'ztGU2KAP5tUvwnMvhA4bfn5Jdvw2';
+
+let cafes = [];
+
+onAuthStateChanged(auth, async(user)=>{
+
+  if(!user || user.uid !== ADMIN_UID){
+    window.location.href='dashboard.html';
+    return;
+  }
+
+  const snap = await getDocs(collection(db,'cafes'));
+
+  const select = document.getElementById('cafeSelect');
+
+  snap.forEach(d=>{
+
+    const cafe = {
+      uid:d.id,
+      ...d.data()
+    };
+
+    cafes.push(cafe);
+
+    const option = document.createElement('option');
+    option.value = cafe.uid;
+    option.textContent =
+      (cafe.name || 'Без названия')
+      + ' (' + cafe.uid + ')';
+
+    select.appendChild(option);
+  });
+
+});
+
+window.importJson = async function(){
+
+  const uid =
+    document.getElementById('cafeSelect').value;
+
+  const json =
+    document.getElementById('jsonInput').value;
+
+  const parsed = JSON.parse(json);
+
+  for(const dish of parsed.dishes){
+
+    if(dish.category){
+
+      await setDoc(
+        doc(
+          db,
+          'cafes',
+          uid,
+          'categories',
+          dish.category
+        ),
+        {
+          name:dish.category,
+          order:0
+        }
+      );
+    }
+
+    const id =
+      Date.now().toString()
+      + Math.random().toString().slice(2,8);
+
+    await setDoc(
+      doc(
+        db,
+        'cafes',
+        uid,
+        'products',
+        id
+      ),
+      {
+        id,
+        name:dish.name || '',
+        price:dish.price || '',
+        category:dish.category || '',
+        description:dish.description || '',
+        nameUz:'',
+        descriptionUz:'',
+        emoji:'🍽️',
+        photo:'',
+        createdAt:new Date().toISOString()
+      }
+    );
+  }
+
+  alert('Импорт завершён');
+}
+</script>
+
+</body>
+</html>
