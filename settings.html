@@ -203,8 +203,12 @@ textarea {
   </div>
 
   <div class="section">
-    <div class="section-label">Язык меню</div>
-    <div class="form-group">
+<div class="section-label">
+  Язык меню
+  <span id="langProBadge" style="display:none;color:#f5c842;font-size:11px;margin-left:8px;">
+    • Доступно только в Pro
+  </span>
+</div>    <div class="form-group">
       <label>Языки для клиентов</label>
       <select id="lang">
   <option value="ru">Только русский</option>
@@ -240,8 +244,9 @@ textarea {
         <input type="checkbox" id="showInCatalog" style="width:18px;height:18px;accent-color:#f5c842;">
         Показывать моё кафе в каталоге QR-Меню.uz
       </label>
-      <small style="color:#444;font-size:12px;margin-top:8px;display:block;">Гости смогут найти ваше кафе на странице каталога qrmenu.uz/catalog</small>
-    </div>
+<small id="catalogHint" style="color:#444;font-size:12px;margin-top:8px;display:block;">
+Гости смогут найти ваше кафе на странице каталога qrmenu.uz/catalog
+</small>    </div>
   </div>
 
   <button class="save-btn" onclick="save()">
@@ -296,11 +301,16 @@ if (s.logo) {
   document.getElementById('lang').value = 'ru';
   document.getElementById('lang').disabled = true;
 
-  document.getElementById('showInCatalog').checked = false;
-  document.getElementById('showInCatalog').disabled = true;
+document.getElementById('showInCatalog').checked = false;
+document.getElementById('showInCatalog').disabled = true;
+
+document.getElementById('catalogHint').innerHTML =
+  '⭐ Доступно только на тарифе Pro';
 
   document.getElementById('logoWrap').style.display = 'none';
-  document.getElementById('logoProNotice').style.display = 'block';
+document.getElementById('logoProNotice').style.display = 'block';
+
+document.getElementById('langProBadge').style.display = 'inline';
 }
   });
 window.loadLogo = async function(input) {
