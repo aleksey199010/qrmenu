@@ -278,7 +278,7 @@ function renderList() {
     <div class="dish" style="${isHidden ? 'opacity:0.5;border-color:#2a1a00;' : ''}">
       <div class="dish-emoji">${p.emoji || '🍽'}</div>
       <div class="dish-info">
-        <div class="dish-name">${p.name || '—'} ${isHidden ? '🔒' : ''}</div>
+      <div class="dish-name">${p.name || '—'} ${isHidden ? '🔒' : ''} ${p.isHit ? '🔥' : ''} ${p.isSpecial ? '🎁' : ''}</div>
         <div class="dish-cat">${isHidden ? '<span style="color:#ff6b00;font-size:11px;">Скрыто от клиентов</span>' : (p.category || '')}</div>
       </div>
 <div class="dish-price">
