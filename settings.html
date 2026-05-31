@@ -187,6 +187,12 @@ textarea {
       <label>Время работы</label>
       <input type="text" id="hours" placeholder="09:00 – 23:00">
     </div>
+
+    <div class="form-group">
+      <label>Сбор за обслуживание (%)</label>
+      <input type="number" id="serviceCharge" min="0" max="50" placeholder="0">
+      <small style="color:#444;font-size:12px;margin-top:4px;display:block;">0 — если не нужно</small>
+    </div>
   </div>
 
   <div class="section">
@@ -231,6 +237,7 @@ textarea {
       if (s.phone) document.getElementById('phone').value = s.phone;
       if (s.hours) document.getElementById('hours').value = s.hours;
       if (s.lang) document.getElementById('lang').value = s.lang;
+      document.getElementById('serviceCharge').value = s.serviceCharge || 0;
     }
   });
 
@@ -242,7 +249,8 @@ textarea {
       address: document.getElementById('address').value,
       phone: document.getElementById('phone').value,
       hours: document.getElementById('hours').value,
-      lang: document.getElementById('lang').value,
+     lang: document.getElementById('lang').value,
+      serviceCharge: Number(document.getElementById('serviceCharge').value) || 0,
     };
     await setDoc(doc(db, 'cafes', currentUid, 'settings', 'main'), settings);
     const msg = document.getElementById('success');
