@@ -323,6 +323,18 @@ textarea { min-height: 80px; resize: vertical; }
       <textarea id="description"
         placeholder="Настоящий узбекский плов с бараниной..."></textarea>
     </div>
+
+    <div class="form-group">
+      <label>Метки</label>
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:14px;color:white;cursor:pointer;">
+          <input type="checkbox" id="isHit" style="width:18px;height:18px;accent-color:#f5c842;"> 🔥 Хит
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:14px;color:white;cursor:pointer;">
+          <input type="checkbox" id="isSpecial" style="width:18px;height:18px;accent-color:#f5c842;"> 🎁 Спецпредложение
+        </label>
+      </div>
+    </div>
   </div>
 
   <button class="save-btn" onclick="save()">
@@ -412,6 +424,8 @@ import { collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.co
       emoji: selectedEmoji,
       photo: photoData || '',
       oldPrice: oldPrice || '',
+      isHit: document.getElementById('isHit').checked,
+      isSpecial: document.getElementById('isSpecial').checked,
       createdAt: new Date().toISOString()
     });
 
