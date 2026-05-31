@@ -316,8 +316,14 @@ input:focus { border-color: #f5c842; }
 <script type="module">
   import { auth, db } from './firebase.js';
   import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
-  import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  deleteDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
   const emojis = {
     'Горячее':'🍲','Салаты':'🥗','Напитки':'☕',
     'Десерты':'🍰','Выпечка':'🫓','Завтраки':'🍳'
@@ -388,23 +394,104 @@ input:focus { border-color: #f5c842; }
     if (!confirm('Удалить категорию?')) return;
     await deleteDoc(doc(db, 'cafes', currentUid, 'categories', id));
     await load();
+};
+
+window.closeModal = function(e) {
+
+  const name =
+    document.getElementById('catInput').value.trim();
+
+  if (!name) {
+    alert('Введите название');
+    return;
   }
 
-  window.save = async function() {
-    const name = document.getElementById('catInput').value.trim();
-    if (!name) { alert('Введите название'); return; }
+  if (editingId) {
 
-    if (editingId) {
-      await setDoc(doc(db, 'cafes', currentUid, 'categories', editingId), { name, order: 0 });
-    } else {
-      await setDoc(doc(db, 'cafes', currentUid, 'categories', name), { name, order: cats.length });
+    const oldCategory =
+      cats.find(c => c.id === editingId);
+
+    const oldName =
+      oldCategory ? oldCategory.name : '';
+
+    await setDoc(
+      doc(
+        db,
+        'cafes',
+        currentUid,
+        'categories',
+        editingId
+      ),
+      {
+        name,
+        order: oldCategory?.order || 0
+      }
+    );
+
+    if (oldName && oldName !== name) {
+
+      const productsSnap =
+        await getDocs(
+          collection(
+            db,
+            'cafes',
+            currentUid,
+            'products'
+          )
+        );
+
+      for (const productDoc of productsSnap.docs) {
+
+        const product =
+          productDoc.data();
+
+        if (product.category === oldName) {
+
+          await updateDoc(
+            doc(
+              db,
+              'cafes',
+              currentUid,
+              'products',
+              productDoc.id
+            ),
+            {
+              category: name
+            }
+          );
+
+        }
+
+      }
+
     }
 
-    document.getElementById('overlay').classList.remove('open');
-    await load();
+  } else {
+
+    await setDoc(
+      doc(
+        db,
+        'cafes',
+        currentUid,
+        'categories',
+        name
+      ),
+      {
+        name,
+        order: cats.length
+      }
+    );
+
   }
 
-  window.closeModal = function(e) {
+  document
+    .getElementById('overlay')
+    .classList.remove('open');
+
+  await load();
+}
+
+    window.closeModal = function(e) {
     if (e.target.id === 'overlay') {
       document.getElementById('overlay').classList.remove('open');
     }
