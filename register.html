@@ -227,12 +227,16 @@ input:focus { border-color: #f5c842; }
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
 
+      const proExpiry = new Date();
+      proExpiry.setDate(proExpiry.getDate() + 30);
+
       await setDoc(doc(db, 'cafes', uid), {
         name: name,
         phone: phone,
         email: email,
         createdAt: new Date().toISOString(),
-        plan: 'free'
+        plan: 'pro',
+        planExpiry: proExpiry.toISOString()
       });
 
       await setDoc(doc(db, 'cafes', uid, 'settings', 'main'), {
