@@ -69,7 +69,7 @@ ${categories}
           generationConfig: {
   temperature: 0,
   maxOutputTokens: 8192,
-  responseMimeType: "application/json"
+  // responseMimeType: "application/json"
 }
         })
       }
@@ -85,12 +85,17 @@ ${categories}
       });
     }
 
-    const text = data.candidates[0].content.parts[0].text;
-    console.log('AI TEXT:', text);
+    console.log('FULL RESPONSE:', JSON.stringify(data));
 
-    return res.status(200).json({
-      text
-    });
+const text =
+  data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+console.log('AI TEXT:', text);
+
+return res.status(200).json({
+  text,
+  raw: data
+});
 
   } catch (error) {
     return res.status(500).json({
