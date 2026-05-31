@@ -392,9 +392,10 @@ textarea { min-height: 80px; resize: vertical; }
     if (p.nameUz) document.getElementById('nameUz').value = p.nameUz;
     if (p.descriptionUz) document.getElementById('descriptionUz').value = p.descriptionUz;
     if (p.isHit) document.getElementById('isHit').checked = true;
-    if (p.isSpecial) document.getElementById('isSpecial').checked = true;    if (p.photo) {
-      photoData = p.photo;
-      document.getElementById('photoPreview').src = p.photo;
+    if (p.isSpecial) document.getElementById('isSpecial').checked = true;    
+    photoData = p.photo || '';
+    if (photoData) {
+      document.getElementById('photoPreview').src = photoData;
       document.getElementById('photoPreview').style.display = 'block';
       document.getElementById('photoPlaceholder').style.display = 'none';
     }
