@@ -70,6 +70,9 @@ body { font-family: 'Golos Text', sans-serif; background: #0a0a0a; color: white;
   <div class="hint">
     💡 Работает с <span>печатными</span> и <span>рукописными</span> меню на русском и узбекском языке. Даже с меню на доске!
   </div>
+  <div class="hint" id="limitHint" style="display:none;">
+    ⚡ Бесплатный тариф: <span id="usageLeft"></span> — <a href="pricing.html" style="color:#f5c842;">перейти на Pro</a> для безлимитного использования
+  </div>
 
   <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
     <span class="upload-icon">📸</span>
@@ -107,12 +110,34 @@ import { collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.co
   let imageBase64 = null;
   let categories = [];
 
+  const AI_FREE_LIMIT = 2;
+  let isPro = false;
+  let aiUsed = 0;
+
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'login.html'; return; }
     currentUid = user.uid;
 
     const snap = await getDocs(collection(db, 'cafes', currentUid, 'categories'));
     snap.forEach(d => categories.push(d.data().name));
+
+    // Проверяем план и счётчик
+    const cafeSnap = await getDoc(doc(db, 'cafes', currentUid));
+    const cafeData = cafeSnap.exists() ? cafeSnap.data() : {};
+    isPro = cafeData.plan === 'pro';
+    aiUsed = cafeData.aiImportCount || 0;
+
+    if (!isPro) {
+      const left = Math.max(0, AI_FREE_LIMIT - aiUsed);
+      document.getElementById('limitHint').style.display = 'block';
+      document.getElementById('usageLeft').textContent = left > 0
+        ? `осталось ${left} из ${AI_FREE_LIMIT} попыток`
+        : 'лимит исчерпан';
+      if (left === 0) {
+        document.getElementById('analyzeBtn').disabled = true;
+        document.getElementById('analyzeBtn').textContent = '🔒 Лимит исчерпан — нужен Pro';
+      }
+    }
   });
 
   window.handleFile = function(input) {
@@ -132,6 +157,13 @@ import { collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.co
 
   window.analyzeMenu = async function() {
     if (!imageBase64) return;
+
+    // Проверка лимита для free
+    if (!isPro && aiUsed >= AI_FREE_LIMIT) {
+      alert('Лимит AI импорта исчерпан. Перейдите на Pro для безлимитного использования.');
+      window.location.href = 'pricing.html';
+      return;
+    }
 
     document.getElementById('analyzeBtn').style.display = 'none';
     document.getElementById('loading').style.display = 'block';
@@ -158,6 +190,16 @@ if (!data.text) {
 const text = data.text;
       const clean = text.replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(clean);
+
+      // Увеличиваем счётчик если free
+      if (!isPro) {
+        aiUsed++;
+        await setDoc(doc(db, 'cafes', currentUid), { aiImportCount: aiUsed }, { merge: true });
+        const left = Math.max(0, AI_FREE_LIMIT - aiUsed);
+        document.getElementById('usageLeft').textContent = left > 0
+          ? `осталось ${left} из ${AI_FREE_LIMIT} попыток`
+          : 'лимит исчерпан';
+      }
 
       showResults(parsed.dishes);
     } catch (err) {
