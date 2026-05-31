@@ -335,6 +335,18 @@ textarea { min-height: 80px; resize: vertical; }
       <textarea id="description"
         placeholder="Настоящий узбекский плов с бараниной..."></textarea>
     </div>
+
+    <div class="form-group">
+      <label>Метки</label>
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:14px;color:white;cursor:pointer;">
+          <input type="checkbox" id="isHit" style="width:18px;height:18px;accent-color:#f5c842;"> 🔥 Хит
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:14px;color:white;cursor:pointer;">
+          <input type="checkbox" id="isSpecial" style="width:18px;height:18px;accent-color:#f5c842;"> 🎁 Спецпредложение
+        </label>
+      </div>
+    </div>
   </div>
 
   <button class="save-btn" onclick="save()">
@@ -386,8 +398,9 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('previewEmoji').textContent = selectedEmoji;
     document.getElementById('previewName').textContent = p.name;
 document.getElementById('previewPrice').textContent = Number(p.price).toLocaleString() + ' сум';
-    if (p.oldPrice) document.getElementById('oldPrice').value = p.oldPrice;
-    if (p.photo) {
+if (p.oldPrice) document.getElementById('oldPrice').value = p.oldPrice;
+    if (p.isHit) document.getElementById('isHit').checked = true;
+    if (p.isSpecial) document.getElementById('isSpecial').checked = true;    if (p.photo) {
       photoData = p.photo;
       document.getElementById('photoPreview').src = p.photo;
       document.getElementById('photoPreview').style.display = 'block';
@@ -446,6 +459,8 @@ document.getElementById('previewPrice').textContent = Number(p.price).toLocaleSt
       emoji: selectedEmoji,
       photo: photoData || '',
       oldPrice: oldPrice || '',
+      isHit: document.getElementById('isHit').checked,
+      isSpecial: document.getElementById('isSpecial').checked,
       updatedAt: new Date().toISOString()
     });
 
