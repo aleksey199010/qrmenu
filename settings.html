@@ -207,10 +207,9 @@ textarea {
     <div class="form-group">
       <label>Языки для клиентов</label>
       <select id="lang">
-        <option value="ru-uz">Русский + Узбекский</option>
-        <option value="ru">Только русский</option>
-        <option value="ru-uz-en">Русский + Узбекский + English</option>
-      </select>
+  <option value="ru">Только русский</option>
+  <option value="ru-uz">Русский + Узбекский (Pro)</option>
+</select>
     </div>
   </div>
 
@@ -241,12 +240,18 @@ textarea {
   import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
   let currentUid = null;
+let currentPlan = 'free';
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = 'login.html'; return; }
-    currentUid = user.uid;
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  currentUid = user.uid;
 
-    const snap = await getDoc(doc(db, 'cafes', currentUid, 'settings', 'main'));
+  const cafeSnap = await getDoc(doc(db, 'cafes', currentUid));
+  if (cafeSnap.exists()) {
+    currentPlan = cafeSnap.data().plan || 'free';
+  }
+
+  const snap = await getDoc(doc(db, 'cafes', currentUid, 'settings', 'main'));
     if (snap.exists()) {
       const s = snap.data();
       if (s.name) document.getElementById('name').value = s.name;
@@ -259,6 +264,14 @@ if (s.city) document.getElementById('city').value = s.city;
 document.getElementById('serviceCharge').value = s.serviceCharge || 0;
 document.getElementById('showInCatalog').checked = s.showInCatalog || false;
     }
+
+    if (currentPlan !== 'pro') {
+      document.getElementById('lang').value = 'ru';
+      document.getElementById('lang').disabled = true;
+
+      document.getElementById('showInCatalog').checked = false;
+      document.getElementById('showInCatalog').disabled = true;
+    }
   });
   window.save = async function() {
     if (!currentUid) return;
@@ -269,9 +282,13 @@ document.getElementById('showInCatalog').checked = s.showInCatalog || false;
   address: document.getElementById('address').value,
   phone: document.getElementById('phone').value,
   hours: document.getElementById('hours').value,
-  lang: document.getElementById('lang').value,
+  lang: currentPlan === 'pro'
+    ? document.getElementById('lang').value
+    : 'ru',
   serviceCharge: Number(document.getElementById('serviceCharge').value) || 0,
-  showInCatalog: document.getElementById('showInCatalog').checked
+  showInCatalog: currentPlan === 'pro'
+    ? document.getElementById('showInCatalog').checked
+    : false
 };
 
 await setDoc(doc(db, 'cafes', currentUid, 'settings', 'main'), settings);
