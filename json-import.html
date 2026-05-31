@@ -114,18 +114,19 @@ for(const dish of dishes){
     if(dish.category){
 
       await setDoc(
-        doc(
-          db,
-          'cafes',
-          uid,
-          'categories',
-          dish.category
-        ),
-        {
-          name:dish.category,
-          order:0
-        }
-      );
+  doc(
+    db,
+    'cafes',
+    uid,
+    'categories',
+    dish.category
+  ),
+  {
+    name:dish.category,
+    nameUz:dish.categoryUz || '',
+    order:0
+  }
+);
     }
 
     const id =
