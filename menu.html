@@ -342,6 +342,7 @@ let selectedStars = 5;
  // ===== КОРЗИНА =====
   let cart = {};
   loadCart();
+  updateCartUI();
 
   window.addToCart = function(id, name, price) {
     if (cart[id]) { cart[id].qty++; } else { cart[id] = { name, price: Number(price), qty: 1 }; }
