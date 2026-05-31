@@ -126,6 +126,8 @@ body {
   overflow-x:auto;
   margin-bottom:16px;
   padding-bottom:4px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
 }
 
 .category-tabs::-webkit-scrollbar { display:none; }
@@ -140,6 +142,7 @@ body {
   cursor:pointer;
   font-family:'Golos Text',sans-serif;
   font-size:13px;
+  flex-shrink:0;
 }
 
 .category-tab.active {
