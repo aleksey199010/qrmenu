@@ -341,22 +341,36 @@ let selectedStars = 5;
 
  // ===== КОРЗИНА =====
   let cart = {};
+  loadCart();
 
   window.addToCart = function(id, name, price) {
     if (cart[id]) { cart[id].qty++; } else { cart[id] = { name, price: Number(price), qty: 1 }; }
+    saveCart();
     updateCartUI();
     const btn = document.querySelector(`[data-cart-id="${id}"]`);
     if (btn) { btn.textContent = '✓'; setTimeout(() => { btn.textContent = '+'; }, 900); }
   }
 
-  window.changeQty = function(id, delta) {
+ window.changeQty = function(id, delta) {
     if (!cart[id]) return;
     cart[id].qty += delta;
     if (cart[id].qty <= 0) delete cart[id];
+    saveCart();
     updateCartUI();
   }
 
-  window.clearCart = function() { cart = {}; updateCartUI(); closeCart(); }
+  window.clearCart = function() { cart = {}; saveCart(); updateCartUI(); closeCart(); }
+
+  function saveCart() {
+    localStorage.setItem('cart_' + cafeId, JSON.stringify(cart));
+  }
+
+  function loadCart() {
+    try {
+      const saved = localStorage.getItem('cart_' + cafeId);
+      if (saved) cart = JSON.parse(saved);
+    } catch(e) { cart = {}; }
+  }
   window.openCart = function() { document.getElementById('cartOverlay').classList.add('open'); }
   window.closeCart = function() { document.getElementById('cartOverlay').classList.remove('open'); }
 
