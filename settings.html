@@ -335,8 +335,12 @@ window.loadLogo = async function(input) {
   };
 
   reader.readAsDataURL(file);
-}    if (!currentUid) return;
-    const settings = {
+}
+
+window.save = async function() {
+  if (!currentUid) return;
+
+  const settings = {
   name: document.getElementById('name').value,
   description: document.getElementById('description').value,
   city: document.getElementById('city').value,
