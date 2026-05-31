@@ -334,8 +334,14 @@ function renderList() {
       <div class="cafe-info">
         <div class="cafe-name">${c.name || 'Без названия'}</div>
         <div class="cafe-email">${c.email || '—'}</div>
-        <div class="cafe-meta">Зарегистрирован: ${c.createdAt ? new Date(c.createdAt).toLocaleDateString('ru') : '—'}</div>
-      </div>
+<div class="cafe-meta">Зарегистрирован: ${c.createdAt ? new Date(c.createdAt).toLocaleDateString('ru') : '—'}</div>
+        ${c.plan === 'pro' && c.planExpiry ? (() => {
+          const daysLeft = Math.ceil((new Date(c.planExpiry) - new Date()) / (1000*60*60*24));
+          const color = daysLeft <= 3 ? '#ff4444' : daysLeft <= 7 ? '#ff6b00' : '#4ade80';
+          return `<div style="font-size:11px;color:${color};margin-top:2px;">
+            Pro истекает: ${new Date(c.planExpiry).toLocaleDateString('ru')} (${daysLeft} дн.)
+          </div>`;
+        })() : ''}      </div>
       <div class="plan-badge ${c.plan === 'pro' ? 'plan-pro' : 'plan-free'}">
         ${c.plan === 'pro' ? 'PRO' : 'FREE'}
       </div>
