@@ -453,20 +453,28 @@ window.save = async function() {
 
         if (product.category === oldName) {
 
-          await updateDoc(
-            doc(
-              db,
-              'cafes',
-              currentUid,
-              'products',
-              productDoc.id
-            ),
-            {
-              category: name
-            }
-          );
+  console.log(
+    'CATEGORY UPDATE',
+    productDoc.id,
+    oldName,
+    '=>',
+    name
+  );
 
-        }
+  await updateDoc(
+    doc(
+      db,
+      'cafes',
+      currentUid,
+      'products',
+      productDoc.id
+    ),
+    {
+      category: name
+    }
+  );
+
+}
 
       }
 
