@@ -147,8 +147,8 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
     <div id="cartItems"><p class="cart-empty">Корзина пуста</p></div>
     <div class="cart-footer" id="cartFooter" style="display:none">
       <div id="cartSummary"></div>
-      <button class="cart-clear" onclick="clearCart()">Очистить корзину</button>
-    </div>
+<button id="sendOrderBtn" onclick="sendOrder()" style="display:none;width:100%;background:#2d6a4f;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;margin-bottom:10px;">📲 Отправить заказ официанту</button>
+      <button class="cart-clear" onclick="clearCart()">Очистить корзину</button>    </div>
   </div>
 </div>
 
@@ -207,6 +207,8 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
       if (s.hours) document.getElementById('cafeHours').textContent = '⏰ ' + s.hours;
       if (s.address) document.getElementById('cafeAddress').textContent = '📍 ' + s.address;
       window.serviceCharge = Number(s.serviceCharge) || 0;
+      window.telegramChatId = s.telegramChatId || '';
+      window.cafeName = s.name || 'Кафе';
       const hasUz = s.lang && s.lang.includes('uz');
       if (hasUz) document.getElementById('langSwitch').style.display = 'flex';
     }
@@ -374,6 +376,49 @@ document.getElementById('m-price').innerHTML = Number(price).toLocaleString() + 
     if (e.target.id === 'overlay') document.getElementById('overlay').classList.remove('open');
   }
 
+  window.sendOrder = async function() {
+    const ids = Object.keys(cart);
+    if (ids.length === 0) return;
+
+    const order = ids.map(id => ({ name: cart[id].name, qty: cart[id].qty, price: cart[id].price }));
+    const totalPrice = ids.reduce((s, id) => s + cart[id].price * cart[id].qty, 0);
+    const charge = Math.round(totalPrice * (window.serviceCharge || 0) / 100);
+    const grandTotal = totalPrice + charge;
+
+    const btn = document.getElementById('sendOrderBtn');
+    btn.textContent = '⏳ Отправляем...';
+    btn.disabled = true;
+
+    try {
+      const resp = await fetch('/api/telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chatId: window.telegramChatId,
+          cafeName: window.cafeName,
+          order,
+          total: grandTotal.toLocaleString()
+        })
+      });
+      const data = await resp.json();
+      if (data.ok) {
+        btn.textContent = '✅ Заказ отправлен!';
+        setTimeout(() => {
+          closeCart();
+          clearCart();
+        }, 1500);
+      } else {
+        alert('Ошибка отправки: ' + (data.error || 'неизвестная'));
+        btn.textContent = '📲 Отправить заказ официанту';
+        btn.disabled = false;
+      }
+    } catch(e) {
+      alert('Ошибка: ' + e.message);
+      btn.textContent = '📲 Отправить заказ официанту';
+      btn.disabled = false;
+    }
+  }
+
   window.modalAddToCart = function() {
     const p = window.currentModalProduct;
     if (!p.id) return;
@@ -487,8 +532,10 @@ let selectedStars = 5;
       }
     } catch(e) { cart = {}; }
   }
-  window.openCart = function() { document.getElementById('cartOverlay').classList.add('open'); }
-  window.closeCart = function() { document.getElementById('cartOverlay').classList.remove('open'); }
+window.openCart = function() {
+    document.getElementById('cartOverlay').classList.add('open');
+    document.getElementById('sendOrderBtn').style.display = window.telegramChatId ? 'block' : 'none';
+  }  window.closeCart = function() { document.getElementById('cartOverlay').classList.remove('open'); }
 
   function updateCartUI() {
     const ids = Object.keys(cart);
