@@ -193,9 +193,13 @@ body {
   <div class="page-title">Блюда</div>
   <div class="page-sub">Все блюда вашего меню</div>
 
-  <input id="searchInput" placeholder="Поиск...">
+ <input id="searchInput" placeholder="Поиск...">
 
-  <div class="category-tabs" id="tabs"></div>
+  <div style="position:relative;">
+    <button id="scrollLeft" onclick="document.getElementById('tabs').scrollBy({left:-150,behavior:'smooth'})" style="position:absolute;left:-8px;top:50%;transform:translateY(-50%);z-index:10;background:#1a1a1a;border:1px solid #2a2a2a;color:#888;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">‹</button>
+    <div class="category-tabs" id="tabs"></div>
+    <button id="scrollRight" onclick="document.getElementById('tabs').scrollBy({left:150,behavior:'smooth'})" style="position:absolute;right:-8px;top:50%;transform:translateY(-50%);z-index:10;background:#1a1a1a;border:1px solid #2a2a2a;color:#888;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">›</button>
+  </div>
   <div id="list"></div>
 
   <button id="addProductBtn" class="add-btn">+ Добавить блюдо</button>
