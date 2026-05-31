@@ -306,6 +306,16 @@ textarea { min-height: 80px; resize: vertical; }
     </div>
 
     <div class="form-group">
+      <label>Название на узбекском <span id="uzTranslating" style="color:#f5c842;font-size:11px;display:none;">⏳ перевод...</span></label>
+      <input type="text" id="nameUz" placeholder="Автоперевод при сохранении">
+    </div>
+
+    <div class="form-group">
+      <label>Описание на узбекском</label>
+      <textarea id="descriptionUz" placeholder="Автоперевод при сохранении"></textarea>
+    </div>
+
+    <div class="form-group">
       <label>Метки</label>
       <div style="display:flex;gap:12px;margin-top:4px;">
         <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:14px;color:white;cursor:pointer;">
@@ -399,9 +409,30 @@ import { collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.co
     }
 
     const oldPrice = document.getElementById('oldPrice').value;
+
+    // Автоперевод если поля пустые
+    let nameUz = document.getElementById('nameUz').value.trim();
+    let descriptionUz = document.getElementById('descriptionUz').value.trim();
+    if (!nameUz) {
+      document.getElementById('uzTranslating').style.display = 'inline';
+      try {
+        const r = await fetch('/api/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description })
+        });
+        const d = await r.json();
+        const parsed = JSON.parse(d.text);
+        nameUz = parsed.name_uz || '';
+        descriptionUz = parsed.description_uz || '';
+      } catch(e) { nameUz = ''; descriptionUz = ''; }
+      document.getElementById('uzTranslating').style.display = 'none';
+    }
+
     const id = Date.now().toString();
     await setDoc(doc(db, 'cafes', currentUid, 'products', id), {
       id, name, price, category, description,
+      nameUz, descriptionUz,
       emoji: selectedEmoji,
       photo: photoData || '',
       oldPrice: oldPrice || '',
