@@ -357,8 +357,9 @@ sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🎁 Ak
     await loadReviews();
   }
 
-window.openModal = function(emoji, name, desc, price, photo, oldPrice) {    if (photo) {
-      document.getElementById('m-emoji').innerHTML = `<img src="${photo}" style="width:100px;height:100px;object-fit:cover;border-radius:16px;">`;
+window.openModal = function(emoji, name, desc, price, photo, oldPrice) {
+    if (photo) {
+      document.getElementById('m-emoji').innerHTML = `<img src="${photo}" style="width:100%;height:220px;object-fit:cover;border-radius:16px;display:block;">`;
     } else {
       document.getElementById('m-emoji').textContent = emoji;
     }
