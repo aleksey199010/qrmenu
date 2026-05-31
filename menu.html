@@ -245,8 +245,8 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
       const desc = getDesc(p).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
       const photo = p.photo || '';
       const oldPrice = p.oldPrice || '';
-return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\',\'' + p.id + '\')">'        + (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + getName(p) + '"></div>' : '<div class="dish-no-photo">' + emo + '</div>')
-        + '<div class="dish-body">'
+return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\',\'' + p.id + '\')">' +
+       (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + getName(p) + '"></div>' : '<div class="dish-no-photo">' + emo + '</div>')        + '<div class="dish-body">'
         + '<div class="dish-name">' + getName(p) + '</div>'
         + (getDesc(p) ? '<div class="dish-desc">' + getDesc(p) + '</div>' : '')
         + '<div class="dish-bottom">'
@@ -321,21 +321,21 @@ addTab(cat, 'cat-' + i, isFirst);
         addTab(currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты', 'sec-hits', true);
         const sec = document.createElement('div');
         sec.className = 'section active'; sec.id = 'sec-hits';
-sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты') + '</div><div class="dishes-grid">' + hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('') + '</div>';        mainEl.appendChild(sec);
-      }
+sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты') + '</div><div class="dishes-grid">' + hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('') + '</div>';
+mainEl.appendChild(sec);      }
       allCats.forEach((cat, i) => {
         const isFirst = hits.length === 0 && i === 0;
         addTab(cat, 'cat-' + i, isFirst);
         const sec = document.createElement('div');
         sec.className = 'section' + (isFirst ? ' active' : ''); sec.id = 'cat-' + i;
-sec.innerHTML = '<div class="section-title">' + cat + '</div><div class="dishes-grid">' + grouped[cat].map(p => dishCard(p)).join('') + '</div>';        mainEl.appendChild(sec);
-      });
+sec.innerHTML = '<div class="section-title">' + cat + '</div><div class="dishes-grid">' + grouped[cat].map(p => dishCard(p)).join('') + '</div>';
+mainEl.appendChild(sec);      });
       if (specials.length > 0) {
         addTab(currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения', 'sec-specials', false);
         const sec = document.createElement('div');
         sec.className = 'section'; sec.id = 'sec-specials';
-sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения') + '</div><div class="dishes-grid">' + specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('') + '</div>';        mainEl.appendChild(sec);
-      }
+sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения') + '</div><div class="dishes-grid">' + specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('') + '</div>';
+mainEl.appendChild(sec);      }
     }
 
     document.getElementById('btnRu').classList.toggle('active', currentLang === 'ru');
