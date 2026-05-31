@@ -139,6 +139,7 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
       if (s.name) document.getElementById('cafeName').textContent = s.name;
       if (s.hours) document.getElementById('cafeHours').textContent = '⏰ ' + s.hours;
       if (s.address) document.getElementById('cafeAddress').textContent = '📍 ' + s.address;
+      window.serviceCharge = Number(s.serviceCharge) || 0;
     }
 
     const cafeSnap = await getDoc(doc(db, 'cafes', uid));
