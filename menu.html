@@ -184,9 +184,10 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
     loadMenu(cafeId);
   }
 
-  let allProducts = [];
+ let allProducts = [];
   let allCats = [];
   let currentLang = localStorage.getItem('menu_lang') || 'ru';
+  let categoryUzMap = {};
 
   window.setLang = function(lang) {
     currentLang = lang;
