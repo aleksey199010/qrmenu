@@ -302,24 +302,35 @@ aiCategories.forEach(cat => {
     );
   }
 
+  document.querySelector('.btn-gold').textContent = '⏳ Переводим на узбекский...';
+  document.querySelector('.btn-gold').disabled = true;
+
   for (let i = 0; i < items.length; i++) {
 
     const checked = document.getElementById('check-' + i);
     if (!checked || !checked.checked) continue;
 
-    const name =
-      document.getElementById('name-' + i).value.trim();
-
-    const price =
-      document.getElementById('price-' + i).value;
-
-    const category =
-      document.getElementById('cat-' + i).value;
-
-    const description =
-      document.getElementById('description-' + i).value.trim();
+    const name = document.getElementById('name-' + i).value.trim();
+    const price = document.getElementById('price-' + i).value;
+    const category = document.getElementById('cat-' + i).value;
+    const description = document.getElementById('description-' + i).value.trim();
 
     if (!name) continue;
+
+    // Переводим на узбекский
+    let nameUz = '';
+    let descriptionUz = '';
+    try {
+      const r = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description })
+      });
+      const d = await r.json();
+      const parsed = JSON.parse(d.text);
+      nameUz = parsed.name_uz || '';
+      descriptionUz = parsed.description_uz || '';
+    } catch(e) {}
 
     const id = Date.now().toString() + i;
 
@@ -331,6 +342,8 @@ aiCategories.forEach(cat => {
         price,
         category,
         description,
+        nameUz,
+        descriptionUz,
         emoji: '🍽️',
         photo: '',
         createdAt: new Date().toISOString()
