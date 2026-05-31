@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     const lines = order.map(i => `• ${i.name} × ${i.qty} — ${(i.price * i.qty).toLocaleString()} сум`).join('\n');
     const text = `🍽️ Новый заказ в ${cafeName || 'кафе'}!\n\n${lines}\n\n💰 Итого: ${total} сум\n\n⏰ ${new Date().toLocaleTimeString('ru')}`;
 
-    const resp = await fetch(`https://api.telegram.org/bot8920034212:AAHxJItBC8r8DR_iqzAZ6zrCq7QsWSWPOCc/sendMessage`, {
+    const resp = await fetch(`https://api.telegram.org/bot8920034212:AAFJoPFhWEpB_6ZOd19EmCdhOhsFCB5TFmo/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
