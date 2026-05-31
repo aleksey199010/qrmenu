@@ -267,11 +267,6 @@ body {
   <span class="action-name">Настройки</span>
   <span class="action-desc">Данные кафе</span>
 </a>
-<a class="action-card" href="import.html">
-  <span class="action-icon">🤖</span>
-  <span class="action-name">AI Импорт</span>
-  <span class="action-desc">Загрузить меню из фото</span>
-</a>
 <a class="action-card" href="reviews.html">
   <span class="action-icon">💬</span>
   <span class="action-name">Отзывы</span>
@@ -347,8 +342,8 @@ body {
       document.getElementById('planCard').innerHTML = `
         <div class="plan-left">
           <div class="plan-name">⭐ Pro тариф активен</div>
-          <div class="plan-desc">Неограниченно блюд · AI импорт · Поддержка в Telegram</div>
-          <div style="font-size:11px;color:${expiryColor};margin-top:4px;">${expiryText}</div>
+<div class="plan-desc">Неограниченно блюд · 2 языка · Приоритетная поддержка</div>         
+<div style="font-size:11px;color:${expiryColor};margin-top:4px;">${expiryText}</div>
         </div>
         ${daysLeft !== null && daysLeft <= 7 ? `<button class="upgrade-btn" onclick="window.location.href='pricing.html'">Продлить →</button>` : ''}
       `;
