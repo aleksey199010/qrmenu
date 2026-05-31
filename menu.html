@@ -194,24 +194,7 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
 
   localStorage.setItem('menu_lang', lang);
 
-  document.getElementById('btnRu').classList.toggle(
-    'active',
-    lang === 'ru'
-  );
-
-  document.getElementById('btnUz').classList.toggle(
-    'active',
-    lang === 'uz'
-  );
-
-  console.log('LANG:', lang);
-
-  try {
-    rerenderMenu();
-  } catch(e) {
-    console.error(e);
-    alert(e.message);
-  }
+  location.reload();
 }
 
   function getName(p) { return (currentLang === 'uz' && p.nameUz) ? p.nameUz : p.name; }
