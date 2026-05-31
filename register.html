@@ -159,6 +159,11 @@ input:focus { border-color: #f5c842; }
   </div>
 
   <div class="form-group">
+    <label>Город</label>
+    <input type="text" id="cafeCity" placeholder="Ташкент, Самарканд, Бухара...">
+  </div>
+
+  <div class="form-group">
     <label>Телефон</label>
     <input type="tel" placeholder="+998 90 000 00 00">
   </div>
@@ -239,10 +244,12 @@ input:focus { border-color: #f5c842; }
         planExpiry: proExpiry.toISOString()
       });
 
+      const city = document.getElementById('cafeCity').value.trim();
       await setDoc(doc(db, 'cafes', uid, 'settings', 'main'), {
         name: name,
         phone: phone,
         address: '',
+        city: city,
         hours: '',
         lang: 'ru-uz'
       });
