@@ -236,8 +236,14 @@ async function load() {
 }
 
 function render() {
-  const categories = ['Все', ...new Set(products.map(p => p.category || 'Без категории'))];
-
+  const hasHits = products.some(p => p.isHit);
+  const hasSpecials = products.some(p => p.isSpecial);
+  const categories = [
+    'Все',
+    ...(hasHits ? ['🔥 Хиты'] : []),
+    ...(hasSpecials ? ['🎁 Спецпредложения'] : []),
+    ...new Set(products.map(p => p.category || 'Без категории'))
+  ];
   const tabs = document.getElementById('tabs');
   tabs.innerHTML = categories.map(c => `
     <div class="category-tab ${c === activeCategory ? 'active' : ''}" data-cat="${c}">${c}</div>
@@ -259,7 +265,11 @@ function renderList() {
   const search = document.getElementById('searchInput').value.toLowerCase();
 
   const filtered = products.filter(p => {
-    const catOk = activeCategory === 'Все' || (p.category || 'Без категории') === activeCategory;
+    let catOk;
+    if (activeCategory === 'Все') catOk = true;
+    else if (activeCategory === '🔥 Хиты') catOk = p.isHit;
+    else if (activeCategory === '🎁 Спецпредложения') catOk = p.isSpecial;
+    else catOk = (p.category || 'Без категории') === activeCategory;
     const searchOk = !search || (p.name || '').toLowerCase().includes(search);
     return catOk && searchOk;
   });
