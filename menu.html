@@ -457,14 +457,24 @@ let selectedStars = 5;
 
   window.clearCart = function() { cart = {}; saveCart(); updateCartUI(); closeCart(); }
 
-  function saveCart() {
+ function saveCart() {
     localStorage.setItem('cart_' + cafeId, JSON.stringify(cart));
+    localStorage.setItem('cart_time_' + cafeId, Date.now().toString());
   }
 
   function loadCart() {
     try {
       const saved = localStorage.getItem('cart_' + cafeId);
-      if (saved) cart = JSON.parse(saved);
+      const savedTime = localStorage.getItem('cart_time_' + cafeId);
+      if (saved && savedTime) {
+        const hours = (Date.now() - Number(savedTime)) / (1000 * 60 * 60);
+        if (hours < 3) {
+          cart = JSON.parse(saved);
+        } else {
+          localStorage.removeItem('cart_' + cafeId);
+          localStorage.removeItem('cart_time_' + cafeId);
+        }
+      }
     } catch(e) { cart = {}; }
   }
   window.openCart = function() { document.getElementById('cartOverlay').classList.add('open'); }
