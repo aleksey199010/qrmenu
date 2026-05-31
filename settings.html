@@ -203,17 +203,17 @@ textarea {
   </div>
 
   <div class="section">
-<div class="section-label">
-  Язык меню
-  <span id="langProBadge" style="display:none;color:#f5c842;font-size:11px;margin-left:8px;">
-    • Доступно только в Pro
-  </span>
-</div>    <div class="form-group">
+<div class="section-label">Язык меню</div>
+    <div class="form-group">
       <label>Языки для клиентов</label>
       <select id="lang">
   <option value="ru">Только русский</option>
   <option value="ru-uz">Русский + Узбекский (Pro)</option>
 </select>
+
+<small id="langHint" style="display:none;color:#f5c842;font-size:12px;margin-top:8px;display:block;">
+⭐ Доступно только в Pro
+</small>
     </div>
   </div>
 
@@ -304,13 +304,17 @@ if (s.logo) {
 document.getElementById('showInCatalog').checked = false;
 document.getElementById('showInCatalog').disabled = true;
 
+document.getElementById('langHint').style.display = 'block';
+
 document.getElementById('catalogHint').innerHTML =
-  '⭐ Доступно только на тарифе Pro';
+  '⭐ Доступно только в Pro';
+
+document.getElementById('logoProNotice').innerHTML =
+  '⭐ Доступно только в Pro';
 
   document.getElementById('logoWrap').style.display = 'none';
 document.getElementById('logoProNotice').style.display = 'block';
 
-document.getElementById('langProBadge').style.display = 'inline';
 }
   });
 window.loadLogo = async function(input) {
