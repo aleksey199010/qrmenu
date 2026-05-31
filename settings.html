@@ -207,6 +207,17 @@ textarea {
     </div>
   </div>
 
+  <div class="section">
+    <div class="section-label">Каталог кафе</div>
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:10px;text-transform:none;letter-spacing:0;font-size:14px;color:white;cursor:pointer;">
+        <input type="checkbox" id="showInCatalog" style="width:18px;height:18px;accent-color:#f5c842;">
+        Показывать моё кафе в каталоге Ташкента
+      </label>
+      <small style="color:#444;font-size:12px;margin-top:8px;display:block;">Гости смогут найти ваше кафе на странице каталога qrmenu.uz/catalog</small>
+    </div>
+  </div>
+
   <button class="save-btn" onclick="save()">
     Сохранить изменения ✓
   </button>
@@ -237,8 +248,8 @@ textarea {
       if (s.phone) document.getElementById('phone').value = s.phone;
       if (s.hours) document.getElementById('hours').value = s.hours;
       if (s.lang) document.getElementById('lang').value = s.lang;
-      document.getElementById('serviceCharge').value = s.serviceCharge || 0;
-    }
+document.getElementById('serviceCharge').value = s.serviceCharge || 0;
+      document.getElementById('showInCatalog').checked = s.showInCatalog || false;    }
   });
 
   window.save = async function() {
@@ -249,8 +260,9 @@ textarea {
       address: document.getElementById('address').value,
       phone: document.getElementById('phone').value,
       hours: document.getElementById('hours').value,
-     lang: document.getElementById('lang').value,
+      lang: document.getElementById('lang').value,
       serviceCharge: Number(document.getElementById('serviceCharge').value) || 0,
+      showInCatalog: document.getElementById('showInCatalog').checked,
     };
     await setDoc(doc(db, 'cafes', currentUid, 'settings', 'main'), settings);
     const msg = document.getElementById('success');
