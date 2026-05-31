@@ -116,7 +116,11 @@ footer span { color:var(--orange); font-weight:600; }
 
     list.innerHTML = cafes.map(c => `
       <a class="cafe-card" href="menu.html?id=${c.uid}">
-        <div class="cafe-avatar">🍽️</div>
+        <div class="cafe-avatar">
+  ${c.logo
+    ? `<img src="${c.logo}" style="width:100%;height:100%;object-fit:contain;border-radius:14px;">`
+    : '🍽️'}
+</div>
         <div class="cafe-info">
           <div class="cafe-name">${c.name}</div>
           ${c.description ? `<div class="cafe-desc">${c.description.slice(0, 80)}${c.description.length > 80 ? '...' : ''}</div>` : ''}
