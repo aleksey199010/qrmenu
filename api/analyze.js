@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 );
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -28,7 +28,42 @@ export default async function handler(req, res) {
                 }
               },
               {
-                text: `Это фото меню кафе.
+                text: `Ты профессиональная система OCR для ресторанных меню.
+
+Внимательно изучи ВСЁ изображение.
+
+На фото находится меню ресторана с названиями блюд, описаниями и ценами.
+
+Найди абсолютно все блюда на изображении, даже если текст мелкий.
+
+Для каждого блюда верни:
+
+- name
+- price
+- category
+- description
+
+Если категория явно не указана, самостоятельно определи её.
+
+Ответ строго в формате:
+
+{
+  "dishes": [
+    {
+      "name": "Название",
+      "price": "100000",
+      "category": "Горячее",
+      "description": "Описание"
+    }
+  ]
+}
+
+Важно:
+- вернуть максимально возможное количество блюд
+- не пропускать блюда
+- цены только цифрами
+- если описание отсутствует, вернуть пустую строку
+- ответ только JSON без пояснений`
 
 Найди ВСЕ блюда на изображении.
 
