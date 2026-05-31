@@ -335,11 +335,22 @@ body {
     document.getElementById('dishCount').textContent = totalDishes;
 
     if (plan === 'pro') {
+      const expiry = planExpiry ? new Date(planExpiry) : null;
+      const daysLeft = expiry ? Math.ceil((expiry - new Date()) / (1000*60*60*24)) : null;
+      const expiryText = daysLeft === null
+        ? 'Безлимитный'
+        : daysLeft > 0
+          ? `Истекает через ${daysLeft} дн. (${expiry.toLocaleDateString('ru')})`
+          : 'Истекает сегодня';
+      const expiryColor = daysLeft !== null && daysLeft <= 7 ? '#ff6b00' : '#555';
+
       document.getElementById('planCard').innerHTML = `
         <div class="plan-left">
           <div class="plan-name">⭐ Pro тариф активен</div>
           <div class="plan-desc">Неограниченно блюд · AI импорт · Поддержка в Telegram</div>
+          <div style="font-size:11px;color:${expiryColor};margin-top:4px;">${expiryText}</div>
         </div>
+        ${daysLeft !== null && daysLeft <= 7 ? `<button class="upgrade-btn" onclick="window.location.href='pricing.html'">Продлить →</button>` : ''}
       `;
       document.getElementById('hiddenBanner').style.display = 'none';
     } else if (totalDishes > 10) {
