@@ -23,15 +23,17 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 .section.active { display: block; }
 .section-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #3d2b1f; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
 .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, #d4b896, transparent); }
-.dish { background: #fffdf8; border-radius: 16px; box-shadow: 0 2px 12px rgba(61,43,31,0.08); display: flex; overflow: hidden; margin-bottom: 12px; border: 1px solid #f0e8d8; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+.dishes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+.dish { background: #fffdf8; border-radius: 16px; box-shadow: 0 2px 12px rgba(61,43,31,0.08); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #f0e8d8; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
 .dish:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(61,43,31,0.12); }
-.dish-emoji { width: 80px; min-width: 80px; display: flex; align-items: center; justify-content: center; font-size: 36px; background: #f0e6d3; }
-.dish-photo { width: 80px; min-width: 80px; overflow: hidden; }
+.dish-photo { width: 100%; height: 140px; overflow: hidden; background: #f0e6d3; }
 .dish-photo img { width: 100%; height: 100%; object-fit: cover; }
-.dish-body { padding: 14px; flex: 1; }
-.dish-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; color: #3d2b1f; }
-.dish-desc { font-size: 12px; color: #8a6a54; margin-top: 4px; line-height: 1.5; }
-.dish-price { font-size: 16px; font-weight: 700; color: #c9942a; margin-top: 8px; }
+.dish-no-photo { width: 100%; height: 140px; background: #f0e6d3; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+.dish-body { padding: 12px; flex: 1; display: flex; flex-direction: column; }
+.dish-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600; color: #3d2b1f; line-height: 1.3; }
+.dish-desc { font-size: 11px; color: #8a6a54; margin-top: 4px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.dish-price { font-size: 14px; font-weight: 700; color: #c9942a; margin-top: 6px; }
+.dish-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 8px; }
 .empty { text-align: center; padding: 40px 20px; color: #8a6a54; font-size: 14px; }
 .share-wrap { padding: 16px 16px 0; max-width: 600px; margin: 0 auto; }
 .share-btn { width: 100%; background: #3d2b1f; color: #e8b84b; border: none; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Golos Text', sans-serif; transition: opacity 0.2s; }
@@ -241,14 +243,16 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
       const photo = p.photo || '';
       const oldPrice = p.oldPrice || '';
       return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\')">'
-        + (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + p.name + '"></div>' : '')
+        + (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + getName(p) + '"></div>' : '<div class="dish-no-photo">' + emo + '</div>')
         + '<div class="dish-body">'
         + '<div class="dish-name">' + getName(p) + '</div>'
         + (getDesc(p) ? '<div class="dish-desc">' + getDesc(p) + '</div>' : '')
+        + '<div class="dish-bottom">'
         + '<div class="dish-price">' + Number(p.price).toLocaleString() + ' сум'
-        + (oldPrice ? ' <span style="text-decoration:line-through;color:#b09080;font-size:13px;margin-left:6px;font-weight:400;">' + Number(oldPrice).toLocaleString() + ' сум</span>' : '')
+        + (oldPrice ? '<br><span style="text-decoration:line-through;color:#b09080;font-size:11px;font-weight:400;">' + Number(oldPrice).toLocaleString() + ' сум</span>' : '')
         + '</div>'
-        + '<button data-cart-id="' + p.id + '" onclick="event.stopPropagation();addToCart(\'' + p.id + '\',\'' + nm + '\',' + p.price + ')" style="margin-top:8px;background:#3d2b1f;color:#e8b84b;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:\'Golos Text\',sans-serif;">+</button>'
+        + '<button data-cart-id="' + p.id + '" onclick="event.stopPropagation();addToCart(\'' + p.id + '\',\'' + nm + '\',' + p.price + ')" style="background:#3d2b1f;color:#e8b84b;border:none;border-radius:8px;width:32px;height:32px;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">+</button>'
+        + '</div>'
         + '</div></div>';
     }
 
@@ -276,8 +280,8 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
         const sec = document.createElement('div');
         sec.className = 'section active';
         sec.id = 'sec-hits';
-        sec.innerHTML = `<div class="section-title">🔥 Хиты</div>` +
-          hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('');
+        sec.innerHTML = `<div class="section-title">🔥 Хиты</div><div class="dishes-grid">` +
+          hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('') + '</div>';
         mainEl.appendChild(sec);
       }
 
@@ -288,8 +292,8 @@ addTab(cat, 'cat-' + i, isFirst);
         const sec = document.createElement('div');
         sec.className = 'section' + (isFirst ? ' active' : '');
         sec.id = 'cat-' + i;
-        sec.innerHTML = '<div class="section-title">' + cat + '</div>' +
-          grouped[cat].map(p => dishCard(p)).join('');
+        sec.innerHTML = '<div class="section-title">' + cat + '</div><div class="dishes-grid">' +
+          grouped[cat].map(p => dishCard(p)).join('') + '</div>';
         mainEl.appendChild(sec);
       });
 
@@ -299,8 +303,8 @@ addTab(cat, 'cat-' + i, isFirst);
         const sec = document.createElement('div');
         sec.className = 'section';
         sec.id = 'sec-specials';
-        sec.innerHTML = '<div class="section-title">🎁 Спецпредложения</div>' +
-          specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('');
+        sec.innerHTML = '<div class="section-title">🎁 Спецпредложения</div><div class="dishes-grid">' +
+          specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('') + '</div>';
         mainEl.appendChild(sec);
       }
     }
