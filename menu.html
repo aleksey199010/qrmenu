@@ -47,6 +47,26 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 .modal-desc { font-size: 14px; color: #8a6a54; text-align: center; margin-top: 8px; line-height: 1.6; }
 .modal-price { font-size: 24px; font-weight: 700; color: #c9942a; text-align: center; margin: 16px 0 20px; }
 .modal-close { width: 100%; background: #3d2b1f; color: #e8b84b; border: none; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Golos Text', sans-serif; }
+
+/* КОРЗИНА */
+.cart-fab { position: fixed; bottom: 24px; right: 20px; background: #3d2b1f; color: #e8b84b; border: none; border-radius: 50px; padding: 13px 20px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; align-items: center; gap: 10px; z-index: 99; box-shadow: 0 4px 20px rgba(0,0,0,0.25); font-family: 'Golos Text', sans-serif; }
+.cart-fab:active { opacity: 0.85; }
+.cart-badge { background: #e8b84b; color: #3d2b1f; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.cart-overlay { display: none; position: fixed; inset: 0; background: rgba(30,15,5,0.6); z-index: 200; align-items: flex-end; backdrop-filter: blur(3px); }
+.cart-overlay.open { display: flex; }
+.cart-sheet { background: #fffdf8; width: 100%; max-height: 75vh; border-radius: 20px 20px 0 0; overflow-y: auto; padding: 24px 20px 36px; }
+.cart-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.cart-head h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: #3d2b1f; margin: 0; }
+.cart-x { background: #f0e6d3; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; color: #3d2b1f; }
+.cart-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0e8d8; }
+.cart-item-name { flex: 1; font-size: 14px; font-weight: 500; color: #3d2b1f; line-height: 1.3; }
+.cart-qty { display: flex; align-items: center; gap: 6px; background: #f0e6d3; border-radius: 8px; padding: 4px 6px; }
+.cart-qty button { width: 26px; height: 26px; border: none; background: #fffdf8; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: 700; color: #3d2b1f; display: flex; align-items: center; justify-content: center; }
+.cart-qty span { font-size: 14px; min-width: 18px; text-align: center; font-weight: 600; color: #3d2b1f; }
+.cart-item-price { font-size: 13px; color: #c9942a; font-weight: 600; min-width: 80px; text-align: right; }
+.cart-footer { margin-top: 16px; padding-top: 12px; border-top: 1px solid #f0e8d8; }
+.cart-empty { text-align: center; color: #8a6a54; font-size: 14px; padding: 24px 0; }
+.cart-clear { background: none; border: none; color: #b09080; font-size: 13px; cursor: pointer; display: block; margin: 12px auto 0; font-family: 'Golos Text', sans-serif; }
 </style>
 </head>
 <body>
@@ -96,6 +116,27 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 
 <div class="footer">
   Приятного аппетита! · <span>QR-Меню.uz</span>
+</div>
+
+<!-- КОРЗИНА FAB -->
+<button class="cart-fab" id="cartFab" onclick="openCart()">
+  🛒 <span id="cartFabLabel">Корзина</span>
+  <span class="cart-badge" id="cartBadge">0</span>
+</button>
+
+<!-- ШТОРКА КОРЗИНЫ -->
+<div class="cart-overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
+  <div class="cart-sheet">
+    <div class="cart-head">
+      <h2>Ваш заказ</h2>
+      <button class="cart-x" onclick="closeCart()">×</button>
+    </div>
+    <div id="cartItems"><p class="cart-empty">Корзина пуста</p></div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div id="cartSummary"></div>
+      <button class="cart-clear" onclick="clearCart()">Очистить корзину</button>
+    </div>
+  </div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeModal(event)">
@@ -194,6 +235,7 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
                   ${Number(p.price).toLocaleString()} сум
                   ${p.oldPrice ? `<span style="text-decoration:line-through;color:#b09080;font-size:13px;margin-left:6px;font-weight:400;">${Number(p.oldPrice).toLocaleString()} сум</span>` : ''}
                 </div>
+                <button data-cart-id="${p.id}" onclick="event.stopPropagation();addToCart('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" style="margin-top:8px;background:#3d2b1f;color:#e8b84b;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;">+</button>
               </div>
             </div>
           `).join('');
@@ -295,6 +337,69 @@ let selectedStars = 5;
       </div>
     `).join('');
   }
+
+ // ===== КОРЗИНА =====
+  let cart = {};
+
+  window.addToCart = function(id, name, price) {
+    if (cart[id]) { cart[id].qty++; } else { cart[id] = { name, price: Number(price), qty: 1 }; }
+    updateCartUI();
+    const btn = document.querySelector(`[data-cart-id="${id}"]`);
+    if (btn) { btn.textContent = '✓'; setTimeout(() => { btn.textContent = '+'; }, 900); }
+  }
+
+  window.changeQty = function(id, delta) {
+    if (!cart[id]) return;
+    cart[id].qty += delta;
+    if (cart[id].qty <= 0) delete cart[id];
+    updateCartUI();
+  }
+
+  window.clearCart = function() { cart = {}; updateCartUI(); closeCart(); }
+  window.openCart = function() { document.getElementById('cartOverlay').classList.add('open'); }
+  window.closeCart = function() { document.getElementById('cartOverlay').classList.remove('open'); }
+
+  function updateCartUI() {
+    const ids = Object.keys(cart);
+    const totalQty = ids.reduce((s, id) => s + cart[id].qty, 0);
+    const totalPrice = ids.reduce((s, id) => s + cart[id].price * cart[id].qty, 0);
+    const charge = Math.round(totalPrice * (window.serviceCharge || 0) / 100);
+    const grandTotal = totalPrice + charge;
+
+    const fab = document.getElementById('cartFab');
+    if (totalQty > 0) {
+      fab.style.display = 'flex';
+      document.getElementById('cartBadge').textContent = totalQty;
+      document.getElementById('cartFabLabel').textContent = grandTotal.toLocaleString() + ' сум';
+    } else {
+      fab.style.display = 'none';
+    }
+
+    const itemsEl = document.getElementById('cartItems');
+    const footer = document.getElementById('cartFooter');
+    if (ids.length === 0) {
+      itemsEl.innerHTML = '<p class="cart-empty">Корзина пуста</p>';
+      footer.style.display = 'none';
+    } else {
+      itemsEl.innerHTML = ids.map(id => {
+        const item = cart[id];
+        return `<div class="cart-item">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-qty">
+            <button onclick="changeQty('${id}',-1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="changeQty('${id}',1)">+</button>
+          </div>
+          <div class="cart-item-price">${(item.price * item.qty).toLocaleString()} сум</div>
+        </div>`;
+      }).join('');
+      document.getElementById('cartSummary').innerHTML =
+        (charge > 0 ? `<div style="display:flex;justify-content:space-between;font-size:14px;color:#8a6a54;margin-bottom:8px"><span>Обслуживание ${window.serviceCharge}%</span><span>${charge.toLocaleString()} сум</span></div>` : '') +
+        `<div style="display:flex;justify-content:space-between;font-size:17px;font-weight:700;color:#3d2b1f"><span>Итого</span><span>${grandTotal.toLocaleString()} сум</span></div>`;
+      footer.style.display = 'block';
+    }
+  }
+  // ===== КОНЕЦ КОРЗИНЫ =====
 
   window.searchDishes = function(query) {    const q = query.toLowerCase().trim();
     const tabs = document.getElementById('tabs');
