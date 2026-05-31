@@ -210,20 +210,23 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
 
     allCats = Object.keys(grouped);
 
-    function dishCard(p, extraStyle = '') {
-      return `
-        <div class="dish" style="${extraStyle}" onclick="openModal('${getEmoji(p.category)}','${p.name.replace(/'/g,"\\'")}','${(p.description||'').replace(/'/g,"\\'")}','${p.price}','${p.photo||''}','${p.oldPrice||''}')">
-          ${p.photo ? `<div class="dish-photo"><img src="${p.photo}" alt="${p.name}"></div>` : `<div class="dish-emoji">${getEmoji(p.category)}</div>`}
-          <div class="dish-body">
-            <div class="dish-name">${p.name}</div>
-            ${p.description ? `<div class="dish-desc">${p.description}</div>` : ''}
-            <div class="dish-price">
-              ${Number(p.price).toLocaleString()} сум
-              ${p.oldPrice ? `<span style="text-decoration:line-through;color:#b09080;font-size:13px;margin-left:6px;font-weight:400;">${Number(p.oldPrice).toLocaleString()} сум</span>` : ''}
-            </div>
-            <button data-cart-id="${p.id}" onclick="event.stopPropagation();addToCart('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" style="margin-top:8px;background:#3d2b1f;color:#e8b84b;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;">+</button>
-          </div>
-        </div>`;
+    function dishCard(p, extraStyle) {
+      extraStyle = extraStyle || '';
+      const emo = getEmoji(p.category);
+      const nm = p.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      const desc = (p.description||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      const photo = p.photo || '';
+      const oldPrice = p.oldPrice || '';
+      return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\')">'
+        + (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + p.name + '"></div>' : '<div class="dish-emoji">' + emo + '</div>')
+        + '<div class="dish-body">'
+        + '<div class="dish-name">' + p.name + '</div>'
+        + (p.description ? '<div class="dish-desc">' + p.description + '</div>' : '')
+        + '<div class="dish-price">' + Number(p.price).toLocaleString() + ' сум'
+        + (oldPrice ? ' <span style="text-decoration:line-through;color:#b09080;font-size:13px;margin-left:6px;font-weight:400;">' + Number(oldPrice).toLocaleString() + ' сум</span>' : '')
+        + '</div>'
+        + '<button data-cart-id="' + p.id + '" onclick="event.stopPropagation();addToCart(\'' + p.id + '\',\'' + nm + '\',' + p.price + ')" style="margin-top:8px;background:#3d2b1f;color:#e8b84b;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:\'Golos Text\',sans-serif;">+</button>'
+        + '</div></div>';
     }
 
     if (allCats.length === 0 && hits.length === 0) {
