@@ -104,7 +104,12 @@ window.importJson = async function(){
 
   const parsed = JSON.parse(json);
 
-  for(const dish of parsed.dishes){
+const dishes =
+  Array.isArray(parsed.dishes)
+    ? parsed.dishes
+    : [parsed];
+
+for(const dish of dishes){
 
     if(dish.category){
 
