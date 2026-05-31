@@ -337,8 +337,9 @@ import {
   }
 
   let currentUid = null;
-  let cats = [];
-  let editingId = null;
+let cats = [];
+let editingId = null;
+let editingOldName = null;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'login.html'; return; }
@@ -382,13 +383,17 @@ import {
   }
 
   window.openEdit = function(id) {
-    editingId = id;
-    const cat = cats.find(c => c.id === id);
-    document.getElementById('modalTitle').textContent = 'Редактировать';
-    document.getElementById('catInput').value = cat.name;
-    document.getElementById('overlay').classList.add('open');
-    document.getElementById('catInput').focus();
-  }
+  editingId = id;
+
+  const cat = cats.find(c => c.id === id);
+
+  editingOldName = cat.name;
+
+  document.getElementById('modalTitle').textContent = 'Редактировать';
+  document.getElementById('catInput').value = cat.name;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('catInput').focus();
+}
 
   window.del = async function(id) {
     if (!confirm('Удалить категорию?')) return;
@@ -417,7 +422,7 @@ window.save = async function() {
     const oldCategory =
   cats.find(c => c.id === editingId);
 
-const oldName = editingId;
+const oldName = editingOldName;
 
     await setDoc(
       doc(
@@ -435,46 +440,41 @@ const oldName = editingId;
 
     if (oldName && oldName !== name) {
 
-  alert(
-    'OLD=' +
-    oldName +
-    ' NEW=' +
-    name
-  );
+  const productsSnap =
+    await getDocs(
+      collection(
+        db,
+        'cafes',
+        currentUid,
+        'products'
+      )
+    );
 
-      for (const productDoc of productsSnap.docs) {
+  for (const productDoc of productsSnap.docs) {
 
-        const product =
-          productDoc.data();
+    const product =
+      productDoc.data();
 
-        if (product.category === oldName) {
+    if (product.category === oldName) {
 
-  console.log(
-    'CATEGORY UPDATE',
-    productDoc.id,
-    oldName,
-    '=>',
-    name
-  );
+      await updateDoc(
+        doc(
+          db,
+          'cafes',
+          currentUid,
+          'products',
+          productDoc.id
+        ),
+        {
+          category: name
+        }
+      );
 
-  await updateDoc(
-    doc(
-      db,
-      'cafes',
-      currentUid,
-      'products',
-      productDoc.id
-    ),
-    {
-      category: name
     }
-  );
+
+  }
 
 }
-
-      }
-
-    }
 
   } else {
 
