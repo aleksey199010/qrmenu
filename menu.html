@@ -218,7 +218,7 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
       const photo = p.photo || '';
       const oldPrice = p.oldPrice || '';
       return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\')">'
-        + (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + p.name + '"></div>' : '<div class="dish-emoji">' + emo + '</div>')
+        + (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + p.name + '"></div>' : '')
         + '<div class="dish-body">'
         + '<div class="dish-name">' + p.name + '</div>'
         + (p.description ? '<div class="dish-desc">' + p.description + '</div>' : '')
@@ -261,7 +261,7 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
       // Обычные категории
       allCats.forEach((cat, i) => {
         const isFirst = hits.length === 0 && i === 0;
-        addTab(getEmoji(cat) + ' ' + cat, 'cat-' + i, isFirst);
+addTab(cat, 'cat-' + i, isFirst);
         const sec = document.createElement('div');
         sec.className = 'section' + (isFirst ? ' active' : '');
         sec.id = 'cat-' + i;
@@ -482,7 +482,7 @@ let selectedStars = 5;
       (results.length === 0 ? '<div class="empty">Ничего не найдено 😔</div>' :
         results.map(p => `
           <div class="dish" onclick="openModal('🍽️','${p.name.replace(/'/g,"\\'")}','${(p.description||'').replace(/'/g,"\\'")}','${p.price}','${p.photo||''}')">
-            ${p.photo ? `<div class="dish-photo"><img src="${p.photo}" alt="${p.name}"></div>` : `<div class="dish-emoji">🍽️</div>`}
+            ${p.photo ? `<div class="dish-photo"><img src="${p.photo}" alt="${p.name}"></div>` : ''}
             <div class="dish-body">
               <div class="dish-name">${p.name}</div>
               ${p.description ? `<div class="dish-desc">${p.description}</div>` : ''}
