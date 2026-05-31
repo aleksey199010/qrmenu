@@ -421,15 +421,39 @@ textarea { min-height: 80px; resize: vertical; }
       : `${Number(price).toLocaleString()} сум`;
   }
 
-  window.loadPhoto = function(input) {
+ window.loadPhoto = async function(input) {
     const file = input.files[0];
     if (!file) return;
+
+    document.getElementById('photoPlaceholder').innerHTML = '<span>⏳</span><p>Загружаем фото...</p>';
+
     const reader = new FileReader();
-    reader.onload = (e) => {
-      photoData = e.target.result;
-      document.getElementById('photoPreview').src = photoData;
-      document.getElementById('photoPreview').style.display = 'block';
-      document.getElementById('photoPlaceholder').style.display = 'none';
+    reader.onload = async (e) => {
+      const base64 = e.target.result.split(',')[1];
+      try {
+        const formData = new FormData();
+        formData.append('key', 'e82b2c4576fbd62dedea91d0a31161c6');
+        formData.append('image', base64);
+
+        const resp = await fetch('https://api.imgbb.com/1/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await resp.json();
+
+        if (data.success) {
+          photoData = data.data.url;
+          document.getElementById('photoPreview').src = photoData;
+          document.getElementById('photoPreview').style.display = 'block';
+          document.getElementById('photoPlaceholder').style.display = 'none';
+        } else {
+          alert('Ошибка загрузки фото');
+          document.getElementById('photoPlaceholder').innerHTML = '<span>📷</span><p>Нажмите чтобы добавить фото</p>';
+        }
+      } catch(err) {
+        alert('Ошибка: ' + err.message);
+        document.getElementById('photoPlaceholder').innerHTML = '<span>📷</span><p>Нажмите чтобы добавить фото</p>';
+      }
     };
     reader.readAsDataURL(file);
   }
