@@ -538,7 +538,11 @@ let selectedStars = 5;
 window.openCart = function() {
     document.getElementById('cartOverlay').classList.add('open');
     document.getElementById('sendOrderBtn').style.display = window.telegramChatId ? 'block' : 'none';
-  }  window.closeCart = function() { document.getElementById('cartOverlay').classList.remove('open'); }
+};
+
+window.closeCart = function() {
+    document.getElementById('cartOverlay').classList.remove('open');
+};
 
   function updateCartUI() {
     const ids = Object.keys(cart);
