@@ -77,6 +77,9 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 <body>
 
 <div class="header">
+  <div id="cafeLogoWrap" style="display:none;margin-bottom:12px;">
+    <img id="cafeLogo" style="width:90px;height:90px;object-fit:contain;background:white;border-radius:16px;padding:8px;">
+  </div>
   <div class="cafe-name" id="cafeName">Меню</div>
   <div class="cafe-info">
     <span id="cafeHours"></span>
@@ -206,8 +209,12 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
     const settingsSnap = await getDoc(doc(db, 'cafes', uid, 'settings', 'main'));
     if (settingsSnap.exists()) {
       const s = settingsSnap.data();
-      if (s.name) document.getElementById('cafeName').textContent = s.name;
-      if (s.hours) document.getElementById('cafeHours').textContent = '⏰ ' + s.hours;
+if (s.name) document.getElementById('cafeName').textContent = s.name;
+
+if (s.logo) {
+  document.getElementById('cafeLogo').src = s.logo;
+  document.getElementById('cafeLogoWrap').style.display = 'block';
+}      if (s.hours) document.getElementById('cafeHours').textContent = '⏰ ' + s.hours;
       if (s.address) document.getElementById('cafeAddress').textContent = '📍 ' + s.address;
       window.serviceCharge = Number(s.serviceCharge) || 0;
       window.telegramChatId = s.telegramChatId || '';
