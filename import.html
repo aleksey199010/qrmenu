@@ -82,8 +82,12 @@ body { font-family: 'Golos Text', sans-serif; background: #0a0a0a; color: white;
   <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFile(this)">
 
   <button class="btn btn-gold" id="analyzeBtn" onclick="analyzeMenu()" disabled>
-    🤖 Распознать меню
-  </button>
+  🤖 Распознать меню
+</button>
+
+<button class="btn btn-dark" onclick="pasteJson()">
+  📋 Вставить JSON вручную
+</button>
 
   <!-- LOADING -->
   <div class="loading" id="loading">
@@ -360,6 +364,34 @@ aiCategories.forEach(cat => {
   }, 2000);
 
 };
+
+  window.pasteJson = function() {
+
+  const jsonText = prompt(
+`Вставьте JSON вида:
+
+{
+  "dishes": [...]
+}`
+  );
+
+  if (!jsonText) return;
+
+  try {
+
+    const parsed = JSON.parse(jsonText);
+
+    if (!parsed.dishes || !Array.isArray(parsed.dishes)) {
+      alert('В JSON отсутствует массив dishes');
+      return;
+    }
+
+    showResults(parsed.dishes);
+
+  } catch (e) {
+    alert('Ошибка JSON: ' + e.message);
+  }
+}
 
   window.resetImport = function() {
     imageBase64 = null;
