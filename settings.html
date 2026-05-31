@@ -160,8 +160,19 @@ textarea {
   <div class="page-title">Настройки</div>
   <div class="page-sub">Информация о вашем кафе</div>
 
+<div class="section">
+    <div class="section-label">Telegram уведомления</div>
+    <div class="form-group">
+      <label>Ваш Telegram Chat ID</label>
+      <input type="text" id="telegramChatId" placeholder="123456789">
+      <small style="color:#444;font-size:12px;margin-top:6px;display:block;">
+        Узнайте свой ID: напишите <strong style="color:#f5c842;">@userinfobot</strong> в Telegram команду /start — он ответит вашим ID
+      </small>
+    </div>
+  </div>
+
   <div class="section">
-    <div class="section-label">Основное</div>
+    <div class="section-label">Каталог кафе</div>
 
     <div class="form-group">
       <label>Название кафе</label>
@@ -255,8 +266,8 @@ if (s.city) document.getElementById('city').value = s.city;
       if (s.hours) document.getElementById('hours').value = s.hours;
       if (s.lang) document.getElementById('lang').value = s.lang;
 document.getElementById('serviceCharge').value = s.serviceCharge || 0;
-      document.getElementById('showInCatalog').checked = s.showInCatalog || false;    }
-  });
+document.getElementById('showInCatalog').checked = s.showInCatalog || false;
+      if (s.telegramChatId) document.getElementById('telegramChatId').value = s.telegramChatId;  });
 
   window.save = async function() {
     if (!currentUid) return;
@@ -269,8 +280,8 @@ city: document.getElementById('city').value,
       hours: document.getElementById('hours').value,
       lang: document.getElementById('lang').value,
       serviceCharge: Number(document.getElementById('serviceCharge').value) || 0,
-      showInCatalog: document.getElementById('showInCatalog').checked,
-    };
+showInCatalog: document.getElementById('showInCatalog').checked,
+      telegramChatId: document.getElementById('telegramChatId').value.trim(),    };
     await setDoc(doc(db, 'cafes', currentUid, 'settings', 'main'), settings);
     const msg = document.getElementById('success');
     msg.style.display = 'block';
