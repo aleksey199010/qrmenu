@@ -335,6 +335,18 @@ sec.innerHTML = '<div class="section-title">' + getCategoryName(cat) + '</div><d
     window.rerenderMenu = function() {
       document.getElementById('tabs').innerHTML = '';
       document.getElementById('main').innerHTML = '';
+
+      const grouped = {};
+
+allProducts.forEach(p => {
+  const cat = p.category || 'Прочее';
+
+  if (!grouped[cat]) {
+    grouped[cat] = [];
+  }
+
+  grouped[cat].push(p);
+});
       const tabsEl = document.getElementById('tabs');
       const mainEl = document.getElementById('main');
 
