@@ -397,6 +397,12 @@ import {
 };
 
 window.closeModal = function(e) {
+  if (e.target.id === 'overlay') {
+    document.getElementById('overlay').classList.remove('open');
+  }
+}
+
+window.save = async function() {
 
   const name =
     document.getElementById('catInput').value.trim();
