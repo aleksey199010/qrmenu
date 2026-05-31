@@ -85,9 +85,6 @@ body { font-family: 'Golos Text', sans-serif; background: #0a0a0a; color: white;
   🤖 Распознать меню
 </button>
 
-<button class="btn btn-dark" onclick="pasteJson()">
-  📋 Вставить JSON вручную
-</button>
 
   <!-- LOADING -->
   <div class="loading" id="loading">
@@ -365,33 +362,6 @@ aiCategories.forEach(cat => {
 
 };
 
-  window.pasteJson = function() {
-
-  const jsonText = prompt(
-`Вставьте JSON вида:
-
-{
-  "dishes": [...]
-}`
-  );
-
-  if (!jsonText) return;
-
-  try {
-
-    const parsed = JSON.parse(jsonText);
-
-    if (!parsed.dishes || !Array.isArray(parsed.dishes)) {
-      alert('В JSON отсутствует массив dishes');
-      return;
-    }
-
-    showResults(parsed.dishes);
-
-  } catch (e) {
-    alert('Ошибка JSON: ' + e.message);
-  }
-}
 
   window.resetImport = function() {
     imageBase64 = null;
