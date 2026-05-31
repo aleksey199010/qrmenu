@@ -189,12 +189,30 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
   let currentLang = localStorage.getItem('menu_lang') || 'ru';
 
   window.setLang = function(lang) {
-    currentLang = lang;
-    localStorage.setItem('menu_lang', lang);
-    document.getElementById('btnRu').classList.toggle('active', lang === 'ru');
-    document.getElementById('btnUz').classList.toggle('active', lang === 'uz');
+
+  currentLang = lang;
+
+  localStorage.setItem('menu_lang', lang);
+
+  document.getElementById('btnRu').classList.toggle(
+    'active',
+    lang === 'ru'
+  );
+
+  document.getElementById('btnUz').classList.toggle(
+    'active',
+    lang === 'uz'
+  );
+
+  console.log('LANG:', lang);
+
+  try {
     rerenderMenu();
+  } catch(e) {
+    console.error(e);
+    alert(e.message);
   }
+}
 
   function getName(p) { return (currentLang === 'uz' && p.nameUz) ? p.nameUz : p.name; }
   function getDesc(p) { return (currentLang === 'uz' && p.descriptionUz) ? p.descriptionUz : (p.description || ''); }
