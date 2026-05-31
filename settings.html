@@ -263,16 +263,18 @@ document.getElementById('showInCatalog').checked = s.showInCatalog || false;
   window.save = async function() {
     if (!currentUid) return;
     const settings = {
-      name: document.getElementById('name').value,
-      description: document.getElementById('description').value,
-city: document.getElementById('city').value,
-      address: document.getElementById('address').value,      
-      phone: document.getElementById('phone').value,
-      hours: document.getElementById('hours').value,
-      lang: document.getElementById('lang').value,
-      serviceCharge: Number(document.getElementById('serviceCharge').value) || 0,
-showInCatalog: document.getElementById('showInCatalog').checked,
-    await setDoc(doc(db, 'cafes', currentUid, 'settings', 'main'), settings);
+  name: document.getElementById('name').value,
+  description: document.getElementById('description').value,
+  city: document.getElementById('city').value,
+  address: document.getElementById('address').value,
+  phone: document.getElementById('phone').value,
+  hours: document.getElementById('hours').value,
+  lang: document.getElementById('lang').value,
+  serviceCharge: Number(document.getElementById('serviceCharge').value) || 0,
+  showInCatalog: document.getElementById('showInCatalog').checked
+};
+
+await setDoc(doc(db, 'cafes', currentUid, 'settings', 'main'), settings);
     const msg = document.getElementById('success');
     msg.style.display = 'block';
     setTimeout(() => msg.style.display = 'none', 3000);
