@@ -209,8 +209,8 @@ body {
   </div>
 </div>
 
-  <button class="btn btn-gold" onclick="download()">
-    ⬇️ Скачать QR-код
+  <button class="btn btn-gold" onclick="downloadCard()">
+    ⬇️ Скачать карточку для печати
   </button>
 
   <button class="btn btn-dark" onclick="copyLink()">
@@ -255,11 +255,95 @@ const base = window.location.origin + '/menu.html';    menuUrl = base + '?id=' +
     alert('Ссылка скопирована! ✓');
   }
 
-  window.download = function() {
+  window.downloadCard = async function() {
+    const cafeName = document.getElementById('cafeName').textContent;
+    const qrUrl = document.getElementById('qrImg').src;
+
+    // Загружаем QR как blob
+    const qrResp = await fetch(qrUrl);
+    const qrBlob = await qrResp.blob();
+    const qrBitmap = await createImageBitmap(await qrBlob);
+
+    const W = 600, H = 800;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // Фон — тёмно-коричневый
+    ctx.fillStyle = '#2c1a0e';
+    ctx.fillRect(0, 0, W, H);
+
+    // Декоративная рамка
+    ctx.strokeStyle = '#e8b84b';
+    ctx.lineWidth = 3;
+    roundRect(ctx, 20, 20, W-40, H-40, 24);
+    ctx.stroke();
+
+    // Верхняя золотая полоса
+    ctx.fillStyle = '#e8b84b';
+    roundRect(ctx, 20, 20, W-40, 100, 24, true);
+    ctx.fill();
+
+    // Название кафе
+    ctx.fillStyle = '#2c1a0e';
+    ctx.font = 'bold 36px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(cafeName, W/2, 82);
+
+    // Подзаголовок
+    ctx.fillStyle = '#e8b84b';
+    ctx.font = '22px sans-serif';
+    ctx.fillText('Цифровое меню', W/2, 155);
+
+    // Белый фон под QR
+    ctx.fillStyle = 'white';
+    roundRect(ctx, W/2 - 185, 180, 370, 370, 20, true);
+    ctx.fill();
+
+    // QR код
+    ctx.drawImage(qrBitmap, W/2 - 165, 200, 330, 330);
+
+    // Иконка телефона
+    ctx.fillStyle = '#e8b84b';
+    ctx.font = '48px sans-serif';
+    ctx.fillText('📱', W/2, 610);
+
+    // Главная подпись
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.fillText('Сканируйте камерой', W/2, 665);
+
+    // Подпись 2
+    ctx.fillStyle = '#8a6a54';
+    ctx.font = '20px sans-serif';
+    ctx.fillText('и смотрите меню', W/2, 700);
+
+    // Нижняя подпись
+    ctx.fillStyle = '#444';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('QR-Меню.uz', W/2, 760);
+
+    // Скачать
     const a = document.createElement('a');
-    a.href = document.getElementById('qrImg').src;
-    a.download = 'qr-menu.png';
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'menu-qr-' + cafeName + '.png';
     a.click();
+  }
+
+  function roundRect(ctx, x, y, w, h, r, fill) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    if (fill) ctx.fill();
   }
 </script>
 
