@@ -174,8 +174,13 @@ textarea {
     </div>
 
     <div class="form-group">
+      <label>Город</label>
+      <input type="text" id="city" placeholder="Ташкент, Самарканд, Бухара...">
+    </div>
+
+    <div class="form-group">
       <label>Адрес</label>
-      <input type="text" id="address" placeholder="ул. Амира Темура, 45, Ташкент">
+      <input type="text" id="address" placeholder="ул. Амира Темура, 45">
     </div>
 
     <div class="form-group">
@@ -212,7 +217,7 @@ textarea {
     <div class="form-group">
       <label style="display:flex;align-items:center;gap:10px;text-transform:none;letter-spacing:0;font-size:14px;color:white;cursor:pointer;">
         <input type="checkbox" id="showInCatalog" style="width:18px;height:18px;accent-color:#f5c842;">
-        Показывать моё кафе в каталоге Ташкента
+        Показывать моё кафе в каталоге QR-Меню.uz
       </label>
       <small style="color:#444;font-size:12px;margin-top:8px;display:block;">Гости смогут найти ваше кафе на странице каталога qrmenu.uz/catalog</small>
     </div>
@@ -244,7 +249,8 @@ textarea {
       const s = snap.data();
       if (s.name) document.getElementById('name').value = s.name;
       if (s.description) document.getElementById('description').value = s.description;
-      if (s.address) document.getElementById('address').value = s.address;
+if (s.city) document.getElementById('city').value = s.city;
+      if (s.address) document.getElementById('address').value = s.address;      
       if (s.phone) document.getElementById('phone').value = s.phone;
       if (s.hours) document.getElementById('hours').value = s.hours;
       if (s.lang) document.getElementById('lang').value = s.lang;
@@ -257,7 +263,8 @@ document.getElementById('serviceCharge').value = s.serviceCharge || 0;
     const settings = {
       name: document.getElementById('name').value,
       description: document.getElementById('description').value,
-      address: document.getElementById('address').value,
+city: document.getElementById('city').value,
+      address: document.getElementById('address').value,      
       phone: document.getElementById('phone').value,
       hours: document.getElementById('hours').value,
       lang: document.getElementById('lang').value,
