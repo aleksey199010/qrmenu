@@ -556,7 +556,7 @@ let selectedStars = 5;
     sec.id = 'search-results';
     sec.innerHTML = '<div class="section-title">Результаты поиска</div>' +
       (results.length === 0 ? '<div class="empty">Ничего не найдено 😔</div>' :
-        '<div class="dishes-grid">' + results.map(p => dishCard(p)).join('') + '</div>'));
+        '<div class="dishes-grid">' + results.map(p => dishCard(p)).join('') + '</div>');
     main.appendChild(sec);
   }
 </script>
