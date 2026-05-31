@@ -68,7 +68,12 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 .cart-empty { text-align: center; color: #8a6a54; font-size: 14px; padding: 24px 0; }
 .cart-clear { background: none; border: none; color: #b09080; font-size: 13px; cursor: pointer; display: block; margin: 12px auto 0; font-family: 'Golos Text', sans-serif; }
 .dish-hit { border: 2px solid #e8b84b !important; }
-.dish-special { border: 2px solid #6a994e !important; }</style>
+.dish-special { border: 2px solid #6a994e !important; }
+.lang-switch { display: flex; gap: 6px; justify-content: center; margin-top: 10px; }
+.lang-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #8a6a54; border-radius: 8px; padding: 4px 12px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Golos Text', sans-serif; transition: all 0.2s; }
+.lang-btn.active { background: #e8b84b; color: #3d2b1f; border-color: #e8b84b; }
+
+</style>
 </head>
 <body>
 
@@ -77,6 +82,10 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
   <div class="cafe-info">
     <span id="cafeHours"></span>
     <span id="cafeAddress"></span>
+  </div>
+  <div class="lang-switch" id="langSwitch" style="display:none;">
+    <button class="lang-btn active" id="btnRu" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn" id="btnUz" onclick="setLang('uz')">UZ</button>
   </div>
 </div>
 
@@ -174,6 +183,18 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
 
   let allProducts = [];
   let allCats = [];
+  let currentLang = localStorage.getItem('menu_lang') || 'ru';
+
+  window.setLang = function(lang) {
+    currentLang = lang;
+    localStorage.setItem('menu_lang', lang);
+    document.getElementById('btnRu').classList.toggle('active', lang === 'ru');
+    document.getElementById('btnUz').classList.toggle('active', lang === 'uz');
+    rerenderMenu();
+  }
+
+  function getName(p) { return (currentLang === 'uz' && p.nameUz) ? p.nameUz : p.name; }
+  function getDesc(p) { return (currentLang === 'uz' && p.descriptionUz) ? p.descriptionUz : (p.description || ''); }
 
   async function loadMenu(uid) {
     const settingsSnap = await getDoc(doc(db, 'cafes', uid, 'settings', 'main'));
@@ -183,6 +204,8 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
       if (s.hours) document.getElementById('cafeHours').textContent = '⏰ ' + s.hours;
       if (s.address) document.getElementById('cafeAddress').textContent = '📍 ' + s.address;
       window.serviceCharge = Number(s.serviceCharge) || 0;
+      const hasUz = s.lang && s.lang.includes('uz');
+      if (hasUz) document.getElementById('langSwitch').style.display = 'flex';
     }
 
     const cafeSnap = await getDoc(doc(db, 'cafes', uid));
@@ -213,15 +236,15 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
     function dishCard(p, extraStyle) {
       extraStyle = extraStyle || '';
       const emo = getEmoji(p.category);
-      const nm = p.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-      const desc = (p.description||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      const nm = getName(p).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      const desc = getDesc(p).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
       const photo = p.photo || '';
       const oldPrice = p.oldPrice || '';
       return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\')">'
         + (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + p.name + '"></div>' : '')
         + '<div class="dish-body">'
-        + '<div class="dish-name">' + p.name + '</div>'
-        + (p.description ? '<div class="dish-desc">' + p.description + '</div>' : '')
+        + '<div class="dish-name">' + getName(p) + '</div>'
+        + (getDesc(p) ? '<div class="dish-desc">' + getDesc(p) + '</div>' : '')
         + '<div class="dish-price">' + Number(p.price).toLocaleString() + ' сум'
         + (oldPrice ? ' <span style="text-decoration:line-through;color:#b09080;font-size:13px;margin-left:6px;font-weight:400;">' + Number(oldPrice).toLocaleString() + ' сум</span>' : '')
         + '</div>'
@@ -281,6 +304,39 @@ addTab(cat, 'cat-' + i, isFirst);
         mainEl.appendChild(sec);
       }
     }
+
+    window.rerenderMenu = function() {
+      document.getElementById('tabs').innerHTML = '';
+      document.getElementById('main').innerHTML = '';
+      const tabsEl = document.getElementById('tabs');
+      const mainEl = document.getElementById('main');
+
+      if (hits.length > 0) {
+        addTab(currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты', 'sec-hits', true);
+        const sec = document.createElement('div');
+        sec.className = 'section active'; sec.id = 'sec-hits';
+        sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты') + '</div>' + hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('');
+        mainEl.appendChild(sec);
+      }
+      allCats.forEach((cat, i) => {
+        const isFirst = hits.length === 0 && i === 0;
+        addTab(cat, 'cat-' + i, isFirst);
+        const sec = document.createElement('div');
+        sec.className = 'section' + (isFirst ? ' active' : ''); sec.id = 'cat-' + i;
+        sec.innerHTML = '<div class="section-title">' + cat + '</div>' + grouped[cat].map(p => dishCard(p)).join('');
+        mainEl.appendChild(sec);
+      });
+      if (specials.length > 0) {
+        addTab(currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения', 'sec-specials', false);
+        const sec = document.createElement('div');
+        sec.className = 'section'; sec.id = 'sec-specials';
+        sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения') + '</div>' + specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('');
+        mainEl.appendChild(sec);
+      }
+    }
+
+    document.getElementById('btnRu').classList.toggle('active', currentLang === 'ru');
+    document.getElementById('btnUz').classList.toggle('active', currentLang === 'uz');
 
     const today = new Date().toDateString();
         
