@@ -49,7 +49,6 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 .modal-desc { font-size: 14px; color: #8a6a54; text-align: center; margin-top: 8px; line-height: 1.6; }
 .modal-price { font-size: 24px; font-weight: 700; color: #c9942a; text-align: center; margin: 16px 0 20px; }
 .modal-close { width: 100%; background: #3d2b1f; color: #e8b84b; border: none; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Golos Text', sans-serif; }
-
 /* КОРЗИНА */
 .cart-fab { position: fixed; bottom: 24px; right: 20px; background: #3d2b1f; color: #e8b84b; border: none; border-radius: 50px; padding: 13px 20px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; align-items: center; gap: 10px; z-index: 99; box-shadow: 0 4px 20px rgba(0,0,0,0.25); font-family: 'Golos Text', sans-serif; }
 .cart-fab:active { opacity: 0.85; }
@@ -74,7 +73,6 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 .lang-switch { display: flex; gap: 6px; justify-content: center; margin-top: 10px; }
 .lang-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #8a6a54; border-radius: 8px; padding: 4px 12px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Golos Text', sans-serif; transition: all 0.2s; }
 .lang-btn.active { background: #e8b84b; color: #3d2b1f; border-color: #e8b84b; }
-
 </style>
 </head>
 <body>
@@ -140,15 +138,16 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 <div class="cart-overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
   <div class="cart-sheet">
     <div class="cart-head">
-        <h2>Ваш заказ</h2>
-        <button class="cart-x" onclick="closeCart()">×</button>
-      </div>
-      <div style="font-size:13px;color:#8a6a54;margin-bottom:16px;">📋 Покажите этот экран официанту</div>
+      <h2>Ваш заказ</h2>
+      <button class="cart-x" onclick="closeCart()">×</button>
+    </div>
+    <div style="font-size:13px;color:#8a6a54;margin-bottom:16px;">📋 Покажите этот экран официанту</div>
     <div id="cartItems"><p class="cart-empty">Корзина пуста</p></div>
     <div class="cart-footer" id="cartFooter" style="display:none">
       <div id="cartSummary"></div>
-<button id="sendOrderBtn" onclick="sendOrder()" style="display:none;width:100%;background:#2d6a4f;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;margin-bottom:10px;">📲 Отправить заказ официанту</button>
-      <button class="cart-clear" onclick="clearCart()">Очистить корзину</button>    </div>
+      <button id="sendOrderBtn" onclick="sendOrder()" style="display:none;width:100%;background:#2d6a4f;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;margin-bottom:10px;">📲 Отправить заказ официанту</button>
+      <button class="cart-clear" onclick="clearCart()">Очистить корзину</button>
+    </div>
   </div>
 </div>
 
@@ -165,7 +164,8 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 
 <script type="module">
   import { db } from './firebase.js';
-import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
   const emojis = { 'Горячее':'🍲','Салаты':'🥗','Напитки':'☕','Десерты':'🍰','Выпечка':'🫓','Завтраки':'🍳' };
 
   function getEmoji(cat) {
@@ -189,38 +189,33 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
   let currentLang = localStorage.getItem('menu_lang') || 'ru';
 
   window.setLang = function(lang) {
-
-  currentLang = lang;
-
-  localStorage.setItem('menu_lang', lang);
-
-  location.reload();
-}
+    currentLang = lang;
+    localStorage.setItem('menu_lang', lang);
+    location.reload();
+  }
 
   function getName(p) { return (currentLang === 'uz' && p.nameUz) ? p.nameUz : p.name; }
   function getDesc(p) { return (currentLang === 'uz' && p.descriptionUz) ? p.descriptionUz : (p.description || ''); }
 
   function getCategoryName(cat) {
-  if (currentLang !== 'uz') return cat;
-
-  const translations = {
-    'Салаты': 'Salatlar',
-    'Супы': "Sho'rvalar",
-    'Горячие блюда': 'Issiq taomlar',
-    'Горячее': 'Issiq taomlar',
-    'Напитки': 'Ichimliklar',
-    'Десерты': 'Shirinliklar',
-    'Завтраки': 'Nonushtalar',
-    'Выпечка': 'Pishiriqlar',
-    'Фастфуд': 'Fast food',
-    'Пицца': 'Pitsa',
-    'Сеты': 'Setlar',
-    'Гарниры': 'Garnirlar',
-    'Соусы': 'Souslar'
-  };
-
-  return translations[cat] || cat;
-}
+    if (currentLang !== 'uz') return cat;
+    const translations = {
+      'Салаты': 'Salatlar',
+      'Супы': "Sho'rvalar",
+      'Горячие блюда': 'Issiq taomlar',
+      'Горячее': 'Issiq taomlar',
+      'Напитки': 'Ichimliklar',
+      'Десерты': 'Shirinliklar',
+      'Завтраки': 'Nonushtalar',
+      'Выпечка': 'Pishiriqlar',
+      'Фастфуд': 'Fast food',
+      'Пицца': 'Pitsa',
+      'Сеты': 'Setlar',
+      'Гарниры': 'Garnirlar',
+      'Соусы': 'Souslar'
+    };
+    return translations[cat] || cat;
+  }
 
   async function loadMenu(uid) {
     const settingsSnap = await getDoc(doc(db, 'cafes', uid, 'settings', 'main'));
@@ -268,8 +263,9 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
       const desc = getDesc(p).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
       const photo = p.photo || '';
       const oldPrice = p.oldPrice || '';
-return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\',\'' + p.id + '\')">' +
-       (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + getName(p) + '"></div>' : '<div class="dish-no-photo">' + emo + '</div>')        + '<div class="dish-body">'
+      return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\',\'' + p.id + '\')">'
+        + (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + getName(p) + '"></div>' : '<div class="dish-no-photo">' + emo + '</div>')
+        + '<div class="dish-body">'
         + '<div class="dish-name">' + getName(p) + '</div>'
         + (getDesc(p) ? '<div class="dish-desc">' + getDesc(p) + '</div>' : '')
         + '<div class="dish-bottom">'
@@ -284,8 +280,6 @@ return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + em
     if (allCats.length === 0 && hits.length === 0) {
       mainEl.innerHTML = '<div class="empty">В меню пока нет блюд</div>';
     } else {
-      let tabIndex = 0;
-
       function addTab(label, sectionId, isFirst) {
         const tab = document.createElement('div');
         tab.className = 'tab' + (isFirst ? ' active' : '');
@@ -301,80 +295,43 @@ return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + em
 
       // 🔥 ХИТЫ — первая вкладка
       if (hits.length > 0) {
-        addTab('🔥 Хиты', 'sec-hits', true);
+        addTab(currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты', 'sec-hits', true);
         const sec = document.createElement('div');
         sec.className = 'section active';
         sec.id = 'sec-hits';
-        sec.innerHTML = `<div class="section-title">🔥 Хиты</div><div class="dishes-grid">` +
-          hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('') + '</div>';
+        sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты') + '</div><div class="dishes-grid">'
+          + hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('') + '</div>';
         mainEl.appendChild(sec);
       }
 
       // Обычные категории
       allCats.forEach((cat, i) => {
         const isFirst = hits.length === 0 && i === 0;
-addTab(getCategoryName(cat), 'cat-' + i, isFirst);
+        addTab(getCategoryName(cat), 'cat-' + i, isFirst);
         const sec = document.createElement('div');
         sec.className = 'section' + (isFirst ? ' active' : '');
         sec.id = 'cat-' + i;
-sec.innerHTML = '<div class="section-title">' + getCategoryName(cat) + '</div><div class="dishes-grid">' +          grouped[cat].map(p => dishCard(p)).join('') + '</div>';
+        sec.innerHTML = '<div class="section-title">' + getCategoryName(cat) + '</div><div class="dishes-grid">'
+          + grouped[cat].map(p => dishCard(p)).join('') + '</div>';
         mainEl.appendChild(sec);
       });
 
       // 🎁 СПЕЦПРЕДЛОЖЕНИЯ — последняя вкладка
       if (specials.length > 0) {
-        addTab('🎁 Спецпредложения', 'sec-specials', false);
+        addTab(currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения', 'sec-specials', false);
         const sec = document.createElement('div');
         sec.className = 'section';
         sec.id = 'sec-specials';
-        sec.innerHTML = '<div class="section-title">🎁 Спецпредложения</div><div class="dishes-grid">' +
-          specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('') + '</div>';
+        sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения') + '</div><div class="dishes-grid">'
+          + specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('') + '</div>';
         mainEl.appendChild(sec);
       }
-    }
-
-    window.rerenderMenu = function() {
-      document.getElementById('tabs').innerHTML = '';
-      document.getElementById('main').innerHTML = '';
-
-      const grouped = {};
-
-allProducts.forEach(p => {
-  const cat = p.category || 'Прочее';
-
-  if (!grouped[cat]) {
-    grouped[cat] = [];
-  }
-
-  grouped[cat].push(p);
-});
-      const tabsEl = document.getElementById('tabs');
-      const mainEl = document.getElementById('main');
-
-      if (hits.length > 0) {
-        addTab(currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты', 'sec-hits', true);
-        const sec = document.createElement('div');
-        sec.className = 'section active'; sec.id = 'sec-hits';
-sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты') + '</div><div class="dishes-grid">' + hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('') + '</div>';
-mainEl.appendChild(sec);      }
-      allCats.forEach((cat, i) => {
-        const isFirst = hits.length === 0 && i === 0;
-addTab(getCategoryName(cat), 'cat-' + i, isFirst);        const sec = document.createElement('div');
-        sec.className = 'section' + (isFirst ? ' active' : ''); sec.id = 'cat-' + i;
-sec.innerHTML = '<div class="section-title">' + getCategoryName(cat) + '</div><div class="dishes-grid">' + grouped[cat].map(p => dishCard(p)).join('') + '</div>';mainEl.appendChild(sec);      });
-      if (specials.length > 0) {
-        addTab(currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения', 'sec-specials', false);
-        const sec = document.createElement('div');
-        sec.className = 'section'; sec.id = 'sec-specials';
-sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения') + '</div><div class="dishes-grid">' + specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('') + '</div>';
-mainEl.appendChild(sec);      }
     }
 
     document.getElementById('btnRu').classList.toggle('active', currentLang === 'ru');
     document.getElementById('btnUz').classList.toggle('active', currentLang === 'uz');
 
     const today = new Date().toDateString();
-        
     const scansRef = doc(db, 'cafes', uid, 'stats', 'scans');
     const scansSnap = await getDoc(scansRef);
     if (scansSnap.exists()) {
@@ -391,7 +348,7 @@ mainEl.appendChild(sec);      }
     await loadReviews();
   }
 
-window.currentModalProduct = {};
+  window.currentModalProduct = {};
 
   window.openModal = function(emoji, name, desc, price, photo, oldPrice, id) {
     window.currentModalProduct = { id, name, price };
@@ -402,12 +359,12 @@ window.currentModalProduct = {};
     }
     document.getElementById('m-name').textContent = name;
     document.getElementById('m-desc').textContent = desc || '';
-    document.getElementById('m-price').innerHTML = Number(price).toLocaleString() + ' сум' +
-      (oldPrice ? ' <span style="text-decoration:line-through;color:#b09080;font-size:16px;font-weight:400;margin-left:8px;">' + Number(oldPrice).toLocaleString() + ' сум</span>' : '');
+    document.getElementById('m-price').innerHTML = Number(price).toLocaleString() + ' сум'
+      + (oldPrice ? ' <span style="text-decoration:line-through;color:#b09080;font-size:16px;font-weight:400;margin-left:8px;">' + Number(oldPrice).toLocaleString() + ' сум</span>' : '');
     document.getElementById('overlay').classList.add('open');
   }
 
- window.closeModal = function(e) {
+  window.closeModal = function(e) {
     if (e.target.id === 'overlay') document.getElementById('overlay').classList.remove('open');
   }
 
@@ -437,17 +394,14 @@ window.currentModalProduct = {};
       });
       const data = await resp.json();
       if (data.ok) {
-  btn.textContent = '✅ Заказ отправлен!';
-
-  setTimeout(() => {
-    closeCart();
-    clearCart();
-
-    btn.textContent = '📲 Отправить заказ официанту';
-    btn.disabled = false;
-  }, 1500);
-}
-      else {
+        btn.textContent = '✅ Заказ отправлен!';
+        setTimeout(() => {
+          closeCart();
+          clearCart();
+          btn.textContent = '📲 Отправить заказ официанту';
+          btn.disabled = false;
+        }, 1500);
+      } else {
         alert('Ошибка отправки: ' + (data.error || 'неизвестная'));
         btn.textContent = '📲 Отправить заказ официанту';
         btn.disabled = false;
@@ -476,7 +430,7 @@ window.currentModalProduct = {};
     }
   }
 
-let selectedStars = 5;
+  let selectedStars = 5;
 
   window.setStar = function(n) {
     selectedStars = n;
@@ -529,7 +483,7 @@ let selectedStars = 5;
     `).join('');
   }
 
- // ===== КОРЗИНА =====
+  // ===== КОРЗИНА =====
   let cart = {};
   loadCart();
   updateCartUI();
@@ -542,7 +496,7 @@ let selectedStars = 5;
     if (btn) { btn.textContent = '✓'; setTimeout(() => { btn.textContent = '+'; }, 900); }
   }
 
- window.changeQty = function(id, delta) {
+  window.changeQty = function(id, delta) {
     if (!cart[id]) return;
     cart[id].qty += delta;
     if (cart[id].qty <= 0) delete cart[id];
@@ -552,7 +506,7 @@ let selectedStars = 5;
 
   window.clearCart = function() { cart = {}; saveCart(); updateCartUI(); closeCart(); }
 
- function saveCart() {
+  function saveCart() {
     localStorage.setItem('cart_' + cafeId, JSON.stringify(cart));
     localStorage.setItem('cart_time_' + cafeId, Date.now().toString());
   }
@@ -572,15 +526,16 @@ let selectedStars = 5;
       }
     } catch(e) { cart = {}; }
   }
-window.openCart = function() {
-    const btn = document.getElementById('sendOrderBtn');
 
+  window.openCart = function() {
+    const btn = document.getElementById('sendOrderBtn');
     btn.textContent = '📲 Отправить заказ официанту';
     btn.disabled = false;
-    btn.style.display = 'none';
-
+    btn.style.display = window.telegramChatId ? 'block' : 'none';
     document.getElementById('cartOverlay').classList.add('open');
-};
+  }
+
+  window.closeCart = function() { document.getElementById('cartOverlay').classList.remove('open'); }
 
   function updateCartUI() {
     const ids = Object.keys(cart);
@@ -617,14 +572,15 @@ window.openCart = function() {
         </div>`;
       }).join('');
       document.getElementById('cartSummary').innerHTML =
-        (charge > 0 ? `<div style="display:flex;justify-content:space-between;font-size:14px;color:#8a6a54;margin-bottom:8px"><span>Обслуживание ${window.serviceCharge}%</span><span>${charge.toLocaleString()} сум</span></div>` : '') +
-        `<div style="display:flex;justify-content:space-between;font-size:17px;font-weight:700;color:#3d2b1f"><span>Итого</span><span>${grandTotal.toLocaleString()} сум</span></div>`;
+        (charge > 0 ? `<div style="display:flex;justify-content:space-between;font-size:14px;color:#8a6a54;margin-bottom:8px"><span>Обслуживание ${window.serviceCharge}%</span><span>${charge.toLocaleString()} сум</span></div>` : '')
+        + `<div style="display:flex;justify-content:space-between;font-size:17px;font-weight:700;color:#3d2b1f"><span>Итого</span><span>${grandTotal.toLocaleString()} сум</span></div>`;
       footer.style.display = 'block';
     }
   }
   // ===== КОНЕЦ КОРЗИНЫ =====
 
-  window.searchDishes = function(query) {    const q = query.toLowerCase().trim();
+  window.searchDishes = function(query) {
+    const q = query.toLowerCase().trim();
     const tabs = document.getElementById('tabs');
     const main = document.getElementById('main');
     const existing = document.getElementById('search-results');
@@ -646,9 +602,9 @@ window.openCart = function() {
     const sec = document.createElement('div');
     sec.className = 'section active';
     sec.id = 'search-results';
-    sec.innerHTML = '<div class="section-title">Результаты поиска</div>' +
-      (results.length === 0 ? '<div class="empty">Ничего не найдено 😔</div>' :
-        '<div class="dishes-grid">' + results.map(p => dishCard(p)).join('') + '</div>');
+    sec.innerHTML = '<div class="section-title">Результаты поиска</div>'
+      + (results.length === 0 ? '<div class="empty">Ничего не найдено 😔</div>'
+        : '<div class="dishes-grid">' + results.map(p => dishCard(p)).join('') + '</div>');
     main.appendChild(sec);
   }
 </script>
