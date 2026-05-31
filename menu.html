@@ -199,6 +199,28 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
   function getName(p) { return (currentLang === 'uz' && p.nameUz) ? p.nameUz : p.name; }
   function getDesc(p) { return (currentLang === 'uz' && p.descriptionUz) ? p.descriptionUz : (p.description || ''); }
 
+  function getCategoryName(cat) {
+  if (currentLang !== 'uz') return cat;
+
+  const translations = {
+    'Салаты': 'Salatlar',
+    'Супы': "Sho'rvalar",
+    'Горячие блюда': 'Issiq taomlar',
+    'Горячее': 'Issiq taomlar',
+    'Напитки': 'Ichimliklar',
+    'Десерты': 'Shirinliklar',
+    'Завтраки': 'Nonushtalar',
+    'Выпечка': 'Pishiriqlar',
+    'Фастфуд': 'Fast food',
+    'Пицца': 'Pitsa',
+    'Сеты': 'Setlar',
+    'Гарниры': 'Garnirlar',
+    'Соусы': 'Souslar'
+  };
+
+  return translations[cat] || cat;
+}
+
   async function loadMenu(uid) {
     const settingsSnap = await getDoc(doc(db, 'cafes', uid, 'settings', 'main'));
     if (settingsSnap.exists()) {
@@ -290,12 +312,11 @@ return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + em
       // Обычные категории
       allCats.forEach((cat, i) => {
         const isFirst = hits.length === 0 && i === 0;
-addTab(cat, 'cat-' + i, isFirst);
+addTab(getCategoryName(cat), 'cat-' + i, isFirst);
         const sec = document.createElement('div');
         sec.className = 'section' + (isFirst ? ' active' : '');
         sec.id = 'cat-' + i;
-        sec.innerHTML = '<div class="section-title">' + cat + '</div><div class="dishes-grid">' +
-          grouped[cat].map(p => dishCard(p)).join('') + '</div>';
+sec.innerHTML = '<div class="section-title">' + getCategoryName(cat) + '</div><div class="dishes-grid">' +          grouped[cat].map(p => dishCard(p)).join('') + '</div>';
         mainEl.appendChild(sec);
       });
 
@@ -325,11 +346,9 @@ sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🔥 Hi
 mainEl.appendChild(sec);      }
       allCats.forEach((cat, i) => {
         const isFirst = hits.length === 0 && i === 0;
-        addTab(cat, 'cat-' + i, isFirst);
-        const sec = document.createElement('div');
+addTab(getCategoryName(cat), 'cat-' + i, isFirst);        const sec = document.createElement('div');
         sec.className = 'section' + (isFirst ? ' active' : ''); sec.id = 'cat-' + i;
-sec.innerHTML = '<div class="section-title">' + cat + '</div><div class="dishes-grid">' + grouped[cat].map(p => dishCard(p)).join('') + '</div>';
-mainEl.appendChild(sec);      });
+sec.innerHTML = '<div class="section-title">' + getCategoryName(cat) + '</div><div class="dishes-grid">' + grouped[cat].map(p => dishCard(p)).join('') + '</div>';mainEl.appendChild(sec);      });
       if (specials.length > 0) {
         addTab(currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения', 'sec-specials', false);
         const sec = document.createElement('div');
