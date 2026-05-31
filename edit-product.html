@@ -385,7 +385,6 @@ textarea { min-height: 80px; resize: vertical; }
     document.getElementById('price').value = p.price;
     document.getElementById('description').value = p.description || '';
     document.getElementById('category').value = p.category;
-    document.getElementById('previewEmoji').textContent = selectedEmoji;
     document.getElementById('previewName').textContent = p.name;
     document.getElementById('previewPrice').textContent = Number(p.price).toLocaleString() + ' сум';
     if (p.oldPrice) document.getElementById('oldPrice').value = p.oldPrice;
