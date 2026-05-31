@@ -319,23 +319,20 @@ addTab(cat, 'cat-' + i, isFirst);
         addTab(currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты', 'sec-hits', true);
         const sec = document.createElement('div');
         sec.className = 'section active'; sec.id = 'sec-hits';
-        sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты') + '</div>' + hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('');
-        mainEl.appendChild(sec);
+sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты') + '</div><div class="dishes-grid">' + hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('') + '</div>';        mainEl.appendChild(sec);
       }
       allCats.forEach((cat, i) => {
         const isFirst = hits.length === 0 && i === 0;
         addTab(cat, 'cat-' + i, isFirst);
         const sec = document.createElement('div');
         sec.className = 'section' + (isFirst ? ' active' : ''); sec.id = 'cat-' + i;
-        sec.innerHTML = '<div class="section-title">' + cat + '</div>' + grouped[cat].map(p => dishCard(p)).join('');
-        mainEl.appendChild(sec);
+sec.innerHTML = '<div class="section-title">' + cat + '</div><div class="dishes-grid">' + grouped[cat].map(p => dishCard(p)).join('') + '</div>';        mainEl.appendChild(sec);
       });
       if (specials.length > 0) {
         addTab(currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения', 'sec-specials', false);
         const sec = document.createElement('div');
         sec.className = 'section'; sec.id = 'sec-specials';
-        sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения') + '</div>' + specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('');
-        mainEl.appendChild(sec);
+sec.innerHTML = '<div class="section-title">' + (currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения') + '</div><div class="dishes-grid">' + specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('') + '</div>';        mainEl.appendChild(sec);
       }
     }
 
