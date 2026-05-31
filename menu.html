@@ -27,7 +27,7 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 .dish { background: #fffdf8; border-radius: 16px; box-shadow: 0 2px 12px rgba(61,43,31,0.08); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #f0e8d8; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
 .dish:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(61,43,31,0.12); }
 .dish-photo { width: 100%; height: 140px; overflow: hidden; background: #f0e6d3; }
-.dish-photo img { width: 100%; height: 100%; object-fit: cover; }
+.dish-photo img { width: 100%; height: 100%; object-fit: contain; background: #f0e6d3; }
 .dish-no-photo { width: 100%; height: 140px; background: #f0e6d3; display: flex; align-items: center; justify-content: center; font-size: 48px; }
 .dish-body { padding: 12px; flex: 1; display: flex; flex-direction: column; }
 .dish-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600; color: #3d2b1f; line-height: 1.3; }
