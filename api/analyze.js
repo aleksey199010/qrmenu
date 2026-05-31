@@ -28,7 +28,7 @@ export default async function handler(req, res) {
                 }
               },
               {
-                text: `text: `Это фото меню кафе.
+                text: `Это фото меню кафе.
 
 Найди ВСЕ блюда на изображении.
 
