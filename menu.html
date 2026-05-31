@@ -224,7 +224,6 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
     console.log('CAFE PLAN:', plan, 'LIMIT:', limit, 'DATA:', JSON.stringify(cafeData));
 
     const catsSnap = await getDocs(collection(db, 'cafes', uid, 'categories'));
-    const categoryUzMap = {};
     catsSnap.forEach(d => {
       const c = d.data();
       if (c.name && c.nameUz) categoryUzMap[c.name] = c.nameUz;
