@@ -47,14 +47,14 @@ footer span { color:var(--orange); font-weight:600; }
 
 <div class="main">
   <div class="hero">
-    <div class="hero-tag">📍 Ташкент</div>
     <h1>Кафе с <em>цифровым меню</em></h1>
     <p>Сканируйте QR-код прямо в кафе или смотрите меню заранее</p>
   </div>
 
   <div class="search-wrap">
-    <input class="search-input" id="searchInput" placeholder="🔍 Найти кафе по названию..." oninput="filterCafes(this.value)">
+    <input class="search-input" id="searchInput" placeholder="🔍 Найти кафе по названию или городу..." oninput="filterCafes(this.value)">
   </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;" id="cityFilters"></div>
 
   <div class="count" id="count"></div>
   <div id="list"><div class="loading">Загружаем кафе...</div></div>
@@ -93,6 +93,14 @@ footer span { color:var(--orange); font-weight:600; }
     const results = await Promise.all(promises);
     allCafes = results.filter(Boolean);
 
+    // Строим фильтры по городам
+    const cities = [...new Set(allCafes.map(c => c.city).filter(Boolean))].sort();
+    const filtersEl = document.getElementById('cityFilters');
+    if (cities.length > 1) {
+      filtersEl.innerHTML = `<button onclick="filterByCity('')" id="city-all" style="background:var(--brown);color:white;border:none;padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">Все</button>` +
+        cities.map(city => `<button onclick="filterByCity('${city}')" id="city-${city}" style="background:white;color:var(--brown);border:1.5px solid var(--border);padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">${city}</button>`).join('');
+    }
+
     renderCafes(allCafes);
   }
 
@@ -113,7 +121,8 @@ footer span { color:var(--orange); font-weight:600; }
           <div class="cafe-name">${c.name}</div>
           ${c.description ? `<div class="cafe-desc">${c.description.slice(0, 80)}${c.description.length > 80 ? '...' : ''}</div>` : ''}
           <div class="cafe-meta">
-            ${c.address ? `<span>📍 ${c.address}</span>` : ''}
+${c.city ? `<span>🏙️ ${c.city}</span>` : ''}
+            ${c.address ? `<span>📍 ${c.address}</span>` : ''}            
             ${c.hours ? `<span>⏰ ${c.hours}</span>` : ''}
           </div>
         </div>
@@ -122,13 +131,29 @@ footer span { color:var(--orange); font-weight:600; }
     `).join('');
   }
 
+  let activeCity = '';
+
+  window.filterByCity = function(city) {
+    activeCity = city;
+    document.querySelectorAll('#cityFilters button').forEach(btn => {
+      btn.style.background = 'white';
+      btn.style.color = 'var(--brown)';
+      btn.style.borderColor = 'var(--border)';
+    });
+    const activeBtn = document.getElementById(city ? 'city-' + city : 'city-all');
+    if (activeBtn) { activeBtn.style.background = 'var(--brown)'; activeBtn.style.color = 'white'; }
+    filterCafes(document.getElementById('searchInput').value);
+  }
+
   window.filterCafes = function(query) {
     const q = query.toLowerCase().trim();
-    if (!q) { renderCafes(allCafes); return; }
-    const filtered = allCafes.filter(c =>
+    let filtered = allCafes;
+    if (activeCity) filtered = filtered.filter(c => c.city === activeCity);
+    if (q) filtered = filtered.filter(c =>
       (c.name || '').toLowerCase().includes(q) ||
       (c.description || '').toLowerCase().includes(q) ||
-      (c.address || '').toLowerCase().includes(q)
+      (c.address || '').toLowerCase().includes(q) ||
+      (c.city || '').toLowerCase().includes(q)
     );
     renderCafes(filtered);
   }
