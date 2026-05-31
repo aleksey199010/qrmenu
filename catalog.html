@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кафе Ташкента | QR-Меню.uz</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --cream:#faf7f2; --brown:#2c1a0e; --orange:#e85d2f; --orange-light:#fff3ee; --muted:#6b6b6b; --border:#e8e0d5; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--brown); min-height:100vh; }
+nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(250,247,242,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; }
+.nav-logo { font-family:'Fraunces',serif; font-size:20px; font-weight:700; color:var(--brown); text-decoration:none; }
+.nav-logo span { color:var(--orange); }
+.nav-btn { background:var(--brown); color:white; border:none; padding:9px 18px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; text-decoration:none; }
+.main { max-width:640px; margin:0 auto; padding:88px 20px 40px; }
+.hero { text-align:center; margin-bottom:32px; }
+.hero-tag { display:inline-flex; align-items:center; gap:8px; background:var(--orange-light); border:1px solid #ffd4c2; color:var(--orange); font-size:13px; font-weight:600; padding:6px 16px; border-radius:20px; margin-bottom:16px; }
+.hero h1 { font-family:'Fraunces',serif; font-size:clamp(28px,7vw,42px); font-weight:900; line-height:1.15; margin-bottom:10px; }
+.hero h1 em { font-style:italic; color:var(--orange); }
+.hero p { font-size:15px; color:var(--muted); line-height:1.7; }
+.search-wrap { margin-bottom:24px; }
+.search-input { width:100%; padding:14px 18px; background:white; border:1.5px solid var(--border); border-radius:14px; font-size:15px; font-family:'DM Sans',sans-serif; color:var(--brown); outline:none; transition:border-color 0.2s; }
+.search-input:focus { border-color:var(--orange); }
+.count { font-size:13px; color:var(--muted); margin-bottom:16px; }
+.cafe-card { background:white; border:1.5px solid var(--border); border-radius:18px; padding:20px; margin-bottom:12px; display:flex; gap:16px; align-items:center; text-decoration:none; transition:all 0.2s; }
+.cafe-card:hover { border-color:var(--orange); transform:translateY(-2px); box-shadow:0 8px 24px rgba(232,93,47,0.1); }
+.cafe-avatar { width:56px; height:56px; background:var(--orange-light); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
+.cafe-info { flex:1; }
+.cafe-name { font-family:'Fraunces',serif; font-size:17px; font-weight:700; color:var(--brown); margin-bottom:4px; }
+.cafe-desc { font-size:13px; color:var(--muted); line-height:1.4; margin-bottom:6px; }
+.cafe-meta { display:flex; gap:12px; flex-wrap:wrap; }
+.cafe-meta span { font-size:12px; color:var(--muted); }
+.cafe-arrow { font-size:20px; color:var(--orange); flex-shrink:0; }
+.empty { text-align:center; padding:60px 20px; color:var(--muted); font-size:15px; }
+.loading { text-align:center; padding:60px 20px; color:var(--muted); font-size:15px; }
+footer { text-align:center; padding:24px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); margin-top:16px; }
+footer span { color:var(--orange); font-weight:600; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">QR-<span>Меню</span>.uz</a>
+  <a href="register.html" class="nav-btn">Добавить кафе →</a>
+</nav>
+
+<div class="main">
+  <div class="hero">
+    <div class="hero-tag">📍 Ташкент</div>
+    <h1>Кафе с <em>цифровым меню</em></h1>
+    <p>Сканируйте QR-код прямо в кафе или смотрите меню заранее</p>
+  </div>
+
+  <div class="search-wrap">
+    <input class="search-input" id="searchInput" placeholder="🔍 Найти кафе по названию..." oninput="filterCafes(this.value)">
+  </div>
+
+  <div class="count" id="count"></div>
+  <div id="list"><div class="loading">Загружаем кафе...</div></div>
+</div>
+
+<footer>Сервис цифровых меню · <span>QR-Меню.uz</span></footer>
+
+<script type="module">
+  import { db } from './firebase.js';
+  import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+  let allCafes = [];
+
+  async function loadCafes() {
+    const cafesSnap = await getDocs(collection(db, 'cafes'));
+    const promises = [];
+
+    cafesSnap.forEach(cafeDoc => {
+      const uid = cafeDoc.id;
+      const cafeData = cafeDoc.data();
+      if (cafeData.plan === undefined) return; // пропускаем не-кафе документы
+
+      promises.push(
+        getDocs(collection(db, 'cafes', uid, 'settings')).then(async () => {
+          const settingsSnap = await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js")
+            .then(m => m.getDoc(m.doc(db, 'cafes', uid, 'settings', 'main')));
+          if (!settingsSnap.exists()) return null;
+          const s = settingsSnap.data();
+          if (!s.showInCatalog) return null;
+          if (!s.name) return null;
+          return { uid, ...s };
+        })
+      );
+    });
+
+    const results = await Promise.all(promises);
+    allCafes = results.filter(Boolean);
+
+    renderCafes(allCafes);
+  }
+
+  function renderCafes(cafes) {
+    const list = document.getElementById('list');
+    const count = document.getElementById('count');
+    count.textContent = `${cafes.length} кафе`;
+
+    if (cafes.length === 0) {
+      list.innerHTML = '<div class="empty">Кафе не найдены 😔</div>';
+      return;
+    }
+
+    list.innerHTML = cafes.map(c => `
+      <a class="cafe-card" href="menu.html?id=${c.uid}">
+        <div class="cafe-avatar">🍽️</div>
+        <div class="cafe-info">
+          <div class="cafe-name">${c.name}</div>
+          ${c.description ? `<div class="cafe-desc">${c.description.slice(0, 80)}${c.description.length > 80 ? '...' : ''}</div>` : ''}
+          <div class="cafe-meta">
+            ${c.address ? `<span>📍 ${c.address}</span>` : ''}
+            ${c.hours ? `<span>⏰ ${c.hours}</span>` : ''}
+          </div>
+        </div>
+        <div class="cafe-arrow">→</div>
+      </a>
+    `).join('');
+  }
+
+  window.filterCafes = function(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) { renderCafes(allCafes); return; }
+    const filtered = allCafes.filter(c =>
+      (c.name || '').toLowerCase().includes(q) ||
+      (c.description || '').toLowerCase().includes(q) ||
+      (c.address || '').toLowerCase().includes(q)
+    );
+    renderCafes(filtered);
+  }
+
+  loadCafes();
+</script>
+
+</body>
+</html>
