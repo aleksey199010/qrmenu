@@ -415,10 +415,9 @@ window.save = async function() {
   if (editingId) {
 
     const oldCategory =
-      cats.find(c => c.id === editingId);
+  cats.find(c => c.id === editingId);
 
-    const oldName =
-      oldCategory ? oldCategory.name : '';
+const oldName = editingId;
 
     await setDoc(
       doc(
