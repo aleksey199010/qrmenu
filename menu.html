@@ -545,13 +545,9 @@ window.openCart = function() {
 
     btn.textContent = '📲 Отправить заказ официанту';
     btn.disabled = false;
-    btn.style.display = window.telegramChatId ? 'block' : 'none';
+    btn.style.display = 'none';
 
     document.getElementById('cartOverlay').classList.add('open');
-};
-
-window.closeCart = function() {
-    document.getElementById('cartOverlay').classList.remove('open');
 };
 
   function updateCartUI() {
