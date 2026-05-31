@@ -67,7 +67,8 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 .cart-footer { margin-top: 16px; padding-top: 12px; border-top: 1px solid #f0e8d8; }
 .cart-empty { text-align: center; color: #8a6a54; font-size: 14px; padding: 24px 0; }
 .cart-clear { background: none; border: none; color: #b09080; font-size: 13px; cursor: pointer; display: block; margin: 12px auto 0; font-family: 'Golos Text', sans-serif; }
-</style>
+.dish-hit { border: 2px solid #e8b84b !important; }
+.dish-special { border: 2px solid #6a994e !important; }</style>
 </head>
 <body>
 
@@ -198,6 +199,8 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
     const tabsEl = document.getElementById('tabs');
     const mainEl = document.getElementById('main');
 
+    const hits = allProducts.filter(p => p.isHit);
+    const specials = allProducts.filter(p => p.isSpecial);
     const grouped = {};
     allProducts.forEach(p => {
       const cat = p.category || 'Прочее';
@@ -207,42 +210,56 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
 
     allCats = Object.keys(grouped);
 
-    if (allCats.length === 0) {
+    function dishCard(p, extraStyle = '') {
+      return `
+        <div class="dish" style="${extraStyle}" onclick="openModal('${getEmoji(p.category)}','${p.name.replace(/'/g,"\\'")}','${(p.description||'').replace(/'/g,"\\'")}','${p.price}','${p.photo||''}','${p.oldPrice||''}')">
+          ${p.photo ? `<div class="dish-photo"><img src="${p.photo}" alt="${p.name}"></div>` : `<div class="dish-emoji">${getEmoji(p.category)}</div>`}
+          <div class="dish-body">
+            <div class="dish-name">${p.name}</div>
+            ${p.description ? `<div class="dish-desc">${p.description}</div>` : ''}
+            <div class="dish-price">
+              ${Number(p.price).toLocaleString()} сум
+              ${p.oldPrice ? `<span style="text-decoration:line-through;color:#b09080;font-size:13px;margin-left:6px;font-weight:400;">${Number(p.oldPrice).toLocaleString()} сум</span>` : ''}
+            </div>
+            <button data-cart-id="${p.id}" onclick="event.stopPropagation();addToCart('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" style="margin-top:8px;background:#3d2b1f;color:#e8b84b;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;">+</button>
+          </div>
+        </div>`;
+    }
+
+    if (allCats.length === 0 && hits.length === 0) {
       mainEl.innerHTML = '<div class="empty">В меню пока нет блюд</div>';
     } else {
-      allCats.forEach((cat, i) => {
+      let tabIndex = 0;
+
+      function addTab(label, sectionId, isFirst) {
         const tab = document.createElement('div');
-        tab.className = 'tab' + (i === 0 ? ' active' : '');
-        tab.textContent = getEmoji(cat) + ' ' + cat;
+        tab.className = 'tab' + (isFirst ? ' active' : '');
+        tab.textContent = label;
         tab.onclick = () => {
           document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
           document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
           tab.classList.add('active');
-          document.getElementById('cat-' + i).classList.add('active');
+          document.getElementById(sectionId).classList.add('active');
         };
         tabsEl.appendChild(tab);
+      }
 
+      // 🔥 ХИТЫ — первая вкладка
+      if (hits.length > 0) {
+        addTab('🔥 Хиты', 'sec-hits', true);
         const sec = document.createElement('div');
-        sec.className = 'section' + (i === 0 ? ' active' : '');
-        sec.id = 'cat-' + i;
-        sec.innerHTML = `<div class="section-title">${cat}</div>` +
-          grouped[cat].map(p => `
-            <div class="dish" onclick="openModal('${getEmoji(p.category)}','${p.name.replace(/'/g,"\\'")}','${(p.description||'').replace(/'/g,"\\'")}','${p.price}','${p.photo||''}','${p.oldPrice||''}')">
-              ${p.photo ? `<div class="dish-photo"><img src="${p.photo}" alt="${p.name}"></div>` : `<div class="dish-emoji">${getEmoji(p.category)}</div>`}
-              <div class="dish-body">
-                <div class="dish-name">${p.name}</div>
-                ${p.description ? `<div class="dish-desc">${p.description}</div>` : ''}
-                <div class="dish-price">
-                  ${Number(p.price).toLocaleString()} сум
-                  ${p.oldPrice ? `<span style="text-decoration:line-through;color:#b09080;font-size:13px;margin-left:6px;font-weight:400;">${Number(p.oldPrice).toLocaleString()} сум</span>` : ''}
-                </div>
-                <button data-cart-id="${p.id}" onclick="event.stopPropagation();addToCart('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" style="margin-top:8px;background:#3d2b1f;color:#e8b84b;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;">+</button>
-              </div>
-            </div>
-          `).join('');
+        sec.className = 'section active';
+        sec.id = 'sec-hits';
+        sec.innerHTML = `<div class="section-title">🔥 Хиты</div>` +
+          hits.map(p => dishCard(p, 'border:2px solid #e8b84b;')).join('');
         mainEl.appendChild(sec);
-      });
-    }
+      }
+
+      // Обычные категории
+      allCats.forEach((cat, i) => {
+        const isFirst = hits.length === 0 && i === 0;
+        addTab(getEmoji(cat) + ' ' + cat, 'cat-' + i, isFirst);
+        const sec = document.createElement('div'
 
     const today = new Date().toDateString();
     const scansRef = doc(db, 'cafes', uid, 'stats', 'scans');
