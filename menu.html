@@ -199,22 +199,7 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 
   function getCategoryName(cat) {
     if (currentLang !== 'uz') return cat;
-    const translations = {
-      'Салаты': 'Salatlar',
-      'Супы': "Sho'rvalar",
-      'Горячие блюда': 'Issiq taomlar',
-      'Горячее': 'Issiq taomlar',
-      'Напитки': 'Ichimliklar',
-      'Десерты': 'Shirinliklar',
-      'Завтраки': 'Nonushtalar',
-      'Выпечка': 'Pishiriqlar',
-      'Фастфуд': 'Fast food',
-      'Пицца': 'Pitsa',
-      'Сеты': 'Setlar',
-      'Гарниры': 'Garnirlar',
-      'Соусы': 'Souslar'
-    };
-    return translations[cat] || cat;
+    return categoryUzMap[cat] || cat;
   }
 
   async function loadMenu(uid) {
@@ -236,6 +221,13 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
     const plan = cafeData.plan || 'free';
     const limit = plan === 'pro' ? 99999 : 10;
     console.log('CAFE PLAN:', plan, 'LIMIT:', limit, 'DATA:', JSON.stringify(cafeData));
+
+    const catsSnap = await getDocs(collection(db, 'cafes', uid, 'categories'));
+    const categoryUzMap = {};
+    catsSnap.forEach(d => {
+      const c = d.data();
+      if (c.name && c.nameUz) categoryUzMap[c.name] = c.nameUz;
+    });
 
     const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
     allProducts = [];
