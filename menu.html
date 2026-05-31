@@ -262,9 +262,28 @@ import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gs
       allCats.forEach((cat, i) => {
         const isFirst = hits.length === 0 && i === 0;
         addTab(getEmoji(cat) + ' ' + cat, 'cat-' + i, isFirst);
-        const sec = document.createElement('div'
+        const sec = document.createElement('div');
+        sec.className = 'section' + (isFirst ? ' active' : '');
+        sec.id = 'cat-' + i;
+        sec.innerHTML = '<div class="section-title">' + cat + '</div>' +
+          grouped[cat].map(p => dishCard(p)).join('');
+        mainEl.appendChild(sec);
+      });
+
+      // 🎁 СПЕЦПРЕДЛОЖЕНИЯ — последняя вкладка
+      if (specials.length > 0) {
+        addTab('🎁 Спецпредложения', 'sec-specials', false);
+        const sec = document.createElement('div');
+        sec.className = 'section';
+        sec.id = 'sec-specials';
+        sec.innerHTML = '<div class="section-title">🎁 Спецпредложения</div>' +
+          specials.map(p => dishCard(p, 'border:2px solid #6a994e;')).join('');
+        mainEl.appendChild(sec);
+      }
+    }
 
     const today = new Date().toDateString();
+        
     const scansRef = doc(db, 'cafes', uid, 'stats', 'scans');
     const scansSnap = await getDoc(scansRef);
     if (scansSnap.exists()) {
