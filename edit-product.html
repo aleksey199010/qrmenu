@@ -317,8 +317,7 @@ textarea { min-height: 80px; resize: vertical; }
     </div>
 
     <div class="form-group">
-      <label>Название на узбекском <span id="uzTranslating" style="color:#f5c842;font-size:11px;display:none;">⏳ перевод...</span></label>
-      <input type="text" id="nameUz" placeholder="Автоперевод при сохранении">
+<label>Название на узбекском</label>      <input type="text" id="nameUz" placeholder="Автоперевод при сохранении">
     </div>
 
     <div class="form-group">
@@ -469,23 +468,8 @@ textarea { min-height: 80px; resize: vertical; }
 
     const oldPrice = document.getElementById('oldPrice').value;
 
-    let nameUz = document.getElementById('nameUz').value.trim();
-    let descriptionUz = document.getElementById('descriptionUz').value.trim();
-    if (!nameUz) {
-      document.getElementById('uzTranslating').style.display = 'inline';
-      try {
-        const r = await fetch('/api/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, description })
-        });
-        const d = await r.json();
-        const parsed = JSON.parse(d.text);
-        nameUz = parsed.name_uz || '';
-        descriptionUz = parsed.description_uz || '';
-      } catch(e) { nameUz = ''; descriptionUz = ''; }
-      document.getElementById('uzTranslating').style.display = 'none';
-    }
+    const nameUz = document.getElementById('nameUz').value.trim();
+    const descriptionUz = document.getElementById('descriptionUz').value.trim();
 
     await setDoc(doc(db, 'cafes', currentUid, 'products', currentId), {
       id: currentId,
