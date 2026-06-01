@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Статистика | QR-Меню.uz</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Golos Text',sans-serif; background:#0a0a0a; color:white; min-height:100vh; }
+
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 20px; border-bottom:1px solid #1e1e1e;
+  background:#0f0f0f; position:sticky; top:0; z-index:50;
+}
+.logo { font-family:'Unbounded',sans-serif; font-size:16px; font-weight:700; color:#f5c842; }
+.back-btn {
+  background:#1a1a1a; color:#888; border:1px solid #2a2a2a;
+  padding:8px 16px; border-radius:10px; cursor:pointer;
+  font-size:13px; font-family:'Golos Text',sans-serif;
+}
+
+.main { max-width:640px; margin:0 auto; padding:24px 16px 60px; }
+
+.page-header { margin-bottom:28px; }
+.page-title { font-family:'Unbounded',sans-serif; font-size:22px; font-weight:700; margin-bottom:4px; }
+.page-sub { font-size:13px; color:#555; }
+
+/* Period tabs */
+.period-tabs {
+  display:flex; gap:6px; margin-bottom:24px;
+  background:#111; border:1px solid #1e1e1e; border-radius:14px; padding:6px;
+}
+.period-tab {
+  flex:1; padding:8px 0; text-align:center; font-size:12px; font-weight:600;
+  border-radius:10px; cursor:pointer; color:#555; transition:all 0.2s;
+  font-family:'Golos Text',sans-serif; border:none; background:transparent;
+}
+.period-tab.active { background:#f5c842; color:#000; }
+
+/* KPI row */
+.kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; }
+.kpi-card {
+  background:#111; border:1px solid #1e1e1e; border-radius:16px;
+  padding:18px 16px; position:relative; overflow:hidden;
+}
+.kpi-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--accent,#f5c842);
+}
+.kpi-icon { font-size:22px; margin-bottom:8px; }
+.kpi-num {
+  font-family:'Unbounded',sans-serif; font-size:26px; font-weight:700;
+  color:var(--accent,#f5c842); line-height:1;
+}
+.kpi-label { font-size:11px; color:#555; margin-top:4px; }
+.kpi-delta { font-size:11px; margin-top:6px; }
+.kpi-delta.up { color:#4ade80; }
+.kpi-delta.down { color:#f87171; }
+.kpi-delta.neutral { color:#555; }
+
+/* Section heading */
+.sec-head {
+  font-family:'Unbounded',sans-serif; font-size:11px; color:#444;
+  text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; margin-top:28px;
+}
+
+/* Bar chart */
+.chart-card {
+  background:#111; border:1px solid #1e1e1e; border-radius:16px;
+  padding:20px 16px; margin-bottom:10px;
+}
+.chart-title { font-size:13px; font-weight:600; color:#ccc; margin-bottom:16px; }
+.bar-chart { display:flex; align-items:flex-end; gap:4px; height:80px; }
+.bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
+.bar {
+  width:100%; border-radius:4px 4px 0 0;
+  background:linear-gradient(to top,#f5c842,#fde68a);
+  min-height:2px; transition:height 0.5s ease;
+  position:relative; cursor:pointer;
+}
+.bar:hover { opacity:0.85; }
+.bar-label { font-size:9px; color:#444; white-space:nowrap; }
+.bar-val { font-size:9px; color:#666; }
+
+/* Hours chart */
+.hours-chart { display:flex; align-items:flex-end; gap:3px; height:60px; margin-top:8px; }
+.h-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; height:100%; justify-content:flex-end; }
+.h-bar {
+  width:100%; border-radius:3px 3px 0 0;
+  background:linear-gradient(to top,#a855f7,#d8b4fe);
+  min-height:1px; transition:height 0.5s ease;
+}
+.h-label { font-size:8px; color:#444; }
+
+/* Top dishes */
+.dish-row {
+  display:flex; align-items:center; gap:12px;
+  background:#111; border:1px solid #1e1e1e; border-radius:14px;
+  padding:14px 16px; margin-bottom:8px;
+}
+.dish-rank {
+  font-family:'Unbounded',sans-serif; font-size:16px; font-weight:700;
+  color:#333; width:24px; flex-shrink:0; text-align:center;
+}
+.dish-rank.gold { color:#f5c842; }
+.dish-rank.silver { color:#9ca3af; }
+.dish-rank.bronze { color:#cd7c2f; }
+.dish-info { flex:1; }
+.dish-name-stat { font-size:14px; font-weight:600; color:#ccc; margin-bottom:2px; }
+.dish-cat { font-size:11px; color:#444; }
+.dish-views { text-align:right; }
+.dish-views-num { font-family:'Unbounded',sans-serif; font-size:16px; font-weight:700; color:#f5c842; }
+.dish-views-lbl { font-size:10px; color:#555; }
+
+/* Progress bar for dishes */
+.dish-progress { height:3px; background:#1e1e1e; border-radius:2px; margin-top:6px; }
+.dish-progress-fill { height:100%; border-radius:2px; background:linear-gradient(to right,#f5c842,#fde68a); transition:width 0.6s ease; }
+
+/* Reviews */
+.review-summary {
+  background:#111; border:1px solid #1e1e1e; border-radius:16px;
+  padding:20px; margin-bottom:10px; display:flex; gap:20px; align-items:center;
+}
+.review-big-num {
+  font-family:'Unbounded',sans-serif; font-size:48px; font-weight:700; color:#f5c842; line-height:1;
+}
+.review-stars { font-size:18px; margin:4px 0; }
+.review-count { font-size:12px; color:#555; }
+.review-bars { flex:1; }
+.review-bar-row { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.review-bar-lbl { font-size:11px; color:#555; width:8px; }
+.review-bar-track { flex:1; height:6px; background:#1e1e1e; border-radius:3px; overflow:hidden; }
+.review-bar-fill { height:100%; border-radius:3px; background:#f5c842; transition:width 0.6s ease; }
+.review-bar-cnt { font-size:11px; color:#555; width:16px; text-align:right; }
+
+.review-card {
+  background:#111; border:1px solid #1e1e1e; border-radius:14px;
+  padding:14px 16px; margin-bottom:8px;
+}
+.review-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.review-author { font-size:13px; font-weight:600; color:#ccc; }
+.review-date { font-size:11px; color:#444; }
+.review-stars-sm { font-size:12px; }
+.review-text { font-size:13px; color:#666; line-height:1.5; margin-top:4px; }
+.review-status {
+  display:inline-block; margin-top:8px; padding:3px 10px; border-radius:20px;
+  font-size:10px; font-weight:700;
+}
+.status-pending { background:#1a1000; color:#f5c842; border:1px solid #2a2000; }
+.status-approved { background:#0a1a0a; color:#4ade80; border:1px solid #1a3a1a; }
+
+/* Orders */
+.order-card {
+  background:#111; border:1px solid #1e1e1e; border-radius:14px;
+  padding:14px 16px; margin-bottom:8px;
+}
+.order-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.order-time { font-size:12px; color:#555; }
+.order-total { font-family:'Unbounded',sans-serif; font-size:14px; font-weight:700; color:#f5c842; }
+.order-items { font-size:12px; color:#666; line-height:1.7; }
+
+/* Empty state */
+.empty-state { text-align:center; padding:40px 20px; color:#333; font-size:13px; }
+.empty-state .emoji { font-size:36px; margin-bottom:8px; }
+
+/* Loading */
+.loading { text-align:center; padding:60px 20px; color:#444; font-size:13px; }
+.spinner { width:28px; height:28px; border:3px solid #1e1e1e; border-top-color:#f5c842; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 12px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Pro lock overlay */
+.pro-lock {
+  background:#111; border:1px solid #2a2000; border-radius:16px;
+  padding:24px; text-align:center; margin-bottom:10px;
+}
+.pro-lock-icon { font-size:32px; margin-bottom:10px; }
+.pro-lock-title { font-size:14px; font-weight:700; color:#f5c842; margin-bottom:6px; }
+.pro-lock-desc { font-size:12px; color:#555; margin-bottom:14px; line-height:1.6; }
+.pro-lock-btn {
+  background:#f5c842; color:#000; border:none; border-radius:10px;
+  padding:10px 20px; font-size:13px; font-weight:700; cursor:pointer;
+  font-family:'Golos Text',sans-serif;
+}
+
+.tooltip {
+  position:absolute; bottom:100%; left:50%; transform:translateX(-50%);
+  background:#222; border:1px solid #333; color:#ccc; font-size:10px;
+  padding:4px 8px; border-radius:6px; white-space:nowrap; pointer-events:none;
+  opacity:0; transition:opacity 0.2s; margin-bottom:4px; z-index:10;
+}
+.bar:hover .tooltip { opacity:1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🍽️ QR-Меню.uz</div>
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">← Кабинет</button>
+</div>
+
+<div class="main">
+
+  <div class="page-header">
+    <div class="page-title">📊 Статистика</div>
+    <div class="page-sub" id="cafeSub">Загрузка...</div>
+  </div>
+
+  <div class="period-tabs">
+    <button class="period-tab active" onclick="setPeriod('today',this)">Сегодня</button>
+    <button class="period-tab" onclick="setPeriod('week',this)">Неделя</button>
+    <button class="period-tab" onclick="setPeriod('month',this)">Месяц</button>
+    <button class="period-tab" onclick="setPeriod('all',this)">Всё время</button>
+  </div>
+
+  <div id="kpiGrid" class="kpi-grid">
+    <div class="kpi-card" style="--accent:#f5c842">
+      <div class="kpi-icon">👁️</div>
+      <div class="kpi-num" id="kpiScans">—</div>
+      <div class="kpi-label">Открытий меню</div>
+      <div class="kpi-delta neutral" id="kpiScansDelta">—</div>
+    </div>
+    <div class="kpi-card" style="--accent:#4ade80">
+      <div class="kpi-icon">🍽️</div>
+      <div class="kpi-num" id="kpiDishViews">—</div>
+      <div class="kpi-label">Просмотров блюд</div>
+      <div class="kpi-delta neutral" id="kpiDishViewsDelta">—</div>
+    </div>
+    <div class="kpi-card" style="--accent:#a855f7">
+      <div class="kpi-icon">🛒</div>
+      <div class="kpi-num" id="kpiOrders">—</div>
+      <div class="kpi-label">Заказов</div>
+      <div class="kpi-delta neutral" id="kpiOrdersDelta">—</div>
+    </div>
+    <div class="kpi-card" style="--accent:#f97316">
+      <div class="kpi-icon">⭐</div>
+      <div class="kpi-num" id="kpiRating">—</div>
+      <div class="kpi-label">Средний рейтинг</div>
+      <div class="kpi-delta neutral" id="kpiRatingCount">— отзывов</div>
+    </div>
+  </div>
+
+  <!-- Scans chart -->
+  <div class="sec-head">Сканирования по дням</div>
+  <div class="chart-card">
+    <div class="chart-title" id="scansChartTitle">Последние 7 дней</div>
+    <div class="bar-chart" id="scansChart">
+      <div class="loading" style="width:100%;height:80px;display:flex;align-items:center;justify-content:center;">
+        <div class="spinner" style="width:20px;height:20px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hourly activity -->
+  <div class="sec-head">Активность по часам</div>
+  <div class="chart-card">
+    <div class="chart-title">Когда посетители смотрят меню</div>
+    <div class="hours-chart" id="hoursChart">
+      <div class="loading" style="width:100%;height:60px;display:flex;align-items:center;justify-content:center;">
+        <div class="spinner" style="width:16px;height:16px;"></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;padding:0 2px;">
+      <span style="font-size:9px;color:#333">00:00</span>
+      <span style="font-size:9px;color:#333">06:00</span>
+      <span style="font-size:9px;color:#333">12:00</span>
+      <span style="font-size:9px;color:#333">18:00</span>
+      <span style="font-size:9px;color:#333">23:00</span>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:#444;" id="peakHour">Пиковое время: —</div>
+  </div>
+
+  <!-- Top dishes -->
+  <div class="sec-head">Топ блюд по просмотрам</div>
+  <div id="topDishes">
+    <div class="loading"><div class="spinner"></div>Загрузка...</div>
+  </div>
+
+  <!-- Reviews block -->
+  <div class="sec-head">Отзывы и рейтинг</div>
+  <div id="reviewsBlock">
+    <div class="loading"><div class="spinner"></div>Загрузка...</div>
+  </div>
+
+  <!-- Recent orders -->
+  <div class="sec-head">Последние заказы</div>
+  <div id="ordersBlock">
+    <div class="loading"><div class="spinner"></div>Загрузка...</div>
+  </div>
+
+</div>
+
+<script type="module">
+import { auth, db } from './firebase.js';
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import {
+  doc, getDoc, collection, getDocs, query, orderBy, limit
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+let uid = null;
+let isPro = false;
+let allScans = {};      // { 'YYYY-MM-DD': count }
+let allHours = {};      // { 0..23: count }
+let allDishViews = {};  // { dishId: { name, category, count } }
+let allReviews = [];
+let allOrders = [];
+let currentPeriod = 'today';
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  uid = user.uid;
+
+  const settingsSnap = await getDoc(doc(db, 'cafes', uid, 'settings', 'main'));
+  const name = settingsSnap.exists() ? (settingsSnap.data().name || 'Ваше кафе') : 'Ваше кафе';
+  document.getElementById('cafeSub').textContent = name + ' · Аналитика';
+
+  const cafeSnap = await getDoc(doc(db, 'cafes', uid));
+  const cafeData = cafeSnap.exists() ? cafeSnap.data() : {};
+  const planExpiry = cafeData.planExpiry;
+  isPro = cafeData.plan === 'pro' && (!planExpiry || new Date(planExpiry) > new Date());
+
+  await Promise.all([loadScans(), loadDishViews(), loadReviews(), loadOrders()]);
+  render();
+});
+
+// ─────────────────────────────────────────
+// DATA LOADERS
+// ─────────────────────────────────────────
+
+async function loadScans() {
+  // Daily scans: cafes/{uid}/stats/scans_daily — map of date→count
+  const snap = await getDoc(doc(db, 'cafes', uid, 'stats', 'scans'));
+  if (snap.exists()) {
+    const d = snap.data();
+    allScans._total = d.total || 0;
+    allScans._today = d.today || 0;
+    allScans._date = d.date || '';
+  }
+
+  // Daily history: cafes/{uid}/stats/scans_history — { days: { 'YYYY-MM-DD': n } }
+  const histSnap = await getDoc(doc(db, 'cafes', uid, 'stats', 'scans_history'));
+  if (histSnap.exists()) {
+    const h = histSnap.data();
+    if (h.days) Object.assign(allScans, h.days);
+  }
+
+  // Hours: cafes/{uid}/stats/scans_hours — { h0:n, h1:n, ... h23:n }
+  const hoursSnap = await getDoc(doc(db, 'cafes', uid, 'stats', 'scans_hours'));
+  if (hoursSnap.exists()) {
+    const h = hoursSnap.data();
+    for (let i = 0; i < 24; i++) allHours[i] = h['h' + i] || 0;
+  }
+}
+
+async function loadDishViews() {
+  // cafes/{uid}/stats/dish_views — { dishId: { name, category, count } }
+  const snap = await getDoc(doc(db, 'cafes', uid, 'stats', 'dish_views'));
+  if (snap.exists()) {
+    allDishViews = snap.data();
+  }
+}
+
+async function loadReviews() {
+  const snap = await getDocs(collection(db, 'cafes', uid, 'reviews'));
+  allReviews = [];
+  snap.forEach(d => allReviews.push({ id: d.id, ...d.data() }));
+  allReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+async function loadOrders() {
+  try {
+    const q = query(collection(db, 'cafes', uid, 'orders'), orderBy('createdAt', 'desc'), limit(20));
+    const snap = await getDocs(q);
+    allOrders = [];
+    snap.forEach(d => allOrders.push({ id: d.id, ...d.data() }));
+  } catch(e) {
+    allOrders = [];
+  }
+}
+
+// ─────────────────────────────────────────
+// PERIOD FILTER HELPERS
+// ─────────────────────────────────────────
+
+function getDateRange(period) {
+  const now = new Date();
+  if (period === 'today') {
+    const s = new Date(now); s.setHours(0,0,0,0);
+    return { start: s, end: now };
+  }
+  if (period === 'week') {
+    const s = new Date(now); s.setDate(s.getDate() - 6); s.setHours(0,0,0,0);
+    return { start: s, end: now };
+  }
+  if (period === 'month') {
+    const s = new Date(now); s.setDate(s.getDate() - 29); s.setHours(0,0,0,0);
+    return { start: s, end: now };
+  }
+  return { start: new Date(0), end: now };
+}
+
+function inPeriod(isoDate, period) {
+  const { start } = getDateRange(period);
+  return new Date(isoDate) >= start;
+}
+
+// ─────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────
+
+window.setPeriod = function(p, btn) {
+  currentPeriod = p;
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function render() {
+  renderKPI();
+  renderScansChart();
+  renderHoursChart();
+  renderTopDishes();
+  renderReviews();
+  renderOrders();
+}
+
+function renderKPI() {
+  const today = new Date().toDateString();
+
+  // Scans
+  let scans = 0;
+  if (currentPeriod === 'today') {
+    scans = allScans._date === today ? (allScans._today || 0) : 0;
+  } else if (currentPeriod === 'all') {
+    scans = allScans._total || 0;
+  } else {
+    const { start } = getDateRange(currentPeriod);
+    Object.entries(allScans).forEach(([k, v]) => {
+      if (k.startsWith('_')) return;
+      if (new Date(k) >= start) scans += v;
+    });
+    // also add today if not in history
+    if (allScans._date === today) scans += (allScans._today || 0);
+  }
+  document.getElementById('kpiScans').textContent = fmtNum(scans);
+
+  // Dish views
+  let dishViews = 0;
+  Object.values(allDishViews).forEach(v => {
+    if (typeof v === 'object' && v.count) {
+      if (currentPeriod === 'all') {
+        dishViews += v.count;
+      } else {
+        // use period-filtered counts if available
+        dishViews += v.count; // simplified — full period filtering needs per-dish daily data
+      }
+    }
+  });
+  document.getElementById('kpiDishViews').textContent = fmtNum(dishViews);
+
+  // Orders
+  const filteredOrders = allOrders.filter(o => currentPeriod === 'all' || inPeriod(o.createdAt, currentPeriod));
+  document.getElementById('kpiOrders').textContent = fmtNum(filteredOrders.length);
+
+  // Rating
+  const filteredReviews = allReviews.filter(r => r.status === 'approved');
+  const avg = filteredReviews.length
+    ? (filteredReviews.reduce((s, r) => s + (r.stars || 5), 0) / filteredReviews.length).toFixed(1)
+    : '—';
+  document.getElementById('kpiRating').textContent = avg;
+  document.getElementById('kpiRatingCount').textContent = filteredReviews.length + ' отзывов';
+}
+
+function renderScansChart() {
+  const el = document.getElementById('scansChart');
+  const titleEl = document.getElementById('scansChartTitle');
+  const today = new Date();
+
+  let days = 7;
+  if (currentPeriod === 'month') days = 30;
+  if (currentPeriod === 'today') {
+    // show hours for today
+    el.innerHTML = '';
+    const maxVal = Math.max(...Object.values(allHours), 1);
+    for (let h = 0; h < 24; h += 2) {
+      const val = allHours[h] || 0;
+      const pct = Math.round((val / maxVal) * 100);
+      const wrap = document.createElement('div');
+      wrap.className = 'bar-wrap';
+      wrap.innerHTML = `
+        <div class="bar-val">${val > 0 ? val : ''}</div>
+        <div class="bar" style="height:${Math.max(pct,2)}%">
+          <div class="tooltip">${h}:00 — ${val} скан.</div>
+        </div>
+        <div class="bar-label">${h}:00</div>`;
+      el.appendChild(wrap);
+    }
+    titleEl.textContent = 'Сегодня по часам';
+    return;
+  }
+  if (currentPeriod === 'all') days = 14;
+
+  titleEl.textContent = days === 7 ? 'Последние 7 дней' : days === 30 ? 'Последние 30 дней' : 'Последние 14 дней';
+
+  const labels = [];
+  const values = [];
+  const todayStr = today.toDateString();
+
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const dStr = d.toDateString();
+    labels.push(d.toLocaleDateString('ru', { day:'numeric', month:'short' }));
+    let v = allScans[key] || 0;
+    if (dStr === todayStr) v = Math.max(v, allScans._today || 0);
+    values.push(v);
+  }
+
+  const maxVal = Math.max(...values, 1);
+  el.innerHTML = '';
+  values.forEach((val, i) => {
+    const pct = Math.round((val / maxVal) * 100);
+    const wrap = document.createElement('div');
+    wrap.className = 'bar-wrap';
+    wrap.innerHTML = `
+      <div class="bar-val">${val > 0 ? val : ''}</div>
+      <div class="bar" style="height:${Math.max(pct,2)}%">
+        <div class="tooltip">${labels[i]}: ${val}</div>
+      </div>
+      <div class="bar-label">${days <= 7 ? labels[i].split(' ')[0] : (i % 5 === 0 ? labels[i].split(' ')[0] : '')}</div>`;
+    el.appendChild(wrap);
+  });
+}
+
+function renderHoursChart() {
+  const el = document.getElementById('hoursChart');
+  const vals = Array.from({length:24}, (_, i) => allHours[i] || 0);
+  const maxVal = Math.max(...vals, 1);
+  el.innerHTML = '';
+  vals.forEach((val, h) => {
+    const pct = Math.round((val / maxVal) * 100);
+    const wrap = document.createElement('div');
+    wrap.className = 'h-bar-wrap';
+    wrap.innerHTML = `
+      <div class="h-bar" style="height:${Math.max(pct,2)}%" title="${h}:00 — ${val}"></div>`;
+    el.appendChild(wrap);
+  });
+
+  // Find peak hour
+  const peakH = vals.indexOf(Math.max(...vals));
+  const peakPeak = document.getElementById('peakHour');
+  if (Math.max(...vals) > 0) {
+    peakPeak.textContent = `🔥 Пиковое время: ${peakH}:00–${peakH+1}:00 (${vals[peakH]} посещений)`;
+  } else {
+    peakPeak.textContent = 'Нет данных. Данные появятся после первых сканирований.';
+  }
+}
+
+function renderTopDishes() {
+  const el = document.getElementById('topDishes');
+  const dishes = Object.entries(allDishViews)
+    .map(([id, v]) => ({ id, name: v.name || 'Блюдо', category: v.category || '', count: v.count || 0 }))
+    .filter(d => d.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+
+  if (dishes.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="emoji">🍽️</div>Данные появятся после просмотров блюд</div>`;
+    return;
+  }
+
+  const maxCount = dishes[0].count;
+  const ranks = ['gold','silver','bronze'];
+  el.innerHTML = dishes.map((d, i) => `
+    <div class="dish-row">
+      <div class="dish-rank ${ranks[i] || ''}">${i + 1}</div>
+      <div class="dish-info">
+        <div class="dish-name-stat">${d.name}</div>
+        <div class="dish-cat">${d.category}</div>
+        <div class="dish-progress">
+          <div class="dish-progress-fill" style="width:${Math.round(d.count/maxCount*100)}%"></div>
+        </div>
+      </div>
+      <div class="dish-views">
+        <div class="dish-views-num">${d.count}</div>
+        <div class="dish-views-lbl">просм.</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderReviews() {
+  const el = document.getElementById('reviewsBlock');
+
+  if (allReviews.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="emoji">💬</div>Отзывов пока нет</div>`;
+    return;
+  }
+
+  const approved = allReviews.filter(r => r.status === 'approved');
+  const avg = approved.length
+    ? (approved.reduce((s, r) => s + (r.stars || 5), 0) / approved.length)
+    : 0;
+  const starCounts = [5,4,3,2,1].map(s => allReviews.filter(r => r.stars === s).length);
+  const maxStar = Math.max(...starCounts, 1);
+
+  const starsHtml = '⭐'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+
+  let html = `
+    <div class="review-summary">
+      <div>
+        <div class="review-big-num">${avg > 0 ? avg.toFixed(1) : '—'}</div>
+        <div class="review-stars">${starsHtml}</div>
+        <div class="review-count">${allReviews.length} отзывов</div>
+      </div>
+      <div class="review-bars">
+        ${[5,4,3,2,1].map((s, i) => `
+          <div class="review-bar-row">
+            <div class="review-bar-lbl">${s}</div>
+            <div class="review-bar-track">
+              <div class="review-bar-fill" style="width:${Math.round(starCounts[i]/maxStar*100)}%"></div>
+            </div>
+            <div class="review-bar-cnt">${starCounts[i]}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+
+  html += allReviews.slice(0, 5).map(r => `
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-author">${r.name}</div>
+        <div class="review-date">${r.createdAt ? new Date(r.createdAt).toLocaleDateString('ru') : ''}</div>
+      </div>
+      <div class="review-stars-sm">${'⭐'.repeat(r.stars || 5)}</div>
+      <div class="review-text">${r.text}</div>
+      <span class="review-status ${r.status === 'approved' ? 'status-approved' : 'status-pending'}">
+        ${r.status === 'approved' ? '✓ Опубликован' : '⏳ На модерации'}
+      </span>
+    </div>`).join('');
+
+  if (allReviews.length > 5) {
+    html += `<div style="text-align:center;padding:12px 0;">
+      <a href="reviews.html" style="color:#f5c842;font-size:13px;text-decoration:none;">
+        Все отзывы (${allReviews.length}) →
+      </a></div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+function renderOrders() {
+  const el = document.getElementById('ordersBlock');
+
+  const filtered = allOrders.filter(o => currentPeriod === 'all' || inPeriod(o.createdAt, currentPeriod));
+
+  if (filtered.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="emoji">🛒</div>
+      Заказы через Telegram ещё не поступали</div>`;
+    return;
+  }
+
+  el.innerHTML = filtered.slice(0, 8).map(o => {
+    const items = Array.isArray(o.items) ? o.items : [];
+    return `
+      <div class="order-card">
+        <div class="order-header">
+          <div class="order-time">${o.createdAt ? new Date(o.createdAt).toLocaleString('ru', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—'}</div>
+          <div class="order-total">${o.total ? Number(o.total).toLocaleString() + ' сум' : '—'}</div>
+        </div>
+        <div class="order-items">
+          ${items.map(it => `${it.name} × ${it.qty}`).join(' · ')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function fmtNum(n) {
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return String(n);
+}
+
+window.logout = async function() {
+  await signOut(auth);
+  window.location.href = 'login.html';
+}
+</script>
+
+</body>
+</html>
