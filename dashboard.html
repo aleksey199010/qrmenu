@@ -77,34 +77,6 @@ body {
 
 .welcome h1 span { color: #f5c842; }
 
-/* STATS */
-.stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-
-.stat {
-  background: #111;
-  border: 1px solid #1e1e1e;
-  border-radius: 16px;
-  padding: 16px 12px;
-  text-align: center;
-}
-
-.stat-num {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: #f5c842;
-}
-
-.stat-label {
-  font-size: 11px;
-  color: #555;
-  margin-top: 4px;
-}
 
 /* SECTION TITLE */
 .section-title {
@@ -229,21 +201,6 @@ body {
     <h1>Добро пожаловать, <span id="cafeName">Кафе</span>!</h1>
   </div>
 
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num" id="dishCount">0</div>
-      <div class="stat-label">Блюд</div>
-    </div>
-    <div class="stat">
-  <div class="stat-num" id="scanCount">0</div>
-  <div class="stat-label">Сканирований</div>
-</div>
-    <div class="stat">
-      <div class="stat-num" id="catCount">0</div>
-      <div class="stat-label">Категорий</div>
-    </div>
-  </div>
-
   <div class="section-title">Управление</div>
 
   <div class="actions">
@@ -333,7 +290,6 @@ body {
 
     const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
     const totalDishes = productsSnap.size;
-    document.getElementById('dishCount').textContent = totalDishes;
 
     if (plan === 'pro') {
       const expiry = planExpiry ? new Date(planExpiry) : null;
@@ -361,11 +317,9 @@ body {
     }
 
     const catsSnap = await getDocs(collection(db, 'cafes', uid, 'categories'));
-    document.getElementById('catCount').textContent = catsSnap.size;
 
     const scansDoc = await getDoc(doc(db, 'cafes', uid, 'stats', 'scans'));
     if (scansDoc.exists()) {
-      document.getElementById('scanCount').textContent = scansDoc.data().total || 0;
     }
   });
 
