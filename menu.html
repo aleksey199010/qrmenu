@@ -48,7 +48,6 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 .modal-desc { font-size: 14px; color: #8a6a54; text-align: center; margin-top: 8px; line-height: 1.6; }
 .modal-price { font-size: 24px; font-weight: 700; color: #c9942a; text-align: center; margin: 16px 0 20px; }
 .modal-close { width: 100%; background: #3d2b1f; color: #e8b84b; border: none; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Golos Text', sans-serif; }
-/* КОРЗИНА */
 .cart-fab { position: fixed; bottom: 24px; right: 20px; background: #3d2b1f; color: #e8b84b; border: none; border-radius: 50px; padding: 13px 20px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; align-items: center; gap: 10px; z-index: 99; box-shadow: 0 4px 20px rgba(0,0,0,0.25); font-family: 'Golos Text', sans-serif; }
 .cart-fab:active { opacity: 0.85; }
 .cart-badge { background: #e8b84b; color: #3d2b1f; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
@@ -101,53 +100,47 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 <!-- ОТЗЫВЫ -->
 <div style="max-width:600px;margin:0 auto;padding:16px 16px 0;">
   <div style="font-family:'Playfair Display',serif;font-size:22px;color:#3d2b1f;margin-bottom:16px;">Отзывы</div>
-
   <div id="reviewsList" style="margin-bottom:16px;"></div>
-
   <div style="background:#fffdf8;border:1px solid #f0e8d8;border-radius:16px;padding:16px;">
     <div style="font-size:13px;font-weight:600;color:#3d2b1f;margin-bottom:12px;">Оставить отзыв</div>
-
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <span id="star1" onclick="setStar(1)" style="font-size:24px;cursor:pointer;">⭐</span>
-      <span id="star2" onclick="setStar(2)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">⭐</span>
-      <span id="star3" onclick="setStar(3)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">⭐</span>
-      <span id="star4" onclick="setStar(4)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">⭐</span>
-      <span id="star5" onclick="setStar(5)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">⭐</span>
+      <span id="star1" onclick="setStar(1)" style="font-size:24px;cursor:pointer;">&#11088;</span>
+      <span id="star2" onclick="setStar(2)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">&#11088;</span>
+      <span id="star3" onclick="setStar(3)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">&#11088;</span>
+      <span id="star4" onclick="setStar(4)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">&#11088;</span>
+      <span id="star5" onclick="setStar(5)" style="font-size:24px;cursor:pointer;filter:grayscale(1);">&#11088;</span>
     </div>
-
     <input id="reviewName" type="text" placeholder="Ваше имя" style="width:100%;padding:10px 14px;background:#faf6ef;border:1.5px solid #e0d0bc;border-radius:10px;font-size:14px;font-family:'Golos Text',sans-serif;color:#2c1a0e;outline:none;margin-bottom:8px;">
     <textarea id="reviewText" placeholder="Расскажите о вашем впечатлении..." style="width:100%;padding:10px 14px;background:#faf6ef;border:1.5px solid #e0d0bc;border-radius:10px;font-size:14px;font-family:'Golos Text',sans-serif;color:#2c1a0e;outline:none;min-height:80px;resize:vertical;margin-bottom:10px;"></textarea>
     <button onclick="submitReview()" style="width:100%;background:#3d2b1f;color:#e8b84b;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;">Отправить отзыв</button>
-    <div id="reviewSuccess" style="display:none;text-align:center;color:#6a994e;font-size:13px;margin-top:10px;">✅ Отзыв отправлен на проверку!</div>
+    <div id="reviewSuccess" style="display:none;text-align:center;color:#6a994e;font-size:13px;margin-top:10px;">&#9989; Отзыв отправлен на проверку!</div>
   </div>
 </div>
 
 <div class="share-wrap">
-  <button class="share-btn" onclick="shareMenu()">📤 Поделиться меню</button>
+  <button class="share-btn" onclick="shareMenu()">&#128228; Поделиться меню</button>
 </div>
 
 <div class="footer">
   Приятного аппетита! · <span>QR-Меню.uz</span>
 </div>
 
-<!-- КОРЗИНА FAB -->
 <button class="cart-fab" id="cartFab" onclick="openCart()">
-  🛒 <span id="cartFabLabel">Корзина</span>
+  &#128722; <span id="cartFabLabel">Корзина</span>
   <span class="cart-badge" id="cartBadge">0</span>
 </button>
 
-<!-- ШТОРКА КОРЗИНЫ -->
 <div class="cart-overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
   <div class="cart-sheet">
     <div class="cart-head">
       <h2>Ваш заказ</h2>
-      <button class="cart-x" onclick="closeCart()">×</button>
+      <button class="cart-x" onclick="closeCart()">&#215;</button>
     </div>
-    <div style="font-size:13px;color:#8a6a54;margin-bottom:16px;">📋 Покажите этот экран официанту</div>
+    <div style="font-size:13px;color:#8a6a54;margin-bottom:16px;">&#128203; Покажите этот экран официанту</div>
     <div id="cartItems"><p class="cart-empty">Корзина пуста</p></div>
     <div class="cart-footer" id="cartFooter" style="display:none">
       <div id="cartSummary"></div>
-      <button id="sendOrderBtn" onclick="sendOrder()" style="display:none;width:100%;background:#2d6a4f;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;margin-bottom:10px;">📲 Отправить заказ официанту</button>
+      <button id="sendOrderBtn" onclick="sendOrder()" style="display:none;width:100%;background:#2d6a4f;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Golos Text',sans-serif;margin-bottom:10px;">&#128242; Отправить заказ официанту</button>
       <button class="cart-clear" onclick="clearCart()">Очистить корзину</button>
     </div>
   </div>
@@ -160,13 +153,13 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
     <div class="modal-desc" id="m-desc"></div>
     <div class="modal-price" id="m-price"></div>
     <button id="m-cart-btn" class="modal-close" style="background:#c9942a;margin-bottom:10px;" onclick="modalAddToCart()">+ В корзину</button>
-    <button class="modal-close" onclick="document.getElementById('overlay').classList.remove('open')">Закрыть ✕</button>
+    <button class="modal-close" onclick="document.getElementById('overlay').classList.remove('open')">Закрыть &#10005;</button>
   </div>
 </div>
 
 <script type="module">
   import { db } from './firebase.js';
-  import { doc, getDoc, collection, getDocs, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { doc, getDoc, collection, getDocs, setDoc, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
   const emojis = { 'Горячее':'🍲','Салаты':'🥗','Напитки':'☕','Десерты':'🍰','Выпечка':'🫓','Завтраки':'🍳' };
 
@@ -186,7 +179,7 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
     loadMenu(cafeId);
   }
 
- let allProducts = [];
+  let allProducts = [];
   let allCats = [];
   let currentLang = localStorage.getItem('menu_lang') || 'ru';
   let categoryUzMap = {};
@@ -199,22 +192,71 @@ body { font-family: 'Golos Text', sans-serif; background: #faf6ef; color: #2c1a0
 
   function getName(p) { return (currentLang === 'uz' && p.nameUz) ? p.nameUz : p.name; }
   function getDesc(p) { return (currentLang === 'uz' && p.descriptionUz) ? p.descriptionUz : (p.description || ''); }
-
   function getCategoryName(cat) {
     if (currentLang !== 'uz') return cat;
     return categoryUzMap[cat] || cat;
   }
 
+  // ══════════════════════════════════════════════
+  // ТРЕКИНГ СТАТИСТИКИ
+  // ══════════════════════════════════════════════
+
+  async function trackHour(uid) {
+    const hour = new Date().getHours();
+    const field = 'h' + hour;
+    const ref = doc(db, 'cafes', uid, 'stats', 'scans_hours');
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      const upd = {}; upd[field] = (snap.data()[field] || 0) + 1;
+      await updateDoc(ref, upd);
+    } else {
+      const init = {};
+      for (let i = 0; i < 24; i++) init['h' + i] = 0;
+      init[field] = 1;
+      await setDoc(ref, init);
+    }
+  }
+
+  async function trackDailyHistory(uid) {
+    const today = new Date().toISOString().slice(0, 10);
+    const ref = doc(db, 'cafes', uid, 'stats', 'scans_history');
+    const snap = await getDoc(ref);
+    const days = snap.exists() ? (snap.data().days || {}) : {};
+    days[today] = (days[today] || 0) + 1;
+    await setDoc(ref, { days });
+  }
+
+  async function trackDishView(uid, dishId, dishName, dishCategory) {
+    if (!dishId || !uid) return;
+    const ref = doc(db, 'cafes', uid, 'stats', 'dish_views');
+    const snap = await getDoc(ref);
+    const data = snap.exists() ? snap.data() : {};
+    const prev = data[dishId] || { name: dishName, category: dishCategory || '', count: 0 };
+    data[dishId] = { name: dishName, category: dishCategory || prev.category, count: prev.count + 1 };
+    await setDoc(ref, data);
+  }
+
+  async function saveOrderToFirestore(uid, items, total) {
+    if (!uid || !items.length) return;
+    await addDoc(collection(db, 'cafes', uid, 'orders'), {
+      items,
+      total,
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  // ══════════════════════════════════════════════
+
   async function loadMenu(uid) {
     const settingsSnap = await getDoc(doc(db, 'cafes', uid, 'settings', 'main'));
     if (settingsSnap.exists()) {
       const s = settingsSnap.data();
-if (s.name) document.getElementById('cafeName').textContent = s.name;
-
-if (s.logo) {
-  document.getElementById('cafeLogo').src = s.logo;
-  document.getElementById('cafeLogoWrap').style.display = 'block';
-}      if (s.hours) document.getElementById('cafeHours').textContent = '⏰ ' + s.hours;
+      if (s.name) document.getElementById('cafeName').textContent = s.name;
+      if (s.logo) {
+        document.getElementById('cafeLogo').src = s.logo;
+        document.getElementById('cafeLogoWrap').style.display = 'block';
+      }
+      if (s.hours) document.getElementById('cafeHours').textContent = '⏰ ' + s.hours;
       if (s.address) document.getElementById('cafeAddress').textContent = '📍 ' + s.address;
       window.serviceCharge = Number(s.serviceCharge) || 0;
       window.telegramChatId = s.telegramChatId || '';
@@ -237,7 +279,7 @@ if (s.logo) {
 
     const productsSnap = await getDocs(collection(db, 'cafes', uid, 'products'));
     allProducts = [];
-   productsSnap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+    productsSnap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
     allProducts = allProducts.filter(p => p.available !== false);
     allProducts = allProducts.slice(0, limit);
 
@@ -262,7 +304,8 @@ if (s.logo) {
       const desc = getDesc(p).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
       const photo = p.photo || '';
       const oldPrice = p.oldPrice || '';
-      return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\',\'' + p.id + '\')">'
+      const cat = (p.category || '').replace(/'/g,"\\'");
+      return '<div class="dish" style="' + extraStyle + '" onclick="openModal(\'' + emo + '\',\'' + nm + '\',\'' + desc + '\',\'' + p.price + '\',\'' + photo + '\',\'' + oldPrice + '\',\'' + p.id + '\',\'' + cat + '\')">'
         + (photo ? '<div class="dish-photo"><img src="' + photo + '" alt="' + getName(p) + '"></div>' : '<div class="dish-no-photo">' + emo + '</div>')
         + '<div class="dish-body">'
         + '<div class="dish-name">' + getName(p) + '</div>'
@@ -292,7 +335,6 @@ if (s.logo) {
         tabsEl.appendChild(tab);
       }
 
-      // 🔥 ХИТЫ — первая вкладка
       if (hits.length > 0) {
         addTab(currentLang === 'uz' ? '🔥 Hitlar' : '🔥 Хиты', 'sec-hits', true);
         const sec = document.createElement('div');
@@ -303,7 +345,6 @@ if (s.logo) {
         mainEl.appendChild(sec);
       }
 
-      // Обычные категории
       allCats.forEach((cat, i) => {
         const isFirst = hits.length === 0 && i === 0;
         addTab(getCategoryName(cat), 'cat-' + i, isFirst);
@@ -315,7 +356,6 @@ if (s.logo) {
         mainEl.appendChild(sec);
       });
 
-      // 🎁 СПЕЦПРЕДЛОЖЕНИЯ — последняя вкладка
       if (specials.length > 0) {
         addTab(currentLang === 'uz' ? '🎁 Aksiyalar' : '🎁 Спецпредложения', 'sec-specials', false);
         const sec = document.createElement('div');
@@ -330,6 +370,7 @@ if (s.logo) {
     document.getElementById('btnRu').classList.toggle('active', currentLang === 'ru');
     document.getElementById('btnUz').classList.toggle('active', currentLang === 'uz');
 
+    // Трекинг сканирования (существующий код)
     const today = new Date().toDateString();
     const scansRef = doc(db, 'cafes', uid, 'stats', 'scans');
     const scansSnap = await getDoc(scansRef);
@@ -344,13 +385,21 @@ if (s.logo) {
       await setDoc(scansRef, { total: 1, today: 1, date: today });
     }
 
+    // Новый трекинг: час + дневная история (не блокируют загрузку)
+    trackHour(uid).catch(() => {});
+    trackDailyHistory(uid).catch(() => {});
+
     await loadReviews();
   }
 
   window.currentModalProduct = {};
 
-  window.openModal = function(emoji, name, desc, price, photo, oldPrice, id) {
+  window.openModal = function(emoji, name, desc, price, photo, oldPrice, id, category) {
     window.currentModalProduct = { id, name, price };
+
+    // Трекинг просмотра блюда
+    if (id && cafeId) trackDishView(cafeId, id, name, category || '').catch(() => {});
+
     if (photo) {
       document.getElementById('m-emoji').innerHTML = '<img src="' + photo + '" style="width:100%;height:220px;object-fit:cover;border-radius:16px;display:block;">';
     } else {
@@ -393,6 +442,9 @@ if (s.logo) {
       });
       const data = await resp.json();
       if (data.ok) {
+        // Сохраняем заказ в Firestore для статистики
+        saveOrderToFirestore(cafeId, order, grandTotal).catch(() => {});
+
         btn.textContent = '✅ Заказ отправлен!';
         setTimeout(() => {
           closeCart();
@@ -482,7 +534,6 @@ if (s.logo) {
     `).join('');
   }
 
-  // ===== КОРЗИНА =====
   let cart = {};
   loadCart();
   updateCartUI();
@@ -576,7 +627,6 @@ if (s.logo) {
       footer.style.display = 'block';
     }
   }
-  // ===== КОНЕЦ КОРЗИНЫ =====
 
   window.searchDishes = function(query) {
     const q = query.toLowerCase().trim();
