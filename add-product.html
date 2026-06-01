@@ -435,23 +435,8 @@ import { collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.co
     const oldPrice = document.getElementById('oldPrice').value;
 
     // Автоперевод если поля пустые
-    let nameUz = document.getElementById('nameUz').value.trim();
-    let descriptionUz = document.getElementById('descriptionUz').value.trim();
-    if (!nameUz) {
-      document.getElementById('uzTranslating').style.display = 'inline';
-      try {
-        const r = await fetch('/api/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, description })
-        });
-        const d = await r.json();
-        const parsed = JSON.parse(d.text);
-        nameUz = parsed.name_uz || '';
-        descriptionUz = parsed.description_uz || '';
-      } catch(e) { nameUz = ''; descriptionUz = ''; }
-      document.getElementById('uzTranslating').style.display = 'none';
-    }
+    const nameUz = document.getElementById('nameUz').value.trim();
+    const descriptionUz = document.getElementById('descriptionUz').value.trim();
 
     const id = Date.now().toString();
     await setDoc(doc(db, 'cafes', currentUid, 'products', id), {
